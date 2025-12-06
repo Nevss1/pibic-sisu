@@ -1,65 +1,70 @@
 "use client";
 
+import { useState } from "react";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import CursoSelect from "./components/CursoSelect";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-export default function DashboardPage() {
-  const [curso, setCurso] = useState("MEDICINA");
-  const [dados, setDados] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+export default function Dashboard() {
+  const [curso, setCurso] = useState("");
+  const [dados, setDados] = useState([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const res = await fetch(`/api/serie-temporal?curso=${encodeURIComponent(curso)}`);
-      const json = await res.json();
-      setDados(json);
-      setLoading(false);
-    }
-    fetchData();
-  }, [curso]);
-
-  const anos = dados.map((d) => d.ano);
-  const mediaCand = dados.map((d) => d.media_nota_candidato);
-  const mediaCorte = dados.map((d) => d.media_nota_corte);
+  async function buscarDados(cursoNome: string) {
+    const res = await fetch(
+      `/api/serie-temporal?curso=${encodeURIComponent(cursoNome)}`
+    );
+    const json = await res.json();
+    setDados(json);
+  }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Dashboard SISU UFMA</h1>
+    <div className="min-h-screen p-10 bg-gray-50">
+      <h1 className="text-4xl font-bold mb-6 text-gray-800">
+        📊 Dashboard SISU UFMA
+      </h1>
 
-      <input
-        className="border rounded px-4 py-2 text-black mb-6"
-        value={curso}
-        onChange={(e) => setCurso(e.target.value)}
-        placeholder="Digite o nome do curso"
-      />
+      {/* Campo de busca */}
+      <div className="flex gap-3 mb-6">
+        <CursoSelect
+          onCursoSelecionado={(curso) => {
+            setCurso(curso);
+            buscarDados(curso);
+          }}
+        />
 
-      {loading && <p>Carregando...</p>}
+        <button
+          onClick={buscarDados}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded"
+        >
+          Buscar
+        </button>
+      </div>
 
-      {!loading && dados.length > 0 && (
+      {/* Gráfico */}
+      {dados.length > 0 && (
         <Plot
           data={[
             {
-              x: anos,
-              y: mediaCand,
+              x: dados.map((d) => d.ano),
+              y: dados.map((d) => Number(d.media_nota_candidato)),
               type: "scatter",
               mode: "lines+markers",
-              name: "Nota Média dos Candidatos",
+              name: "Média Nota do Candidato",
             },
             {
-              x: anos,
-              y: mediaCorte,
+              x: dados.map((d) => d.ano),
+              y: dados.map((d) => Number(d.media_nota_corte)),
               type: "scatter",
               mode: "lines+markers",
-              name: "Nota Média de Corte",
+              name: "Nota de Corte",
             },
           ]}
           layout={{
-            title: `Série Temporal — ${curso}`,
+            title: `Série temporal — ${curso}`,
+            xaxis: { title: "Ano" },
+            yaxis: { title: "Notas ENEM" },
           }}
-          style={{ width: "100%", height: 500 }}
         />
       )}
     </div>

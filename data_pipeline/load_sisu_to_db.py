@@ -40,7 +40,7 @@ def carregar_ano(year):
 
 
 def main():
-    for year in range(2018, 2024):  # agora 2018 a 2023
+    for year in range(2018, 2024):
         carregar_ano(year)
 
 if __name__ == "__main__":
