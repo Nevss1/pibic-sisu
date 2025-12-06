@@ -1,11 +1,9 @@
 import pandas as pd
 from sqlalchemy import create_engine
 
-# COLOCA A SUA CONNECTION STRING AQUI
 DATABASE_URL =  'postgresql://neondb_owner:npg_s5KeiBV8kZpt@ep-bold-fog-acr5li04-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 engine = create_engine(DATABASE_URL)
 
-# Lista de colunas que devem virar número
 NUMERIC_COLS = [
     "NU_ANO","NU_EDICAO","NU_PERCENTUAL_BONUS",
     "NU_PESO_L","NU_PESO_CH","NU_PESO_CN","NU_PESO_M","NU_PESO_R",
