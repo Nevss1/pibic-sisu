@@ -1,0 +1,1 @@
+export { fetchDados } from "./fetchers";

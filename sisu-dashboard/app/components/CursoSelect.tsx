@@ -6,7 +6,7 @@ type CursoSelectProps = {
   onCursoSelecionado: (cursoNome: string) => void;
 };
 
-export default function CursoSelect({ onCursoSelecionado }: CursoSelectProps) {
+export const CursoSelect = ({ onCursoSelecionado }: CursoSelectProps) => {
   const [texto, setTexto] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
 
