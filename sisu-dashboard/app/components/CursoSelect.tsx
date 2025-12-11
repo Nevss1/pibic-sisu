@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react";
 
-export default function CursoSelect({ onCursoSelecionado }) {
+type CursoSelectProps = {
+  onCursoSelecionado: (cursoNome: string) => void;
+};
+
+export default function CursoSelect({ onCursoSelecionado }: CursoSelectProps) {
   const [texto, setTexto] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
 
