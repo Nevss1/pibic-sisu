@@ -3,17 +3,17 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q") || "";
+  const curso = searchParams.get("curso") || "";
+
+  if (!curso) return NextResponse.json([]);
 
   const result = await pool.query(
     `
-    SELECT DISTINCT no_curso 
+    SELECT nu_nota_candidato
     FROM sisu_ufma
-    WHERE LOWER(no_curso) LIKE LOWER($1)
-    ORDER BY no_curso ASC
-    LIMIT 20
+    WHERE LOWER(no_curso) = LOWER($1)
     `,
-    [`%${q}%`]
+    [curso]
   );
 
   return NextResponse.json(result.rows);

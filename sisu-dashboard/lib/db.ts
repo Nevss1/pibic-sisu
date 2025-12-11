@@ -1,5 +1,4 @@
 import { Pool } from "pg";
-
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
