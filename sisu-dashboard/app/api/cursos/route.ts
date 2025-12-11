@@ -1,21 +1,13 @@
-import { pool } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { pool } from "@/lib/db";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q") || "";
-
-  if (q.length < 2) return NextResponse.json([]);
-
+export async function GET() {
   const result = await pool.query(
     `
     SELECT DISTINCT no_curso 
     FROM sisu_ufma
-    WHERE LOWER(no_curso) LIKE LOWER($1)
-    ORDER BY no_curso ASC
-    LIMIT 20
-    `,
-    [`%${q}%`]
+    ORDER BY no_curso
+    `
   );
 
   return NextResponse.json(result.rows);

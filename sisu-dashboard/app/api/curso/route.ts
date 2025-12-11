@@ -7,12 +7,12 @@ export async function GET(req: Request) {
 
   if (!curso) return NextResponse.json([]);
 
-  const dados = await pool.query(
+  const serie = await pool.query(
     `
     SELECT 
       ano,
-      AVG(nu_nota_candidato) AS media_candidato,
-      AVG(nu_notacorte) AS media_corte,
+      AVG(nu_nota_candidato) AS media_nota_candidato,
+      AVG(nu_notacorte) AS media_nota_corte,
       COUNT(*) AS total_inscritos
     FROM sisu_ufma
     WHERE LOWER(no_curso) = LOWER($1)
@@ -22,22 +22,22 @@ export async function GET(req: Request) {
     [curso]
   );
 
-  // busca modalidades
   const modalidades = await pool.query(
     `
     SELECT 
       ds_mod_concorrencia,
-      AVG(nu_notacorte) AS media_corte
+      AVG(nu_notacorte) AS media_nota_corte,
+      AVG(nu_nota_candidato) AS media_nota_candidato
     FROM sisu_ufma
     WHERE LOWER(no_curso) = LOWER($1)
     GROUP BY ds_mod_concorrencia
-    ORDER BY media_corte DESC
+    ORDER BY media_nota_corte DESC
     `,
     [curso]
   );
 
   return NextResponse.json({
-    serie: dados.rows,
+    serie: serie.rows,
     modalidades: modalidades.rows,
   });
 }

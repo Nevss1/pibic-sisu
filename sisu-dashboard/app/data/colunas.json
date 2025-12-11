@@ -1,0 +1,267 @@
+{
+  "ANO": {
+    "nome": "Ano da edição",
+    "tipo": "Numérico",
+    "descricao": "Ano do processo seletivo"
+  },
+  "EDICAO": {
+    "nome": "Número da edição",
+    "tipo": "Numérico",
+    "descricao": "Número da edição do processo seletivo no ano"
+  },
+  "CODIGO_ETAPA": {
+    "nome": "Código da etapa",
+    "tipo": "Numérico",
+    "descricao": "Identificador da etapa dentro do Sisu Gestão"
+  },
+  "ETAPA": {
+    "nome": "Nome da etapa",
+    "tipo": "Alfanumérico",
+    "descricao": "Etapa do processo (inscrição, chamada regular, lista de espera)"
+  },
+  "CODIGO_IES": {
+    "nome": "Código da IES",
+    "tipo": "Numérico",
+    "descricao": "Código da instituição segundo o cadastro e-MEC"
+  },
+  "NOME_IES": {
+    "nome": "Nome da IES",
+    "tipo": "Alfanumérico",
+    "descricao": "Nome da instituição segundo o e-MEC"
+  },
+  "SIGLA_IES": {
+    "nome": "Sigla da IES",
+    "tipo": "Alfanumérico",
+    "descricao": "Sigla da instituição"
+  },
+  "UF_IES": {
+    "nome": "UF da IES",
+    "tipo": "Alfanumérico",
+    "descricao": "Unidade da Federação da instituição"
+  },
+  "CODIGO_CAMPUS": {
+    "nome": "Código do campus",
+    "tipo": "Numérico",
+    "descricao": "Código do campus no cadastro e-MEC"
+  },
+  "NOME_CAMPUS": {
+    "nome": "Nome do campus",
+    "tipo": "Alfanumérico",
+    "descricao": "Nome do campus segundo o cadastro e-MEC"
+  },
+  "UF_CAMPUS": {
+    "nome": "UF do campus",
+    "tipo": "Alfanumérico",
+    "descricao": "Estado onde se localiza o campus"
+  },
+  "MUNICIPIO_CAMPUS": {
+    "nome": "Município do campus",
+    "tipo": "Alfanumérico",
+    "descricao": "Município onde está localizado o campus"
+  },
+  "CODIGO_CURSO": {
+    "nome": "Código do curso",
+    "tipo": "Numérico",
+    "descricao": "Código do curso segundo o e-MEC"
+  },
+  "NOME_CURSO": {
+    "nome": "Nome do curso",
+    "tipo": "Alfanumérico",
+    "descricao": "Nome do curso segundo o cadastro e-MEC"
+  },
+  "GRAU": {
+    "nome": "Grau do curso",
+    "tipo": "Alfanumérico",
+    "descricao": "Bacharelado, Licenciatura, Tecnológico etc."
+  },
+  "TURNO": {
+    "nome": "Turno",
+    "tipo": "Alfanumérico",
+    "descricao": "Turno do curso (matutino, noturno, integral etc.)"
+  },
+  "TIPO_MOD_CONCORRENCIA": {
+    "nome": "Tipo da modalidade",
+    "tipo": "Alfanumérico",
+    "descricao": "Código da modalidade de concorrência"
+  },
+  "MOD_CONCORRENCIA": {
+    "nome": "Modalidade de concorrência",
+    "tipo": "Alfanumérico",
+    "descricao": "Descrição da modalidade (ampla concorrência, cotas etc.)"
+  },
+  "PERCENTUAL_BONUS": {
+    "nome": "Percentual de bônus",
+    "tipo": "Numérico",
+    "descricao": "Percentual aplicado em bônus de ações afirmativas"
+  },
+  "PESO_L": {
+    "nome": "Peso Linguagens",
+    "tipo": "Numérico",
+    "descricao": "Peso da prova de Linguagens"
+  },
+  "PESO_CH": {
+    "nome": "Peso Humanas",
+    "tipo": "Numérico",
+    "descricao": "Peso da prova de Ciências Humanas"
+  },
+  "PESO_CN": {
+    "nome": "Peso Natureza",
+    "tipo": "Numérico",
+    "descricao": "Peso da prova de Ciências da Natureza"
+  },
+  "PESO_M": {
+    "nome": "Peso Matemática",
+    "tipo": "Numérico",
+    "descricao": "Peso da prova de Matemática"
+  },
+  "PESO_R": {
+    "nome": "Peso Redação",
+    "tipo": "Numérico",
+    "descricao": "Peso da Redação"
+  },
+  "NOTA_MINIMA_L": {
+    "nome": "Nota mínima L",
+    "tipo": "Numérico",
+    "descricao": "Nota mínima exigida em Linguagens"
+  },
+  "NOTA_MINIMA_CH": {
+    "nome": "Nota mínima CH",
+    "tipo": "Numérico",
+    "descricao": "Nota mínima exigida em Humanas"
+  },
+  "NOTA_MINIMA_CN": {
+    "nome": "Nota mínima CN",
+    "tipo": "Numérico",
+    "descricao": "Nota mínima exigida em Natureza"
+  },
+  "NOTA_MINIMA_M": {
+    "nome": "Nota mínima M",
+    "tipo": "Numérico",
+    "descricao": "Nota mínima exigida em Matemática"
+  },
+  "NOTA_MINIMA_R": {
+    "nome": "Nota mínima R",
+    "tipo": "Numérico",
+    "descricao": "Nota mínima exigida em Redação"
+  },
+  "MEDIA_MINIMA": {
+    "nome": "Média mínima",
+    "tipo": "Numérico",
+    "descricao": "Média mínima aritmética do ENEM exigida"
+  },
+  "CPF": {
+    "nome": "CPF truncado",
+    "tipo": "Numérico",
+    "descricao": "CPF truncado para proteção de dados"
+  },
+  "INSCRICAO_ENEM": {
+    "nome": "Inscrição ENEM",
+    "tipo": "Numérico",
+    "descricao": "Número da inscrição no ENEM (parcial)"
+  },
+  "INSCRITO": {
+    "nome": "Nome do inscrito",
+    "tipo": "Alfanumérico",
+    "descricao": "Nome do estudante inscrito"
+  },
+  "SEXO": {
+    "nome": "Sexo",
+    "tipo": "Alfanumérico",
+    "descricao": "Sexo do candidato"
+  },
+  "DATA_NASCIMENTO": {
+    "nome": "Data de nascimento",
+    "tipo": "Numérico",
+    "descricao": "Data de nascimento do candidato"
+  },
+  "UF_CANDIDATO": {
+    "nome": "UF do candidato",
+    "tipo": "Alfanumérico",
+    "descricao": "Estado de residência do candidato"
+  },
+  "MUNICIPIO_CANDIDATO": {
+    "nome": "Município do candidato",
+    "tipo": "Alfanumérico",
+    "descricao": "Município de residência do candidato"
+  },
+  "OPCAO": {
+    "nome": "Opção",
+    "tipo": "Numérico",
+    "descricao": "Informa se é a 1ª ou 2ª opção do estudante"
+  },
+  "NOTA_L": {
+    "nome": "Nota Linguagens",
+    "tipo": "Numérico",
+    "descricao": "Nota da prova de Linguagens"
+  },
+  "NOTA_CH": {
+    "nome": "Nota Humanas",
+    "tipo": "Numérico",
+    "descricao": "Nota da prova de Ciências Humanas"
+  },
+  "NOTA_CN": {
+    "nome": "Nota Natureza",
+    "tipo": "Numérico",
+    "descricao": "Nota da prova de Ciências da Natureza"
+  },
+  "NOTA_M": {
+    "nome": "Nota Matemática",
+    "tipo": "Numérico",
+    "descricao": "Nota da prova de Matemática"
+  },
+  "NOTA_R": {
+    "nome": "Nota Redação",
+    "tipo": "Numérico",
+    "descricao": "Nota da Redação"
+  },
+  "NOTA_L_COM_PESO": {
+    "nome": "Nota L com peso",
+    "tipo": "Numérico",
+    "descricao": "Nota de Linguagens multiplicada pelo peso"
+  },
+  "NOTA_CH_COM_PESO": {
+    "nome": "Nota CH com peso",
+    "tipo": "Numérico",
+    "descricao": "Nota de Humanas multiplicada pelo peso"
+  },
+  "NOTA_CN_COM_PESO": {
+    "nome": "Nota CN com peso",
+    "tipo": "Numérico",
+    "descricao": "Nota de Natureza multiplicada pelo peso"
+  },
+  "NOTA_M_COM_PESO": {
+    "nome": "Nota M com peso",
+    "tipo": "Numérico",
+    "descricao": "Nota de Matemática multiplicada pelo peso"
+  },
+  "NOTA_R_COM_PESO": {
+    "nome": "Nota R com peso",
+    "tipo": "Numérico",
+    "descricao": "Nota da Redação multiplicada pelo peso"
+  },
+  "NOTA_CANDIDATO": {
+    "nome": "Nota do candidato",
+    "tipo": "Numérico",
+    "descricao": "Nota ponderada final usada no SISU"
+  },
+  "NOTA_CORTE": {
+    "nome": "Nota de corte",
+    "tipo": "Numérico",
+    "descricao": "Nota de corte do curso/modalidade"
+  },
+  "CLASSIFICACAO": {
+    "nome": "Classificação",
+    "tipo": "Numérico",
+    "descricao": "Posição do candidato entre os inscritos"
+  },
+  "APROVADO": {
+    "nome": "Aprovado",
+    "tipo": "Alfanumérico",
+    "descricao": "Indica se o candidato foi aprovado na chamada regular"
+  },
+  "MATRICULA": {
+    "nome": "Situação da matrícula",
+    "tipo": "Alfanumérico",
+    "descricao": "Situação da matrícula registrada no Sisu Gestão"
+  }
+}

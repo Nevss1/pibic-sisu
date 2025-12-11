@@ -10,13 +10,13 @@ export default function CursoClientPage({ curso }) {
   const [modalidades, setModalidades] = useState([]);
 
   async function carregarDados() {
-    const s = await fetch(`/api/curso/serie?curso=${encodeURIComponent(curso)}`).then(r => r.json());
-    const m = await fetch(`/api/curso/modalidades?curso=${encodeURIComponent(curso)}`).then(r => r.json());
+    const res = await fetch(`/api/curso?curso=${encodeURIComponent(curso)}`);
+    const json = await res.json();
 
-    console.log("Modalidades recebidas:", m); // <-- debug
+    console.log("Retorno completo da API:", json);
 
-    setSerie(s);
-    setModalidades(m);
+    setSerie(json.serie);
+    setModalidades(json.modalidades);
   }
 
   useEffect(() => {
@@ -25,11 +25,9 @@ export default function CursoClientPage({ curso }) {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-10">
-      <h1 className="text-5xl font-bold mb-10 text-white">
-        {curso}
-      </h1>
+      <h1 className="text-5xl font-bold mb-10 text-white">{curso}</h1>
 
-      {/* --- Gráfico de série temporal --- */}
+      {/* Gráfico de série temporal */}
       {serie.length > 0 && (
         <div className="bg-gray-800 p-6 rounded-xl shadow-xl mb-10">
           <Plot
@@ -63,7 +61,7 @@ export default function CursoClientPage({ curso }) {
         </div>
       )}
 
-      {/* --- Modalidades --- */}
+      {/* Modalidades */}
       <h2 className="text-3xl font-semibold mt-12 mb-4 text-white">Modalidades no SISU</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -83,7 +81,14 @@ export default function CursoClientPage({ curso }) {
             <p className="mt-2 text-gray-300">
               Nota média dos candidatos:{" "}
               <span className="font-semibold text-white">
-                {m.media_nota_candidato?.toFixed(2)}
+                {Number(m.media_nota_candidato).toFixed(2)}
+              </span>
+            </p>
+
+            <p className="mt-1 text-gray-300">
+              Nota de corte média:{" "}
+              <span className="font-semibold text-white">
+                {Number(m.media_nota_corte).toFixed(2)}
               </span>
             </p>
           </div>

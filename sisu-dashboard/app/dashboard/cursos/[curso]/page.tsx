@@ -1,4 +1,3 @@
-// app/dashboard/curso/[curso]/page.tsx
 
 import CursoClientPage from "./CursoClientPage";
 
