@@ -29,7 +29,7 @@ export default function Dashboard() {
     const json = await res.json();
 
     setDados(json);
-    setAnosSelecionados([]); // reseta filtro ao trocar curso
+    setAnosSelecionados([]);
   }
 
   const totalCandidatos = dadosPorAno.flatMap((d) => d.notas).length;
@@ -64,7 +64,6 @@ export default function Dashboard() {
         Dashboard SISU UFMA
       </h1>
 
-      {/* CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <Card title="Candidatos" data={totalCandidatos} />
         <Card title="Nota média" data={mediaNotaCandidato} />
@@ -72,7 +71,6 @@ export default function Dashboard() {
         <Card title="Taxa de Aprovação" data={`${taxaAprovacao}%`} />
       </div>
 
-      {/* Seleção de curso */}
       <div className="flex gap-3 mb-6">
         <CursoSelect
           onCursoSelecionado={(cursoEscolhido) => {
