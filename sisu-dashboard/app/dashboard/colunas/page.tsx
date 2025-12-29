@@ -1,5 +1,5 @@
 import colunas from "@/app/data/colunas.json";
-
+ 
 export default function ColunasPage() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-10">
