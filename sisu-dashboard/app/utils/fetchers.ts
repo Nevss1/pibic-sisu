@@ -1,4 +1,4 @@
-export async function fetchDados(cursoNome: string) {
+export async function fetchDadosdoCurso(cursoNome: string) {
   if (!cursoNome) return;
 
   const res = await fetch(`/api/dados?curso=${encodeURIComponent(cursoNome)}`);

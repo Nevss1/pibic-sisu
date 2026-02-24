@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dados } from "../types";
-import { fetchDados } from "../utils";
+import { fetchDadosdoCurso } from "../utils";
 
 export function useDashboard() {
   const [curso, setCurso] = useState("");
@@ -11,7 +11,7 @@ export function useDashboard() {
   async function buscarDados(cursoNome: string) {
     if (!cursoNome) return;
 
-    const json = await fetchDados(cursoNome);
+    const json = await fetchDadosdoCurso(cursoNome);
 
     setDados(json);
     setAnosSelecionados([]);
