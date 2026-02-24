@@ -1,1 +1,2 @@
-export { fetchDados } from "./fetchers";
+export * from './metrics'
+export * from './fetchers'

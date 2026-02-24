@@ -1,59 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Dados } from "../types/sisu";
-import { fetchDados } from "@/app/utils";
 import { Card, YearToggleGroup, CursoSelect } from "@/app/components";
+import { calcularDadosPorAno, calcularMedia, calcularTotalCandidatos } from "../utils";
+import { useDashboard } from "../hooks";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 export default function Dashboard() {
-  const [curso, setCurso] = useState("");
-  const [dados, setDados] = useState<Dados>([]);
-  const [anosSelecionados, setAnosSelecionados] = useState<string[]>([]);
-
-  const dadosPorAno =
-    anosSelecionados.length === 0
-      ? dados
-      : dados.filter((d) => anosSelecionados.includes(d.ano));
-
-  const anos = [...new Set(dados.map((d) => d.ano))];
-
-  async function buscarDados(cursoNome: string) {
-    if (!cursoNome) return;
-
-    const json = await fetchDados(cursoNome);
-
-    setDados(json);
-    setAnosSelecionados([]);
-  }
-
-  const totalCandidatos = dadosPorAno.flatMap((d) => d.notas).length;
-
-  const mediaNotaCandidato =
-    dadosPorAno.length > 0
-      ? (
-          dadosPorAno.reduce((acc, d) => acc + d.media_nota_candidato, 0) /
-          dadosPorAno.length
-        ).toFixed(2)
-      : "0";
-
-  const mediaNotaCorte =
-    dadosPorAno.length > 0
-      ? (
-          dadosPorAno.reduce((acc, d) => acc + d.media_nota_corte, 0) /
-          dadosPorAno.length
-        ).toFixed(2)
-      : "0";
-
-  const taxaAprovacao =
-    dadosPorAno.length > 0
-      ? (
-          dadosPorAno.reduce((acc, d) => acc + d.taxa_aprovacao, 0) /
-          dadosPorAno.length
-        ).toFixed(2)
-      : "0";
+  const { curso, setCurso, dados, anosSelecionados, setAnosSelecionados, buscarDados, anos } = useDashboard();
+  
+  const dadosPorAno = calcularDadosPorAno(dados, anosSelecionados);
+  const totalCandidatos = calcularTotalCandidatos(dados)
+  const mediaNotaCandidato = calcularMedia(dadosPorAno, "media_nota_candidato")
+  const mediaNotaCorte = calcularMedia(dadosPorAno, "media_nota_corte")
+  const taxaAprovacao = calcularMedia(dadosPorAno, "taxa_aprovacao")
 
   return (
     <div className="min-h-screen p-10 bg-gray-100 rounded-lg">
@@ -83,17 +44,17 @@ export default function Dashboard() {
           Buscar
         </button>
       </div>
+      <YearToggleGroup
+        items={anos}
+        selected={anosSelecionados}
+        onChange={setAnosSelecionados}
+      />
+     
+
+
 
       {dadosPorAno.length > 0 && (
-        <YearToggleGroup
-          items={anos}
-          selected={anosSelecionados}
-          onChange={setAnosSelecionados}
-        />
-      )}
-
-      {dadosPorAno.length > 0 && (
-        <div className="w-full flex flex-col object-center items-center">
+        <div className="w-full flex flex-col object-center items-center space-y-5">
           <div className="bg-white p-6 rounded shadow mt-10">
             <Plot
               data={[
