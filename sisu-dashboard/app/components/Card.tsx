@@ -1,6 +1,6 @@
 export type CardProps = {
   title: string;
-  data: string;
+  data: string | number;
 }
 
 export const Card = ({ title = "N/A", data="-" }: CardProps) => {

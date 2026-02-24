@@ -46,7 +46,7 @@ export default function HomePage() {
             href="/dashboard"
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-xl font-semibold transition-all shadow-lg text-center"
           >
-            Acessar Dashboard
+            Explorar Dados
           </Link>
         </motion.div>
 

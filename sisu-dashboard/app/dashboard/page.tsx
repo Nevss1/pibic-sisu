@@ -56,7 +56,7 @@ export default function Dashboard() {
       : "0";
 
   return (
-    <div className="min-h-screen p-10 bg-gray-20">
+    <div className="min-h-screen p-10 bg-gray-100 rounded-lg">
       <h1 className="text-4xl font-bold mb-6 text-gray-800">
         Dashboard SISU UFMA
       </h1>
