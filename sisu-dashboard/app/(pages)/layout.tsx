@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <img src="/ufma-logo.png" alt="UFMA Logo" className="mb-4 size-24"/>
 
         <nav className="space-y-3 px-6">
-          <a className="block hover:text-blue-800 text-black" href="/home">Home</a>
+          <a className="block hover:text-blue-800 text-black" href="/analise">Panorama</a>
           <a className="block hover:text-blue-800 text-black" href="/areas">Áreas</a>
           <a className="block hover:text-blue-800 text-black" href="/cursos">Cursos</a>
           <a className="block hover:text-blue-800 text-black" href="/modalidades">Modalidades</a>

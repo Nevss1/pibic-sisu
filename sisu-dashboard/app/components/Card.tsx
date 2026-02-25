@@ -6,9 +6,9 @@ export type CardProps = {
 export const Card = ({ title = "N/A", data="-" }: CardProps) => {
 
   return (
-    <div className="bg-gray-900 p-5 rounded shadow">
-      <h3 className="text-gray-500 text-sm">{title}</h3>
-      <p className="text-2xl font-bold">{data}</p>
+    <div className="bg-gray-200 p-4 rounded shadow flex-1 text-center text-white">
+      <h3 className="text-gray-900 text-sm ">{title}</h3>
+      <p className="text-2xl text-gray-900 font-bold ">{data}</p>
     </div>
   )
 }

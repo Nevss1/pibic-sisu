@@ -43,7 +43,7 @@ export default function HomePage() {
           whileTap={{ scale: 0.97 }}
         >
           <Link
-            href="/home"
+            href="/analise"
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-xl font-semibold transition-all shadow-lg text-center"
           >
             Explorar Dados

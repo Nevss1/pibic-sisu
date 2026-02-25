@@ -16,10 +16,10 @@ export default function Home() {
   return (
     <div className="min-h-screen p-10 bg-gray-100 rounded-lg">
       <h1 className="text-4xl font-bold mb-6 text-gray-800">
-        Dashboard SISU UFMA
+        Panorama Geral do SISU UFMA
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      <div className="flex gap-4 mb-6">
         <Card title="Candidatos" data={totalCandidatos} />
         <Card title="Nota média" data={mediaNotaCandidato} />
         <Card title="Nota de corte média" data={mediaNotaCorte} />
