@@ -4,7 +4,7 @@ import { Card, YearToggleGroup, CursoSelect, GraficoSerieTemporalNotas } from "@
 import { calcularDadosPorAno, calcularMedia, calcularTotalCandidatos } from "@/app/utils";
 import { useDashboard } from "@/app/hooks";
 
-export default function Dashboard() {
+export default function Home() {
   const { curso, setCurso, dados, anosSelecionados, setAnosSelecionados, buscarDados, anos } = useDashboard();
   
   const dadosPorAno = calcularDadosPorAno(dados, anosSelecionados);

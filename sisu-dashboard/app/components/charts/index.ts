@@ -1,1 +1,1 @@
-export { GraficoSerieTemporalNotas } from './'
+export { GraficoSerieTemporalNotas } from './GraficoSerieTemporalNotas';
