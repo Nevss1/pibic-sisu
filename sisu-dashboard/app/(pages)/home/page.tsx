@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, YearToggleGroup, CursoSelect, GraficoSerieTemporalNotas } from "@/app/components";
+import { Card, CursoSelect, GraficoSerieTemporalNotas, SeletorAno } from "@/app/components";
 import { calcularDadosPorAno, calcularMedia, calcularTotalCandidatos } from "@/app/utils";
 import { useDashboard } from "@/app/hooks";
 
@@ -12,9 +12,7 @@ export default function Home() {
   const mediaNotaCandidato = calcularMedia(dadosPorAno, "media_nota_candidato")
   const mediaNotaCorte = calcularMedia(dadosPorAno, "media_nota_corte")
   const taxaAprovacao = calcularMedia(dadosPorAno, "taxa_aprovacao")
-
-  console.log(dadosPorAno)
-
+  
   return (
     <div className="min-h-screen p-10 bg-gray-100 rounded-lg">
       <h1 className="text-4xl font-bold mb-6 text-gray-800">
@@ -35,7 +33,6 @@ export default function Home() {
             buscarDados(cursoEscolhido);
           }}
         />
-
         <button
           onClick={() => buscarDados(curso)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded"
@@ -43,7 +40,8 @@ export default function Home() {
           Buscar
         </button>
       </div>
-      <YearToggleGroup
+
+      <SeletorAno
         items={anos}
         selected={anosSelecionados}
         onChange={setAnosSelecionados}

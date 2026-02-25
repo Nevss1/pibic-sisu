@@ -1,10 +1,10 @@
-type YearToggleGroupProps = {
+type SeletorAnoProps = {
   items: string[];
   selected: string[];
   onChange: (newSelected: string[]) => void 
 };
 
-export const YearToggleGroup = ({items, selected, onChange}: YearToggleGroupProps) => {
+export const SeletorAno = ({items, selected, onChange}: SeletorAnoProps) => {
   const toggle = (item: string) => {
     if (selected.includes(item)){
       onChange(selected.filter((i) => i != item))
