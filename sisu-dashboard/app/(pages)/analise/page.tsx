@@ -1,18 +1,24 @@
 "use client";
 
-import { Card, CursoSelect, GraficoSerieTemporalNotas, SeletorAno } from "@/app/components";
-import { calcularDadosPorAno, calcularMedia, calcularTotalCandidatos } from "@/app/utils";
+import { Card, SerieTemporalArea, SerieTemporalLinha } from "@/app/components";
+import { calcularMedia, calcularTotalCandidatos } from "@/app/utils";
 import { useDashboard } from "@/app/hooks";
+import { useEffect } from "react";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export default function Home() {
-  const { curso, setCurso, dados, anosSelecionados, setAnosSelecionados, buscarDados, anos } = useDashboard();
+  const { curso, setCurso, dados, anosSelecionados, setAnosSelecionados, buscarDados, buscarDadosTotal, anos } = useDashboard();
   
-  const dadosPorAno = calcularDadosPorAno(dados, anosSelecionados);
+  useEffect(() => {
+    buscarDadosTotal();
+  }, []);
+  console.log(dados);
+
   const totalCandidatos = calcularTotalCandidatos(dados)
-  const mediaNotaCandidato = calcularMedia(dadosPorAno, "media_nota_candidato")
-  const mediaNotaCorte = calcularMedia(dadosPorAno, "media_nota_corte")
-  const taxaAprovacao = calcularMedia(dadosPorAno, "taxa_aprovacao")
-  
+  const mediaNotaCandidato = calcularMedia(dados, "media_nota_candidato")
+  const mediaNotaCorte = calcularMedia(dados, "media_nota_corte")
+  const taxaAprovacao = calcularMedia(dados, "taxa_aprovacao")
+  console.log(dados)
   return (
     <div className="min-h-screen p-10 bg-gray-100 rounded-lg">
       <h1 className="text-4xl font-bold mb-6 text-gray-800">
@@ -25,29 +31,20 @@ export default function Home() {
         <Card title="Nota de corte média" data={mediaNotaCorte} />
         <Card title="Taxa de Aprovação" data={`${taxaAprovacao}%`} />
       </div>
-
-      <div className="flex gap-3 mb-6">
-        <CursoSelect
-          onCursoSelecionado={(cursoEscolhido) => {
-            setCurso(cursoEscolhido);
-            buscarDados(cursoEscolhido);
-          }}
-        />
-        <button
-          onClick={() => buscarDados(curso)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded"
-        >
-          Buscar
-        </button>
-      </div>
-
-      <SeletorAno
-        items={anos}
-        selected={anosSelecionados}
-        onChange={setAnosSelecionados}
+      
+      <SerieTemporalLinha
+        dados={dados}
+        linhas={[
+          { dataKey: "media_nota_candidato", name: "Nota Média do Candidato", stroke: "#2563eb" },
+          { dataKey: "media_nota_corte", name: "Nota de Corte", stroke: "#dc2626" },
+        ]}
       />
-
-      <GraficoSerieTemporalNotas dados={dadosPorAno} />
+      <SerieTemporalArea
+        dados={dados}
+        areas={[
+          { dataKey: "total_inscritos", name: "Total de candidatos", stroke: "#2563eb" },
+        ]}
+      />
     </div>
   );
 }

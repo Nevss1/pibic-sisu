@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dados } from "../types";
-import { fetchDadosdoCurso } from "../utils";
+import { fetchDadosdoCurso, fetchDadosTotal } from "../utils";
 
 export function useDashboard() {
   const [curso, setCurso] = useState("");
@@ -17,7 +17,13 @@ export function useDashboard() {
     setAnosSelecionados([]);
   }
 
+  async function buscarDadosTotal() {
+    const json = await fetchDadosTotal();
+
+    setDados(json);
+  }
+
   const anos = [...new Set(dados.map((d) => d.ano))];
 
-  return { curso, setCurso, dados, anosSelecionados, setAnosSelecionados, buscarDados, anos };
+  return { curso, setCurso, dados, anosSelecionados, setAnosSelecionados, buscarDados, buscarDadosTotal, anos };
 }

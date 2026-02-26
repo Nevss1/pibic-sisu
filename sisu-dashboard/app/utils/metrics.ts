@@ -14,6 +14,16 @@ export function calcularDadosPorAno(dados: Dados, anosSelecionados: string[]) {
     : dados.filter((d) => anosSelecionados.includes(d.ano));
 }
 
+export function calcularDadosTotal(dados: Dados) {
+  return dados.reduce((acc, d) => {
+    acc.total_inscritos += Number(d.total_inscritos);
+    acc.media_nota_candidato += Number(d.media_nota_candidato);
+    acc.media_nota_corte += Number(d.media_nota_corte);
+    acc.taxa_aprovacao += Number(d.taxa_aprovacao);
+    return acc;
+  });
+}
+
 export function calcularTotalCandidatos(dados: Dados) {
   return dados.flatMap((d) => d.total_inscritos).reduce((acc, v) => acc + Number(v), 0)
 }
