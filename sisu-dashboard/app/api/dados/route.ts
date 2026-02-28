@@ -13,8 +13,8 @@ export async function GET(req: Request) {
     AVG(nu_notacorte) AS media_nota_corte,
     ARRAY_AGG(nu_nota_candidato) AS notas,
 
-    COUNT(*) AS total_inscritos,
-    COUNT(*) FILTER (WHERE st_aprovado = 'S') AS aprovados,
+    COUNT(*)::int AS total_inscritos,
+    COUNT(*) FILTER (WHERE st_aprovado = 'S')::int AS aprovados,
     (COUNT(*) FILTER (WHERE st_aprovado = 'S')::float / COUNT(*)::float) * 100 AS taxa_aprovacao
 
     FROM sisu_ufma

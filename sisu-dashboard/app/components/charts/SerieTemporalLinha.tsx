@@ -13,21 +13,21 @@ type SerieTemporalLinhaProps = {
   height?: number
 }
 
-export const SerieTemporalLinha = ({ dados, linhas, height = 300}: SerieTemporalLinhaProps) => {
+export const SerieTemporalLinha = ({ dados, linhas, height = 300 }: SerieTemporalLinhaProps) => {
   return (
     <ResponsiveContainer
-      width="60%" height={height}
+      width="100%" height={height}
     >
-      <LineChart 
-        data={dados} 
+      <LineChart
+        data={dados}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="ano" />
-        <YAxis domain={([min, max]) => [Math.floor(min - (min * 0.1)), Math.ceil(max + (max * 0.1))]}  />
+        <YAxis domain={([min, max]) => [Math.floor(min - (min * 0.1)), Math.ceil(max + (max * 0.1))]} />
         <Tooltip animationEasing="ease-in" />
         <Legend />
         {linhas.map((linha) => (
-          <Line 
+          <Line
             dataKey={linha.dataKey}
             name={linha.name}
             stroke={linha.stroke}

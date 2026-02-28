@@ -16,18 +16,18 @@ type SerieTemporalAreaProps = {
 export const SerieTemporalArea = ({ dados, areas, height = 300 }: SerieTemporalAreaProps) => {
   return (
     <ResponsiveContainer
-      width="60%" height={height}
+      width="100%" height={height}
     >
-      <AreaChart 
-        data={dados} 
+      <AreaChart
+        data={dados}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="ano" />
-        <YAxis domain={([min, max]) => [Math.floor(min - (min * 0.1)), Math.ceil(max + (max * 0.1))]}  />
+        <YAxis domain={([min, max]) => [Math.floor(min - (min * 0.1)), Math.ceil(max + (max * 0.1))]} />
         <Tooltip animationEasing="ease-in" />
         <Legend />
         {areas.map((area) => (
-          <Area 
+          <Area
             dataKey={area.dataKey}
             name={area.name}
             stroke={area.stroke}

@@ -1,16 +1,17 @@
 "use client";
 
-import { Card, SerieTemporalArea, SerieTemporalLinha } from "@/app/components";
+import { Card, SerieTemporalArea, SerieTemporalBarra, SerieTemporalLinha } from "@/app/components";
 import { calcularMedia, calcularTotalCandidatos } from "@/app/utils";
 import { useDashboard } from "@/app/hooks";
 import { useEffect } from "react";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export default function Home() {
-  const { curso, setCurso, dados, anosSelecionados, setAnosSelecionados, buscarDados, buscarDadosTotal, anos } = useDashboard();
+  const { dados, buscarDadosTotal, rankingConcorridos, buscarRankingConcorridos } = useDashboard();
   
   useEffect(() => {
     buscarDadosTotal();
+    buscarRankingConcorridos();
   }, []);
   console.log(dados);
 
@@ -18,7 +19,8 @@ export default function Home() {
   const mediaNotaCandidato = calcularMedia(dados, "media_nota_candidato")
   const mediaNotaCorte = calcularMedia(dados, "media_nota_corte")
   const taxaAprovacao = calcularMedia(dados, "taxa_aprovacao")
-  console.log(dados)
+
+  console.log(rankingConcorridos)
   return (
     <div className="min-h-screen p-10 bg-gray-100 rounded-lg">
       <h1 className="text-4xl font-bold mb-6 text-gray-800">
@@ -43,6 +45,21 @@ export default function Home() {
         dados={dados}
         areas={[
           { dataKey: "total_inscritos", name: "Total de candidatos", stroke: "#2563eb" },
+        ]}
+      />
+
+      <SerieTemporalBarra
+        dados={dados}
+        barras={[
+          { dataKey: "total_inscritos", fill: "#6d97f1" },
+        ]}
+      />
+
+       <SerieTemporalBarra
+        dados={rankingConcorridos}
+        xAxisKey="no_curso"
+        barras={[
+          { dataKey: "razao_inscritos_por_vaga", fill: "#6d97f1" },
         ]}
       />
     </div>
