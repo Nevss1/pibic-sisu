@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Dados } from "../types";
+import { DadoRanking, Dados } from "../types";
 import { fetchDadosdoCurso, fetchDadosTotal, fetchRankingConcorridos } from "../utils";
 
 export function useDashboard() {
   const [curso, setCurso] = useState("");
   const [dados, setDados] = useState<Dados>([]);
   const [anosSelecionados, setAnosSelecionados] = useState<string[]>([]);
-  const [rankingConcorridos, setRankingConcorridos] = useState<Dados>([]);
+  const [rankingConcorridos, setRankingConcorridos] = useState<DadoRanking[]>([]);
 
   async function buscarDados(cursoNome: string) {
     if (!cursoNome) return;

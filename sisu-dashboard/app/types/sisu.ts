@@ -8,4 +8,9 @@ export type Dado = {
   taxa_aprovacao: number
 }
 
+export type DadoRanking = {
+  no_curso: string
+  razao_inscritos_por_vaga: number
+}
+
 export type Dados = Dado[]

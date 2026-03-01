@@ -2,7 +2,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen">
 
-      <aside className="w-54 text-white p-6 space-y-4 items-center flex flex-col bg-gray-300">
+      <aside className="w-54 text-white p-6 space-y-4 items-center flex flex-col bg-[#FFF]">
         <h2 className="text-2xl font-bold text-black">SISU UFMA</h2>
 
         <img src="/ufma-logo.png" alt="UFMA Logo" className="mb-4 size-24"/>

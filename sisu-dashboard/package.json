@@ -9,6 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/roboto": "^5.2.10",
+    "@mui/icons-material": "^7.3.8",
+    "@mui/material": "^7.3.8",
+    "@mui/x-charts": "^8.27.0",
+    "@mui/x-data-grid": "^8.27.3",
+    "@mui/x-date-pickers": "^8.27.2",
+    "@mui/x-tree-view": "^8.27.2",
+    "@react-spring/web": "^10.0.3",
+    "dayjs": "^1.11.19",
     "framer-motion": "^12.23.26",
     "next": "16.0.7",
     "pg": "^8.16.3",
