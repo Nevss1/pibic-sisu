@@ -37,7 +37,7 @@ export default function CursosPage() {
               transition={{ duration: 0.15 }}
             >
               <Link
-                href={`/dashboard/cursos/${encodeURIComponent(curso)}`}
+                href={`/cursos/${encodeURIComponent(curso)}`}
                 className="
                   block bg-white border border-gray-200 
                   hover:border-blue-400 hover:shadow-lg 

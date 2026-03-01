@@ -9,7 +9,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <nav className="space-y-3 px-6">
           <a className="block hover:text-blue-800 text-black" href="/analise">Panorama</a>
-          <a className="block hover:text-blue-800 text-black" href="/areas">Áreas</a>
           <a className="block hover:text-blue-800 text-black" href="/cursos">Cursos</a>
           <a className="block hover:text-blue-800 text-black" href="/predicao">Predição</a>
           <a className="block hover:text-blue-800 text-black" href="/colunas">Informações disponíveis</a>

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 
+// OBSOLETE
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const area = searchParams.get("nome")?.toLowerCase();

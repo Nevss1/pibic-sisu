@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 
+// OBSOLETE, INFO DOS CURSOS
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const curso = searchParams.get("curso");
