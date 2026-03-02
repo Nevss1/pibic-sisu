@@ -1,23 +1,91 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { AppBar, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import MenuIcon from "@mui/icons-material/Menu";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import SchoolIcon from "@mui/icons-material/School";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
+
+const DRAWER_WIDTH = 220;
+
+const NAV_ITEMS = [
+  { href: "/analise", label: "Panorama", icon: <DashboardIcon /> },
+  { href: "/cursos", label: "Cursos", icon: <SchoolIcon /> },
+  { href: "/predicao", label: "Predição", icon: <TrendingUpIcon /> },
+  { href: "/colunas", label: "Informações disponíveis", icon: <TableChartIcon /> },
+  { href: "/conta", label: "Conta", icon: <AccountCircleIcon /> },
+  { href: "/", label: "Sair", icon: <LogoutIcon /> },
+];
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(true);
+
   return (
-    <div className="flex min-h-screen">
+    <Box sx={{ display: "flex" }}>
 
-      <aside className="w-54 text-white p-6 space-y-4 items-center flex flex-col bg-[#FFF]">
-        <h2 className="text-2xl font-bold text-black">SISU UFMA</h2>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: open ? DRAWER_WIDTH : 0,
+          flexShrink: 0,
+          transition: "width 0.2s",
+          "& .MuiDrawer-paper": {
+            width: open ? DRAWER_WIDTH : 0,
+            boxSizing: "border-box",
+            overflowX: "hidden",
+            transition: "width 0.2s",
+          },
+        }}
+      >
+        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+          <Box component="img" src="/ufma-logo.png" alt="UFMA Logo" sx={{ width: 96, height: 96 }} />
+        </Box>
 
-        <img src="/ufma-logo.png" alt="UFMA Logo" className="mb-4 size-24"/>
+        <Divider />
 
-        <nav className="space-y-3 px-6">
-          <a className="block hover:text-blue-800 text-black" href="/analise">Panorama</a>
-          <a className="block hover:text-blue-800 text-black" href="/cursos">Cursos</a>
-          <a className="block hover:text-blue-800 text-black" href="/predicao">Predição</a>
-          <a className="block hover:text-blue-800 text-black" href="/colunas">Informações disponíveis</a>
-          <a className="block hover:text-blue-800 text-black" href="/conta">Conta</a>
-          <a className="block hover:text-blue-800 text-black" href="/">Sair</a>
-        </nav>
-      </aside>
+        <List>
+          {NAV_ITEMS.map(({ href, label, icon }) => (
+            <ListItem key={href} disablePadding>
+              <ListItemButton component={Link} href={href}>
+                <ListItemIcon sx={{ minWidth: 36 }}>{icon}</ListItemIcon>
+                <ListItemText primary={label} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
 
-      <main className="flex-1 p-10 bg-gray-300">{children}</main>
-    </div>
+        <Box sx={{ mt: "auto", p: 1, display: "flex", justifyContent: "flex-end" }}>
+          <IconButton onClick={() => setOpen(false)}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </Box>
+      </Drawer>
+
+      <Box component="main" sx={{ flex: 1, display: "flex", flexDirection: "column", bgcolor: "grey.300", minHeight: "100vh" }}>
+        <AppBar position="static" elevation={0.5} sx={{ bgcolor: "white", color: "text.primary" }}>
+          <Toolbar>
+            {!open && (
+              <IconButton onClick={() => setOpen(true)} edge="start" sx={{ mr: 2 }}>
+                <MenuIcon />
+              </IconButton>
+            )}
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              SISU Dashboard
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <Box sx={{ flex: 1, p: 5 }}>
+          {children}
+        </Box>
+      </Box>
+
+    </Box>
   );
 }

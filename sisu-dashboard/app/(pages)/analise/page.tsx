@@ -1,11 +1,10 @@
 "use client";
 
-import { Card } from "@/app/components";
 import { calcularMedia, calcularTotalCandidatos } from "@/app/utils";
 import { useDashboard } from "@/app/hooks";
 import { useEffect } from "react";
-import { LineChart } from "@mui/x-charts/LineChart";
-import { BarChart } from "@mui/x-charts/BarChart";
+import { Box, Grid, Typography, Card } from "@mui/material";
+import { LineChart, BarChart } from "@mui/x-charts";
 
 export default function Home() {
   const { dados, buscarDadosTotal, rankingConcorridos, buscarRankingConcorridos } = useDashboard();
@@ -20,55 +19,77 @@ export default function Home() {
   const mediaNotaCorte = calcularMedia(dados, "media_nota_corte");
   const taxaAprovacao = calcularMedia(dados, "taxa_aprovacao");
 
+  const cards = [
+    { label: "Candidatos", value: totalCandidatos },
+    { label: "Média de Nota do Candidato", value: mediaNotaCandidato },
+    { label: "Média de Nota de Corte", value: mediaNotaCorte },
+    { label: "Taxa de Aprovação", value: `${taxaAprovacao}%` },
+  ];
+
   const anos = dados.map((d) => d.ano);
 
   return (
-    <div className="min-h-screen p-10 bg-[#FFF] rounded-lg">
-      <h1 className="text-4xl font-bold mb-6 text-gray-800">
+    <Box sx={{ minHeight: '100vh', bgcolor: 'white', borderRadius: 2 }}>
+      <Typography variant="h4" fontWeight="bold" mb={3} color="text.primary" >
         Panorama Geral do SISU UFMA
-      </h1>
+      </Typography>
 
-      <div className="flex gap-4 mb-6">
-        <Card title="Candidatos" data={totalCandidatos} />
-        <Card title="Nota média" data={mediaNotaCandidato} />
-        <Card title="Nota de corte média" data={mediaNotaCorte} />
-        <Card title="Taxa de Aprovação" data={`${taxaAprovacao}%`} />
-      </div>
+      <Grid container>
+        {cards.map((card) => (
+          <Grid size={{ xs: 12, md: 3 }} key={card.label}>
+            <Card variant="outlined" sx={{ height: 100, p: 2 }}>
+              <Typography variant="body2">{card.label}</Typography>
+              <Typography variant="h6">{card.value}</Typography>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
-      <LineChart
-        xAxis={[{ data: anos, scaleType: "point" }]}
-        series={[
-          { data: dados.map((d) => d.media_nota_candidato), label: "Nota Média do Candidato", color: "#2563eb", showMark: false },
-          { data: dados.map((d) => d.media_nota_corte), label: "Nota de Corte", color: "#dc2626", showMark: false },
-        ]}
-        height={300}
-      />
+      <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Card variant="outlined" >
+          <LineChart
+            xAxis={[{ data: anos, scaleType: "point" }]}
+            series={[
+              { data: dados.map((d) => d.media_nota_candidato), label: "Nota Média do Candidato", color: "#2563eb", showMark: false },
+              { data: dados.map((d) => d.media_nota_corte), label: "Nota de Corte", color: "#dc2626", showMark: false },
+            ]}
+            height={300}
+          />
+        </Card>
 
-      <LineChart
-        xAxis={[{ data: anos, scaleType: "point" }]}
-        series={[
-          { data: dados.map((d) => Number(d.total_inscritos)), label: "Total de candidatos", color: "#2563eb", area: true, showMark: false },
-        ]}
-        height={300}
-      />
+        <Card variant="outlined" >
+          <LineChart
+            xAxis={[{ data: anos, scaleType: "point" }]}
+            series={[
+              { data: dados.map((d) => Number(d.total_inscritos)), label: "Total de candidatos", color: "#2563eb", area: true, showMark: false },
+            ]}
+            height={300}
+          />
+        </Card>
 
-      <BarChart
-        xAxis={[{ data: anos, scaleType: "band" }]}
-        series={[
-          { data: dados.map((d) => Number(d.total_inscritos)), label: "Total de inscritos", color: "#6d97f1" },
-        ]}
-        height={300}
-        borderRadius={10}
-      />
 
-      <BarChart
-        xAxis={[{ data: rankingConcorridos.map((d) => String(d.no_curso)), scaleType: "band" }]}
-        series={[
-          { data: rankingConcorridos.map((d) => Number(d.razao_inscritos_por_vaga)), label: "Razão inscritos/vaga", color: "#6d97f1" },
-        ]}
-        height={300}
-        borderRadius={10}
-      />
-    </div>
+        <Card variant="outlined" >
+          <BarChart
+            xAxis={[{ data: anos, scaleType: "band" }]}
+            series={[
+              { data: dados.map((d) => Number(d.total_inscritos)), label: "Total de inscritos", color: "#6d97f1" },
+            ]}
+            height={300}
+            borderRadius={10}
+          />
+        </Card>
+
+        <Card variant="outlined" >
+          <BarChart
+            xAxis={[{ data: rankingConcorridos.map((d) => String(d.no_curso)), scaleType: "band" }]}
+            series={[
+              { data: rankingConcorridos.map((d) => Number(d.razao_inscritos_por_vaga)), label: "Razão inscritos/vaga", color: "#6d97f1" },
+            ]}
+            height={300}
+            borderRadius={10}
+          />
+        </Card>
+      </Box>
+    </Box>
   );
 }
