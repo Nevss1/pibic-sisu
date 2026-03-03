@@ -18,15 +18,15 @@ export default function CursosPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 px-10 py-14">
-
+    <div className="min-h-screen px-10 py-14">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 mb-3">
           Cursos Disponíveis
         </h1>
 
         <p className="text-gray-600 mb-10">
-          Selecione um curso abaixo para visualizar estatísticas detalhadas do SISU-UFMA.
+          Selecione um curso abaixo para visualizar estatísticas detalhadas do
+          SISU-UFMA.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -44,13 +44,9 @@ export default function CursosPage() {
                   transition-all rounded-xl p-5
                 "
               >
-                <h2 className="text-lg font-semibold text-gray-900">
-                  {curso}
-                </h2>
+                <h2 className="text-lg font-semibold text-gray-900">{curso}</h2>
 
-                <p className="text-sm text-gray-500 mt-1">
-                  Ver estatísticas →
-                </p>
+                <p className="text-sm text-gray-500 mt-1">Ver estatísticas →</p>
               </Link>
             </motion.div>
           ))}

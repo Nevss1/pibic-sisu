@@ -1,6 +1,6 @@
 import { Box, Typography, Container } from "@mui/material";
 
-export default function PredicaoPage() {
+export default function SobrePage() {
   return (
     <Container maxWidth="sm">
       <Box

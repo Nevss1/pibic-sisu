@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Autocomplete, TextField } from "@mui/material";
 import { useCursos } from "@/src/hooks";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const { data: cursos = [] } = useCursos();
+  const router = useRouter();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
@@ -45,15 +46,13 @@ export default function HomePage() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.97 }}
       >
-        {/* <Link
-          href="/analise"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-xl font-semibold transition-all shadow-lg text-center"
-        >
-          Selecione um Curso
-        </Link> */}
         <Autocomplete
           disablePortal
           options={cursos.map((c: { no_curso: string }) => c.no_curso)}
+          onChange={(_, value) => {
+            if (value)
+              router.push(`/cursos/${encodeURIComponent(value as string)}`);
+          }}
           sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField {...params} label="Digite seu curso" />

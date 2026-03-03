@@ -4,9 +4,15 @@ import { Box, Grid, Typography, Card } from "@mui/material";
 import { LineChart, BarChart } from "@mui/x-charts";
 import { useMetricasGerais } from "@/src/hooks";
 
-export default function Home() {
+export default function Geral() {
   const { dados, rankingConcorridos, metricas } = useMetricasGerais();
-  const { totalCandidatos, mediaNotaCandidato, mediaNotaCorte, taxaAprovacao, anos } = metricas;
+  const {
+    totalCandidatos,
+    mediaNotaCandidato,
+    mediaNotaCorte,
+    taxaAprovacao,
+    anos,
+  } = metricas;
 
   const cards = [
     { label: "Candidatos", value: totalCandidatos },
@@ -27,10 +33,7 @@ export default function Home() {
       >
         <Grid container>
           {cards.map((card, index) => (
-            <Grid
-              size={{ xs: 12, md: 3 }}
-              key={card.label}
-            >
+            <Grid size={{ xs: 12, md: 3 }} key={card.label}>
               <Card
                 variant="outlined"
                 sx={{ height: 100, p: 2, borderRadius: 0, border: 0 }}
