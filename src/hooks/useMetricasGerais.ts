@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { useDadosTotal } from "./useDadosTotal";
+import { useHistoricoGeral } from "./useHistoricoGeral";
 import { useRankingConcorridos } from "./useRankingConcorridos";
 import { calcularMedia, calcularTotalCandidatos } from "../utils";
 
 export function useMetricasGerais() {
-  const { data: dados = [] } = useDadosTotal();
+  const { data: dados = [] } = useHistoricoGeral();
   const { data: rankingConcorridos = [] } = useRankingConcorridos();
 
   const metricas = useMemo(

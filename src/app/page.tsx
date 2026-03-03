@@ -2,8 +2,12 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Autocomplete, TextField } from "@mui/material";
+import { useCursos } from "@/src/hooks";
 
 export default function HomePage() {
+  const { data: cursos = [] } = useCursos();
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <motion.img
@@ -30,26 +34,32 @@ export default function HomePage() {
         transition={{ delay: 0.7, duration: 1 }}
         className="text-lg text-gray-600 mb-10 text-center max-w-xl"
       >
-        Explore séries históricas, notas de corte, distribuições estatísticas
-        e indicadores completos dos cursos da UFMA no SISU.
+        Explore séries históricas, notas de corte, distribuições estatísticas e
+        indicadores completos dos cursos da UFMA no SISU.
       </motion.p>
 
-
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1}}
-          transition={{ delay: 1.2, duration: 0.3 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.97 }}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.3 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.97 }}
+      >
+        {/* <Link
+          href="/analise"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-xl font-semibold transition-all shadow-lg text-center"
         >
-          <Link
-            href="/analise"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-xl font-semibold transition-all shadow-lg text-center"
-          >
-            Explorar Dados
-          </Link>
-        </motion.div>
-
+          Selecione um Curso
+        </Link> */}
+        <Autocomplete
+          disablePortal
+          options={cursos.map((c: { no_curso: string }) => c.no_curso)}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Digite seu curso" />
+          )}
+        />
+      </motion.div>
 
       <motion.p
         initial={{ opacity: 0 }}
