@@ -1,31 +1,12 @@
 "use client";
 
-import { calcularMedia, calcularTotalCandidatos } from "@/src/utils";
-import { useEffect } from "react";
 import { Box, Grid, Typography, Card } from "@mui/material";
 import { LineChart, BarChart } from "@mui/x-charts";
-import { useDashboard } from "@/src/hooks";
-
-// formulario react hook form
+import { useMetricasGerais } from "@/src/hooks";
 
 export default function Home() {
-  const {
-    dados,
-    buscarDadosTotal,
-    rankingConcorridos,
-    buscarRankingConcorridos,
-  } = useDashboard();
-
-  useEffect(() => {
-    buscarDadosTotal();
-    buscarRankingConcorridos();
-  }, []);
-
-  // criar um hook com memo pra calcular esses valores
-  const totalCandidatos = calcularTotalCandidatos(dados);
-  const mediaNotaCandidato = calcularMedia(dados, "media_nota_candidato");
-  const mediaNotaCorte = calcularMedia(dados, "media_nota_corte");
-  const taxaAprovacao = calcularMedia(dados, "taxa_aprovacao");
+  const { dados, rankingConcorridos, metricas } = useMetricasGerais();
+  const { totalCandidatos, mediaNotaCandidato, mediaNotaCorte, taxaAprovacao, anos } = metricas;
 
   const cards = [
     { label: "Candidatos", value: totalCandidatos },
@@ -33,8 +14,6 @@ export default function Home() {
     { label: "Média de Nota de Corte", value: mediaNotaCorte },
     { label: "Taxa de Aprovação", value: `${taxaAprovacao}%` },
   ];
-
-  const anos = dados.map((d) => d.ano);
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "white", borderRadius: 2 }}>
@@ -51,10 +30,6 @@ export default function Home() {
             <Grid
               size={{ xs: 12, md: 3 }}
               key={card.label}
-              // sx={{
-              //   borderRight: { xs: 0, md: index < cards.length - 1 ? 1 : 0 },
-              //   borderBottom: { xs: index < cards.length - 1 ? 1 : 0, md: 0 },
-              // }}
             >
               <Card
                 variant="outlined"

@@ -1,2 +1,2 @@
-export { SeletorAno } from './SeletorAno'
-export { CursoSelect } from './CursoSelect'
+export { SeletorAno } from "./SeletorAno";
+export { CursoSelect } from "./CursoSelect";
