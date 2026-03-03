@@ -2,6 +2,8 @@ import { useState } from "react";
 import { DadoRanking, Dados } from "../types";
 import { fetchDadosdoCurso, fetchDadosTotal, fetchRankingConcorridos } from "../utils";
 
+// usar tanstack, remover useState e useEffect
+
 export function useDashboard() {
   const [curso, setCurso] = useState("");
   const [dados, setDados] = useState<Dados>([]);

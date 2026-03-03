@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pool } from "@/lib/db";
+import { pool } from "@/src/lib/db";
 
 // ranking 5 cursos mais concorridos (razao_inscritos_por_vaga)
 

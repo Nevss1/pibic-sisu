@@ -67,7 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </Box>
       </Drawer>
 
-      <Box component="main" sx={{ flex: 1, display: "flex", flexDirection: "column", bgcolor: "grey.300", minHeight: "100vh" }}>
+      <Box component="main" sx={{ flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
         <AppBar position="static" elevation={0.5} sx={{ bgcolor: "white", color: "text.primary" }}>
           <Toolbar>
             {!open && (
@@ -75,8 +75,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <MenuIcon />
               </IconButton>
             )}
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              SISU Dashboard
+            <Typography variant="h6" sx={{ fontWeight: 400 }}>
+              Dashboard SISU UFMA
             </Typography>
           </Toolbar>
         </AppBar>

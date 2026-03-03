@@ -1,3 +1,5 @@
+// trocar fetch por axios
+
 export async function fetchDadosdoCurso(cursoNome: string) {
   if (!cursoNome) return;
 
