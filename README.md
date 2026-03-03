@@ -1,36 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎓 SISU UFMA — Dashboard Analítico
 
-## Getting Started
+Projeto de Iniciação Científica (PIBIC/CNPq 2025–2026)
 
-First, run the development server:
+Dashboard interativo para análise de dados do SISU na Universidade Federal do Maranhão (UFMA), com foco em séries históricas, notas de corte, concorrência e estatísticas descritivas dos cursos.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 📌 Objetivo
+
+Construir uma plataforma web analítica que permita:
+
+* Explorar a concorrência por curso ao longo dos anos
+* Visualizar notas de corte e tendências
+* Comparar cursos
+* Analisar distribuições estatísticas
+* Apoiar pesquisas acadêmicas com dados estruturados
+
+---
+
+## 🏗️ Arquitetura do Projeto
+
+### 🔄 Pipeline de Dados
+
+CSV (dados brutos)
+→ Python (ETL e tratamento)
+→ PostgreSQL (Neon)
+→ API Next.js
+→ Frontend (Next.js + React)
+
+---
+
+## 🛣️ Estrutura de Rotas (App Router)
+
+```
+/
+/geral
+/curso
+/curso/[slug]
+/curso/[slug]/historico
+/curso/[slug]/estatisticas
+/curso/[slug]/comparar
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 📍 Descrição das Rotas
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* `/` → Página inicial com seleção de curso
+* `/geral` → Informações institucionais e visão geral da UFMA
+* `/curso` → Lista completa de cursos disponíveis
+* `/curso/[slug]` → Página principal do curso (overview)
+* Subrotas → Análises específicas do curso
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ⚙️ Tecnologias Utilizadas
 
-To learn more about Next.js, take a look at the following resources:
+### Frontend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* Next.js (App Router)
+* React
+* TypeScript
+* Material UI (componentes)
+* Framer Motion (animações)
+* TanStack Query (gerenciamento de dados assíncronos)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Backend
 
-## Deploy on Vercel
+* API Routes do Next.js
+* PostgreSQL (Neon)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Processamento de Dados
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Python (ETL)
+* Pandas
+
+---
+
+## 📊 Funcionalidades Principais
+
+* 🔎 Seleção de curso via Autocomplete
+* 📈 Visualização de séries históricas
+* 📉 Análise de razão candidato/vaga
+* 📊 Estatísticas descritivas (média, mediana, dispersão)
+* 📂 Comparação entre cursos
+* 🔄 Filtros por ano
+
+---
+
+## 🎯 Público-Alvo
+
+* Estudantes interessados em ingressar na UFMA
+* Pesquisadores
+* Professores
+* Gestão acadêmica
+
+---
+
+## 🚀 Como Rodar o Projeto
+
+```bash
+npm install
+npm run dev
+```
+
+Acesse:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 📚 Estrutura de Pastas (Simplificada)
+
+```
+app/
+  layout.tsx
+  page.tsx
+  geral/
+  curso/
+    page.tsx
+    [slug]/
+```
+
+---
+
+## 🔬 Contexto Acadêmico
+
+Este projeto faz parte de um programa PIBIC com foco em análise exploratória de dados educacionais do SISU na UFMA (2018–2023).
+
+---
+
+## 👨‍💻 Autor
+
+Rafael Neves
+Ciência da Computação — UFMA
+PIBIC/CNPq 2025–2026
+
+---
+
+## 📌 Status
+
+🚧 Em desenvolvimento
