@@ -1,27 +1,33 @@
-// trocar fetch por axios
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "/api",
+});
 
 export async function fetchDadosdoCurso(cursoNome: string) {
   if (!cursoNome) return;
 
-  const res = await fetch(`/api/dados?curso=${encodeURIComponent(cursoNome)}`);
-  return res.json();
+  const { data } = await api.get("/dados", {
+    params: { curso: cursoNome },
+  });
+
+  return data;
 }
 
 export async function fetchDadosTotal() {
-  const res = await fetch(`/api/dados`);
-  return res.json();
+  const { data } = await api.get("/dados");
+  return data;
 }
 
 export async function fetchRankingConcorridos(ano?: string) {
-  if (ano) {
-    const res = await fetch(`/api/ranking?ano=${encodeURIComponent(ano)}`);
-    return res.json();
-  }
-  const res = await fetch(`/api/ranking`);
-  return res.json();
+  const { data } = await api.get("/ranking", {
+    params: ano ? { ano } : undefined,
+  });
+
+  return data;
 }
 
 export async function fetchCursos() {
-  const res = await fetch(`/api/cursos`);
-  return res.json();
+  const { data } = await api.get("/cursos");
+  return data;
 }
