@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Autocomplete, TextField } from "@mui/material";
 import { useCursos } from "@/src/hooks";
 import { useRouter } from "next/navigation";
-
+import { toTitleCase } from "../utils";
 export default function HomePage() {
   const { data: cursos = [] } = useCursos();
   const router = useRouter();
@@ -43,15 +43,15 @@ export default function HomePage() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.3 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.97 }}
       >
         <Autocomplete
           disablePortal
-          options={cursos.map((c: { no_curso: string }) => c.no_curso)}
+          options={cursos.map((c: { no_curso: string }) =>
+            toTitleCase(c.no_curso)
+          )}
           onChange={(_, value) => {
             if (value)
-              router.push(`/cursos/${encodeURIComponent(value as string)}`);
+              router.push(`/cursos/${encodeURIComponent((value as string).toLowerCase())}`);
           }}
           sx={{ width: 300 }}
           renderInput={(params) => (

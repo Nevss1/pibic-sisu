@@ -1,8 +1,9 @@
+import { toTitleCase } from "@/src/utils";
 import { Box, Container, Typography } from "@mui/material";
 
 export default async function CursoPage({ params }: { params: Promise<{ curso: string }> }) {
   const { curso } = await params;
-  const cursoDecoded = decodeURIComponent(curso);
+  const cursoDecoded = toTitleCase(decodeURIComponent(curso));
 
   return (
     <Container maxWidth="sm">

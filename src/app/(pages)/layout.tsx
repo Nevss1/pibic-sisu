@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   AppBar,
   Box,
+  Breadcrumbs,
   Divider,
   Drawer,
   IconButton,
@@ -18,28 +20,11 @@ import {
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MenuIcon from "@mui/icons-material/Menu";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import SchoolIcon from "@mui/icons-material/School";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import TableChartIcon from "@mui/icons-material/TableChart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LogoutIcon from "@mui/icons-material/Logout";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { toTitleCase } from "@/src/utils";
+import { NAV_ITEMS, ROUTE_LABELS } from "@/src/config";
 
-const DRAWER_WIDTH = 220;
-
-const NAV_ITEMS = [
-  { href: "/cursos", label: "Cursos", icon: <SchoolIcon /> },
-  { href: "/geral", label: "Visão Geral", icon: <DashboardIcon /> },
-  { href: "/predicao", label: "Predição", icon: <TrendingUpIcon /> },
-  {
-    href: "/colunas",
-    label: "Informações disponíveis",
-    icon: <TableChartIcon />,
-  },
-  { href: "/conta", label: "Conta", icon: <AccountCircleIcon /> },
-  { href: "/sobre", label: "Sobre", icon: <TableChartIcon /> },
-  { href: "/", label: "Sair", icon: <LogoutIcon /> },
-];
+const DRAWER_WIDTH = 250;
 
 export default function DashboardLayout({
   children,
@@ -47,6 +32,22 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(true);
+  const pathname = usePathname();
+  const segments = pathname.split("/").filter(Boolean);
+  const breadcrumbs = segments.map((segment, index) => {
+    const href = "/" + segments.slice(0, index + 1).join("/");
+    const label = ROUTE_LABELS[segment] ?? toTitleCase(decodeURIComponent(segment));
+    const isLast = index === segments.length - 1;
+    return isLast ? (
+      <Typography key={href} sx={{ color: "text.primary" }}>
+        {label}
+      </Typography>
+    ) : (
+      <Link key={href} href={href} style={{ color: "inherit", textDecoration: "none" }}>
+        {label}
+      </Link>
+    );
+  });
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -114,7 +115,7 @@ export default function DashboardLayout({
       >
         <AppBar
           position="static"
-          sx={{ bgcolor: "white", color: "text.primary" }}
+          sx={{ bgcolor: "white" }}
         >
           <Toolbar>
             {!open && (
@@ -126,12 +127,14 @@ export default function DashboardLayout({
                 <MenuIcon />
               </IconButton>
             )}
-            <Typography variant="h6" sx={{ fontWeight: 400 }}>
-              Dashboard SISU UFMA
-            </Typography>
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize="small" />}
+              aria-label="breadcrumb"
+            >
+              {breadcrumbs}
+            </Breadcrumbs>
           </Toolbar>
         </AppBar>
-
         <Box sx={{ flex: 1, p: 5 }}>{children}</Box>
       </Box>
     </Box>

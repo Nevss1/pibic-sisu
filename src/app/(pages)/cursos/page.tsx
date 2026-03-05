@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { toTitleCase } from "@/src/utils";
 
 export default function CursosPage() {
   const [cursos, setCursos] = useState<string[]>([]);
@@ -37,14 +38,14 @@ export default function CursosPage() {
               transition={{ duration: 0.15 }}
             >
               <Link
-                href={`/cursos/${encodeURIComponent(curso)}`}
+                href={`/cursos/${encodeURIComponent(curso.toLowerCase())}`}
                 className="
-                  block bg-white border border-gray-200 
-                  hover:border-blue-400 hover:shadow-lg 
+                  block bg-white border border-gray-200
+                  hover:border-blue-400 hover:shadow-lg
                   transition-all rounded-xl p-5
                 "
               >
-                <h2 className="text-lg font-semibold text-gray-900">{curso}</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{toTitleCase(curso)}</h2>
 
                 <p className="text-sm text-gray-500 mt-1">Ver estatísticas →</p>
               </Link>
