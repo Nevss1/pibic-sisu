@@ -13,18 +13,13 @@ interface CursoTabsBarProps {
   onChange: (event: React.SyntheticEvent, newValue: number) => void;
 }
 
-const CursoTabsBar = styled((props: CursoTabsBarProps) => <Tabs {...props} />)({
+const CursoTabsBar = styled((props: CursoTabsBarProps) => <Tabs {...props} />)(({ theme }) => ({
   "& .MuiTabs-indicator": {
     display: "flex",
     justifyContent: "center",
-    backgroundColor: "#000000",
+    backgroundColor: theme.palette.primary.main,
   },
-  // "& .MuiTabs-indicatorSpan": {
-  //   maxWidth: 40,
-  //   width: "100%",
-  //   backgroundColor: "#c8c8c8",
-  // },
-});
+}));
 
 interface CourseTabProps {
   label: string;

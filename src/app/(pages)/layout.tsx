@@ -102,7 +102,11 @@ export default function DashboardLayout({
         <List>
           {NAV_ITEMS.map(({ href, label, icon }) => (
             <ListItem key={href} disablePadding>
-              <ListItemButton component={Link} href={href}>
+              <ListItemButton
+                component={Link}
+                href={href}
+                selected={href === "/" ? pathname === "/" : pathname.startsWith(href)}
+              >
                 <ListItemIcon sx={{ minWidth: 36, pl: 2, pr: 1.5 }}>{icon}</ListItemIcon>
                 <ListItemText primary={label} />
               </ListItemButton>
