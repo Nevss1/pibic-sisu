@@ -24,7 +24,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { toTitleCase } from "@/src/utils";
 import { NAV_ITEMS, ROUTE_LABELS } from "@/src/config";
 
-const DRAWER_WIDTH = 280;
+const DRAWER_WIDTH = 260;
 
 export default function DashboardLayout({
   children,
@@ -76,14 +76,14 @@ export default function DashboardLayout({
             width: "100%",
             alignItems: "center",
             justifyContent: "space-around",
-            p: 2,
+            minHeight: { xs: '55px !important', sm: '75px !important' },
           }}
         >
           <Box
             component="img"
             src="/ufma-logo.png"
             alt="UFMA Logo"
-            sx={{ width: 36, height: 36 }}
+            sx={{ width: 66, height: 66 }}
           />
           <Box
             sx={{
@@ -113,7 +113,6 @@ export default function DashboardLayout({
 
       <Box
         component="main"
-      
         sx={{
           flex: 1,
           display: "flex",
@@ -121,7 +120,7 @@ export default function DashboardLayout({
           minHeight: "100vh",
         }}
       >
-          <Toolbar sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Toolbar sx={{ borderBottom: 1, borderColor: "divider", minHeight: { xs: '56px !important', sm: '76px !important' } }}>
             {!open && (
               <IconButton
                 onClick={() => setOpen(true)}
@@ -138,7 +137,7 @@ export default function DashboardLayout({
               {breadcrumbs}
             </Breadcrumbs>
           </Toolbar>
-        <Box sx={{ flex: 1, p: 5 }}>{children}</Box>
+        <Box sx={{ flex: 1, p: 6 }}>{children}</Box>
       </Box>
     </Box>
   );
