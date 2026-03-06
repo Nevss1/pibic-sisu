@@ -2,7 +2,7 @@ import { toTitleCase } from "@/src/utils";
 import { Box, Container, Typography } from "@mui/material";
 import CursoTabs from "@/src/components/CursoTabs";
 
-export default async function CursoPage({ params }: { params: Promise<{ curso: string }> }) {
+export default async function CursoPageOverview({ params }: { params: Promise<{ curso: string }> }) {
   const { curso } = await params;
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
@@ -16,7 +16,7 @@ export default async function CursoPage({ params }: { params: Promise<{ curso: s
       >
         <CursoTabs />
         <Typography variant="h4" color="text.primary">
-          {nomeCurso}
+          OVERVIEW!
         </Typography>
       </Box>
     </Container>

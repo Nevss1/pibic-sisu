@@ -24,7 +24,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { toTitleCase } from "@/src/utils";
 import { NAV_ITEMS, ROUTE_LABELS } from "@/src/config";
 
-const DRAWER_WIDTH = 250;
+const DRAWER_WIDTH = 280;
 
 export default function DashboardLayout({
   children,
@@ -36,14 +36,19 @@ export default function DashboardLayout({
   const segments = pathname.split("/").filter(Boolean);
   const breadcrumbs = segments.map((segment, index) => {
     const href = "/" + segments.slice(0, index + 1).join("/");
-    const label = ROUTE_LABELS[segment] ?? toTitleCase(decodeURIComponent(segment));
+    const label =
+      ROUTE_LABELS[segment] ?? toTitleCase(decodeURIComponent(segment));
     const isLast = index === segments.length - 1;
     return isLast ? (
       <Typography key={href} sx={{ color: "text.primary" }}>
         {label}
       </Typography>
     ) : (
-      <Link key={href} href={href} style={{ color: "inherit", textDecoration: "none" }}>
+      <Link
+        key={href}
+        href={href}
+        style={{ color: "inherit", textDecoration: "none" }}
+      >
         {label}
       </Link>
     );
@@ -70,7 +75,7 @@ export default function DashboardLayout({
             display: "flex",
             width: "100%",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-around",
             p: 2,
           }}
         >
@@ -78,8 +83,18 @@ export default function DashboardLayout({
             component="img"
             src="/ufma-logo.png"
             alt="UFMA Logo"
-            sx={{ width: 96, height: 96 }}
+            sx={{ width: 36, height: 36 }}
           />
+          <Box
+            sx={{
+              display: "flex",
+              height: '100%',
+            }}
+          >
+            <IconButton onClick={() => setOpen(false)}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Box>
         </Box>
 
         <Divider />
@@ -88,24 +103,17 @@ export default function DashboardLayout({
           {NAV_ITEMS.map(({ href, label, icon }) => (
             <ListItem key={href} disablePadding>
               <ListItemButton component={Link} href={href}>
-                <ListItemIcon sx={{ minWidth: 36 }}>{icon}</ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 36, pl: 2, pr: 1.5 }}>{icon}</ListItemIcon>
                 <ListItemText primary={label} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
-
-        <Box
-          sx={{ mt: "auto", p: 1, display: "flex", justifyContent: "flex-end" }}
-        >
-          <IconButton onClick={() => setOpen(false)}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </Box>
       </Drawer>
 
       <Box
         component="main"
+      
         sx={{
           flex: 1,
           display: "flex",
@@ -113,11 +121,7 @@ export default function DashboardLayout({
           minHeight: "100vh",
         }}
       >
-        <AppBar
-          position="static"
-          sx={{ bgcolor: "white" }}
-        >
-          <Toolbar>
+          <Toolbar sx={{ borderBottom: 1, borderColor: "divider" }}>
             {!open && (
               <IconButton
                 onClick={() => setOpen(true)}
@@ -134,7 +138,6 @@ export default function DashboardLayout({
               {breadcrumbs}
             </Breadcrumbs>
           </Toolbar>
-        </AppBar>
         <Box sx={{ flex: 1, p: 5 }}>{children}</Box>
       </Box>
     </Box>
