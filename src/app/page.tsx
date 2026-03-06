@@ -2,13 +2,13 @@
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Autocomplete, TextField } from "@mui/material";
-import { useCursos } from "@/src/hooks";
+import { useNomeCursos } from "@/src/hooks";
 import { useRouter } from "next/navigation";
 import { toTitleCase } from "../utils";
 import { useEffect, useRef } from "react";
 
 export default function HomePage() {
-  const { data: cursos = [] } = useCursos();
+  const { data: cursos = [] } = useNomeCursos();
   const router = useRouter();
 
   const spotlightRef = useRef<HTMLDivElement>(null);

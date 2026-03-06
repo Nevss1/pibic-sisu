@@ -14,3 +14,19 @@ export type DadoRanking = {
 }
 
 export type Dados = Dado[]
+
+export type DadoOverviewCurso = {
+  ano: string
+  total_inscritos: number
+  aprovados: number
+  notas: number[]
+  media_nota_candidato: number
+  media_nota_corte: number
+  min_nota_candidato: number
+  max_nota_candidato: number
+  min_nota_corte: number
+  max_nota_corte: number
+  taxa_aprovacao: number
+}
+
+export type OverviewCurso = DadoOverviewCurso[]
