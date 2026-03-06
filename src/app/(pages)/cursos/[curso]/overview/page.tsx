@@ -25,35 +25,55 @@ export default async function CursoPageOverview({
           display: "flex",
           flexDirection: "column",
           gap: 4,
+          p: 2,
         }}
       >
         <CursoTabs />
         <Box>
           <Box
+            sx={{ boxShadow: "0px 1px 4px rgba(0,0,0,0.08)", borderRadius: 2, border: 1, borderColor: "divider" }}
           >
             <Grid container>
               {cards.map((card, index) => (
-                <Grid size={{ xs: 12, md: 3 }} key={card.label}>
-                  <Card
-                    variant="outlined"
-                    sx={{ height: 100, p: 2, borderRadius: 0, border: 0 }}
+                <Grid
+                  size={{ xs: 12, md: 3 }}
+                  sx={{
+                    p: 3,
+                    borderRight: index < cards.length - 1 ? 1 : 0,
+                    borderColor: "divider",
+                  }}
+                  key={card.label}
+                >
+                  <Box
+                    sx={{
+                      height: 100,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexDirection: "column",
+                      minHeight: 100,
+                    }}
                   >
                     <Typography
                       variant="body2"
                       sx={{
-                        fontFamily: "var(--font-archivo), sans-serif",
-                        fontWeight: 500,
+                        fontWeight: 400,
+                        color: "text.primary",
+                        fontSize: 16,
                       }}
                     >
                       {card.label}
                     </Typography>
                     <Typography
-                      variant="h6"
-                      sx={{ fontFamily: "var(--font-archivo), sans-serif" }}
+                      sx={{
+                        fontWeight: 500,
+                        color: "text.primary",
+                        fontSize: 24,
+                        fontFamily: "var(--font-archivo), sans-serif",
+                      }}
                     >
                       {card.value}
                     </Typography>
-                  </Card>
+                  </Box>
                 </Grid>
               ))}
             </Grid>

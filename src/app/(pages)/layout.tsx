@@ -137,7 +137,7 @@ export default function DashboardLayout({
               {breadcrumbs}
             </Breadcrumbs>
           </Toolbar>
-        <Box sx={{ flex: 1, p: 6 }}>{children}</Box>
+        <Box sx={{ flex: 1, p: 0 }}>{children}</Box>
       </Box>
     </Box>
   );
