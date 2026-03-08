@@ -2,6 +2,7 @@ import { toTitleCase } from "@/src/utils";
 import { Box, Container } from "@mui/material";
 import CursoOverviewCards from "./CursoOverviewCards";
 import CursoTabs from "../CursoTabs";
+import BarChart from "./BarChart";
 
 export default async function CursoPageOverview({ params }: { params: Promise<{ curso: string }> }) {
   const { curso } = await params;
@@ -14,6 +15,7 @@ export default async function CursoPageOverview({ params }: { params: Promise<{ 
       >
         <CursoTabs />
         <CursoOverviewCards curso={nomeCurso} />
+        <BarChart curso={nomeCurso} />
         
       </Box>
     </Container>
