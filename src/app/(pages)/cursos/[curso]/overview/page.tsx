@@ -3,6 +3,7 @@ import { Box, Container } from "@mui/material";
 import CursoOverviewCards from "./CursoOverviewCards";
 import CursoTabs from "../CursoTabs";
 import BarChart from "./BarChart";
+import PieChartGenero from "./PieChart";
 
 export default async function CursoPageOverview({ params }: { params: Promise<{ curso: string }> }) {
   const { curso } = await params;
@@ -16,6 +17,7 @@ export default async function CursoPageOverview({ params }: { params: Promise<{ 
         <CursoTabs />
         <CursoOverviewCards curso={nomeCurso} />
         <BarChart curso={nomeCurso} />
+        <PieChartGenero curso={nomeCurso} />
         
       </Box>
     </Container>

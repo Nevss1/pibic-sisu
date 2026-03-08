@@ -22,10 +22,10 @@ function buildHistogram(notas: number[], min: number, max: number) {
 
 export default function BarChart({ curso }: { curso: string }) {
   const { data: dados } = useCursoOverview(curso);
-
-  const notas = dados?.[0]?.notas ?? [];
-  const min = dados?.[0]?.min_nota_candidato ?? 0;
-  const max = dados?.[0]?.max_nota_candidato ?? 1000;
+  
+  const notas = dados?.flatMap((d) => d?.notas) ?? []
+  const min = Math.min(...dados?.map((d) => d.min_nota_candidato) ?? [0])
+  const max = Math.max(...(dados?.map((d) => d.max_nota_candidato) ?? [1000]))
   const bins = buildHistogram(notas, min, max);
 
   return (

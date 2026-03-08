@@ -26,6 +26,8 @@ export type DadoOverviewCurso = {
   max_nota_candidato: number
   min_nota_corte: number
   max_nota_corte: number
+  inscritos_masculino: number
+  inscritos_feminino: number
   taxa_aprovacao: number
 }
 

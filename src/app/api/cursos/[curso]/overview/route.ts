@@ -22,6 +22,8 @@ export async function GET(
       ROUND(MAX(nu_nota_candidato)::numeric, 2)::float                           AS max_nota_candidato,
       ROUND(MIN(nu_notacorte)::numeric, 2)::float                                AS min_nota_corte,
       ROUND(MAX(nu_notacorte)::numeric, 2)::float                                AS max_nota_corte,
+      COUNT(*) FILTER (WHERE tp_sexo = 'M')::int                                 AS inscritos_masculino,
+      COUNT(*) FILTER (WHERE tp_sexo = 'F')::int                                 AS inscritos_feminino,
       ROUND(
         ((COUNT(*) FILTER (WHERE st_aprovado = 'S')::float / COUNT(*)::float) * 100)::numeric,
         2
