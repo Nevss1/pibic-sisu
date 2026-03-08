@@ -1,10 +1,10 @@
 "use client";
 
-import { useCursoOverview } from "@/src/hooks";
 import { Box, Grid, Typography } from "@mui/material";
+import { useCursoFilter } from "./CursoFilterContext";
 
-export default function CursoOverviewCards({ curso }: { curso: string }) {
-  const { data: dados } = useCursoOverview(curso);
+export default function CursoOverviewCards() {
+  const { dadosFiltrados: dados } = useCursoFilter();
 
   const cards = [
     { label: "Candidatos", value: dados?.[0]?.total_inscritos },

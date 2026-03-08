@@ -92,7 +92,7 @@ export default function HomePage() {
           )}
           onChange={(_, value) => {
             if (value)
-              router.push(`/cursos/${encodeURIComponent((value as string).toLowerCase())}/overview`);
+              router.push(`/cursos/${encodeURIComponent((value as string).toLowerCase())}`);
           }}
           slotProps={{
             paper: {

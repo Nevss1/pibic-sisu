@@ -1,8 +1,8 @@
 "use client";
 
-import { useCursoOverview } from "@/src/hooks";
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, CardContent, Typography } from "@mui/material";
 import { BarChart as MuiBarChart } from "@mui/x-charts/BarChart";
+import { useCursoFilter } from "./CursoFilterContext";
 
 const BIN_SIZE = 5;
 
@@ -20,8 +20,8 @@ function buildHistogram(notas: number[], min: number, max: number) {
   return bins;
 }
 
-export default function BarChart({ curso }: { curso: string }) {
-  const { data: dados } = useCursoOverview(curso);
+export default function BarChart() {
+  const { dadosFiltrados: dados } = useCursoFilter();
   
   const notas = dados?.flatMap((d) => d?.notas) ?? []
   const min = Math.min(...dados?.map((d) => d.min_nota_candidato) ?? [0])
