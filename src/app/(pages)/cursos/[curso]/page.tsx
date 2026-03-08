@@ -1,11 +1,15 @@
 import { toTitleCase } from "@/src/utils";
-import { Box, Container } from "@mui/material";
+import { Box, Card, Container } from "@mui/material";
 import CursoOverviewCards from "./CursoOverviewCards";
 import BarChart from "./BarChart";
 import PieChartGenero from "./PieChart";
 import CursoTabs from "./CursoTabs";
 
-export default async function CursoPageOverview({ params }: { params: Promise<{ curso: string }> }) {
+export default async function CursoPageOverview({
+  params,
+}: {
+  params: Promise<{ curso: string }>;
+}) {
   const { curso } = await params;
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
@@ -16,9 +20,19 @@ export default async function CursoPageOverview({ params }: { params: Promise<{ 
       >
         <CursoTabs />
         <CursoOverviewCards curso={nomeCurso} />
-        <BarChart curso={nomeCurso} />
-        <PieChartGenero curso={nomeCurso} />
-        
+        <Card
+          variant="outlined"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            flexGrow: 1,
+          }}
+        >
+          <Box sx={{ flex: 1, borderRight: 1, borderColor: "divider", }}>
+            <BarChart curso={nomeCurso} />
+          </Box>
+          <PieChartGenero curso={nomeCurso} />
+        </Card>
       </Box>
     </Container>
   );

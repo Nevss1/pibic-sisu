@@ -1,7 +1,7 @@
 "use client";
 
 import { useCursoOverview } from "@/src/hooks";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import { PieChart as MuiPieChart } from "@mui/x-charts/PieChart";
 
 const CORES_GENERO = {
@@ -24,7 +24,7 @@ export default function PieChartGenero({ curso }: { curso: string }) {
   ];
 
   return (
-    <Card variant="outlined">
+    <Box>
       <CardContent>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Distribuição de Inscritos por Gênero
@@ -52,6 +52,6 @@ export default function PieChartGenero({ curso }: { curso: string }) {
           }}
         />
       </CardContent>
-    </Card>
+    </Box>
   );
 }

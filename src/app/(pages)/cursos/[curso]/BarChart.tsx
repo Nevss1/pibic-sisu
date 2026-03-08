@@ -1,7 +1,7 @@
 "use client";
 
 import { useCursoOverview } from "@/src/hooks";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import { BarChart as MuiBarChart } from "@mui/x-charts/BarChart";
 
 const BIN_SIZE = 5;
@@ -29,7 +29,7 @@ export default function BarChart({ curso }: { curso: string }) {
   const bins = buildHistogram(notas, min, max);
 
   return (
-    <Card variant="outlined">
+    <Box>
       <CardContent>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Distribuição das Notas dos Candidatos
@@ -53,6 +53,6 @@ export default function BarChart({ curso }: { curso: string }) {
           margin={{ left: 60, right: 20, top: 20, bottom: 50 }}
         />
       </CardContent>
-    </Card>
+    </Box>
   );
 }
