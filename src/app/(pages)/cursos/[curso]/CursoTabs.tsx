@@ -59,7 +59,7 @@ export default function CursoTabs() {
           onChange={handleChange}
           aria-label="styled tabs example"
         >
-          <CursoTab label="Overview" href={`${pathname}/overview`} />
+          <CursoTab label="Overview" href={`${pathname}`} />
           <CursoTab label="Áreas" href={`${pathname}/areas`} />
           <CursoTab label="Modalidade" href={`${pathname}/modalidade`} />
         </CursoTabsBar>
