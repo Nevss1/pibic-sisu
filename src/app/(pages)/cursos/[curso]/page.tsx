@@ -16,15 +16,14 @@ export default async function CursoPageOverview({
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
   return (
-    <Container>
+    <Container sx={{ paddingTop: 4 }}>
       <Typography
         variant="h4"
         sx={{
           fontWeight: 500,
           letterSpacing: "-0.02em",
           color: "text.primary",
-          p: 2,
-          mt: 2,
+          p: 2
         }}
       >
         {nomeCurso}
@@ -33,9 +32,15 @@ export default async function CursoPageOverview({
         <Box
           sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 4, p: 2 }}
         >
-          <CursoTabs />
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <YearFilter />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <CursoTabs />
+
+            <Box sx={{ position: 'relative' }}>
+              <Typography variant="caption" sx={{ position: 'absolute', top: -25, width: '100%', textAlign: 'center' }}>
+                Filtrar por ano:
+              </Typography>
+              <YearFilter />
+            </Box>
           </Box>
           <CursoOverviewCards />
           <Card

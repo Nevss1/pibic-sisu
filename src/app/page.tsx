@@ -56,7 +56,7 @@ export default function HomePage() {
         transition={{ duration: 0.6 }}
         src="/ufma-logo.png"
         alt="UFMA Logo"
-        className="mb-6 size-28 relative z-10"
+        className="mb-6 size-60 relative z-10"
       />
 
       <motion.h1
