@@ -1,23 +1,82 @@
 "use client";
 
-import * as React from "react";
-import { useTheme, styled } from "@mui/material/styles";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Typography from "@mui/material/Typography";
-import { BarChart, type BarLabelProps, type BarProps } from "@mui/x-charts/BarChart";
-import { useAnimate, useAnimateBar, useDrawingArea } from "@mui/x-charts/hooks";
-import { PiecewiseColorLegend } from "@mui/x-charts/ChartsLegend";
-import { interpolateObject } from "@mui/x-charts-vendor/d3-interpolate";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useCandidatosCursos } from "@/src/hooks";
 import { useYearFilter } from "../YearFilterContext";
 
-const BAR_HEIGHT = 36;
-const BAR_MARGIN = 8;
+const BAR_HEIGHT = 32;
+const BAR_GAP = 8;
+const STEP = BAR_HEIGHT + BAR_GAP;
+const LABEL_WIDTH = 200;
+const MARGIN = { top: 6, right: 80 };
+const EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
+const DURATION = "500ms";
+
+function getColor(value: number, low: number, high: number) {
+  if (value < low) return "#f5e6c8";
+  if (value < high) return "#D5B071";
+  return "#a07a3a";
+}
+
+function truncate(text: string, max: number) {
+  return text.length > max ? text.slice(0, max) + "…" : text;
+}
 
 export default function CandidatosBarChart() {
   const { anosSelecionados } = useYearFilter();
   const { data, isLoading } = useCandidatosCursos();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(800);
+
+  // FLIP: refs e posições anteriores por curso
+  const rowRefs = useRef<Record<string, SVGGElement | null>>({});
+  const prevY = useRef<Record<string, number>>({});
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const dataset = useMemo(() => {
+    if (!data) return [];
+    return Object.values(
+      data
+        .filter((d) => anosSelecionados.includes(d.ano))
+        .reduce<Record<string, { curso: string; candidatos: number }>>((acc, d) => {
+          acc[d.no_curso] ??= { curso: d.no_curso, candidatos: 0 };
+          acc[d.no_curso].candidatos += d.total_candidatos;
+          return acc;
+        }, {})
+    ).sort((a, b) => b.candidatos - a.candidatos);
+  }, [data, anosSelecionados]);
+
+  // FLIP para posição Y: anima tanto subida quanto descida
+  useLayoutEffect(() => {
+    dataset.forEach((d, i) => {
+      const el = rowRefs.current[d.curso];
+      if (!el) return;
+      const newY = i * STEP;
+      const oldY = prevY.current[d.curso];
+
+      if (oldY !== undefined && oldY !== newY) {
+        el.style.transition = "none";
+        el.style.transform = `translateY(${oldY}px)`;
+        el.getBoundingClientRect(); // força reflow
+        el.style.transition = `transform ${DURATION} ${EASE}`;
+        el.style.transform = `translateY(${newY}px)`;
+      } else {
+        el.style.transform = `translateY(${newY}px)`;
+      }
+
+      prevY.current[d.curso] = newY;
+    });
+  }, [dataset]);
 
   if (isLoading || !data) {
     return (
@@ -27,20 +86,11 @@ export default function CandidatosBarChart() {
     );
   }
 
-  const dataset = Object.values(
-    data
-      .filter((d) => anosSelecionados.includes(d.ano))
-      .reduce<Record<string, { curso: string; candidatos: number }>>((acc, d) => {
-        acc[d.no_curso] ??= { curso: d.no_curso, candidatos: 0 };
-        acc[d.no_curso].candidatos += d.total_candidatos;
-        return acc;
-      }, {})
-  ).sort((a, b) => b.candidatos - a.candidatos);
-
-  const max = Math.max(...dataset.map((d) => d.candidatos));
-  const low = Math.round(max * 0.33);
-  const high = Math.round(max * 0.66);
-  const chartHeight = dataset.length * (BAR_HEIGHT + BAR_MARGIN) + 60;
+  const maxVal = Math.max(...dataset.map((d) => d.candidatos), 1);
+  const low = Math.round(maxVal * 0.33);
+  const high = Math.round(maxVal * 0.66);
+  const innerWidth = width - LABEL_WIDTH - MARGIN.right;
+  const svgHeight = dataset.length * STEP + MARGIN.top;
 
   return (
     <Box width="100%">
@@ -53,139 +103,75 @@ export default function CandidatosBarChart() {
           overflowY: "auto",
           overflowX: "hidden",
           "&::-webkit-scrollbar": { width: 6 },
-          "&::-webkit-scrollbar-thumb": {
-            borderRadius: 3,
-            bgcolor: "divider",
-          },
+          "&::-webkit-scrollbar-thumb": { borderRadius: 3, bgcolor: "divider" },
         }}
       >
-        <BarChart
-          height={chartHeight}
-          dataset={dataset}
-          series={[
-            {
-              id: "candidatos",
-              dataKey: "candidatos",
-              valueFormatter: (value: number | null) =>
-                value !== null ? value.toLocaleString("pt-BR") : "",
-            },
-          ]}
-          layout="horizontal"
-          xAxis={[
-            {
-              id: "color",
-              min: 0,
-              colorMap: {
-                type: "piecewise",
-                thresholds: [low, high],
-                colors: ["#f5e6c8", "#D5B071", "#a07a3a"],
-              },
-              valueFormatter: (value: number) => value.toLocaleString("pt-BR"),
-            },
-          ]}
-          barLabel={(v) =>
-            v.value !== null ? v.value.toLocaleString("pt-BR") : ""
-          }
-          yAxis={[
-            {
-              scaleType: "band",
-              dataKey: "curso",
-              width: 180,
-            },
-          ]}
-          slots={{
-            legend: PiecewiseColorLegend,
-            barLabel: BarLabelAtBase,
-            bar: BarShadedBackground,
-          }}
-          slotProps={{
-            legend: {
-              axisDirection: "x",
-              markType: "square",
-              labelPosition: "inline-start",
-              labelFormatter: ({ index }: { index: number }) => {
-                if (index === 0) return "menos candidatos";
-                if (index === 1) return "moderado";
-                return "mais candidatos";
-              },
-            },
-          }}
-        />
+        <div ref={containerRef} style={{ width: "100%" }}>
+          <svg width={width} height={svgHeight} style={{ display: "block", overflow: "visible" }}>
+            <g transform={`translate(${LABEL_WIDTH}, ${MARGIN.top})`}>
+              {dataset.map((d) => {
+                const ratio = d.candidatos / maxVal;
+                const barWidth = ratio * innerWidth;
+                const color = getColor(d.candidatos, low, high);
+                return (
+                  <g
+                    key={d.curso}
+                    ref={(el) => { rowRefs.current[d.curso] = el; }}
+                    style={{ willChange: "transform" }}
+                  >
+                    {/* Fundo */}
+                    <rect x={0} y={0} width={innerWidth} height={BAR_HEIGHT} fill="currentColor" opacity={0.07} rx={2} />
+
+                    {/* Barra animada via scaleX */}
+                    <g
+                      style={{
+                        transform: `scaleX(${ratio})`,
+                        transformOrigin: "0px 0px",
+                        transition: `transform ${DURATION} ${EASE}`,
+                      }}
+                    >
+                      <rect x={0} y={0} width={innerWidth} height={BAR_HEIGHT} fill={color} rx={2} />
+                    </g>
+
+                    {/* Valor animado junto com a barra */}
+                    <g
+                      style={{
+                        transform: `translateX(${barWidth}px)`,
+                        transition: `transform ${DURATION} ${EASE}`,
+                      }}
+                    >
+                      <text
+                        x={8}
+                        y={BAR_HEIGHT / 2}
+                        dominantBaseline="central"
+                        fill="currentColor"
+                        fontWeight={600}
+                        fontSize={12}
+                        style={{ pointerEvents: "none" }}
+                      >
+                        {d.candidatos.toLocaleString("pt-BR")}
+                      </text>
+                    </g>
+
+                    {/* Nome do curso */}
+                    <text
+                      x={-8}
+                      y={BAR_HEIGHT / 2}
+                      textAnchor="end"
+                      dominantBaseline="central"
+                      fontSize={12}
+                      fill="currentColor"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      {truncate(d.curso, 26)}
+                    </text>
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+        </div>
       </Box>
     </Box>
   );
-}
-
-function BarShadedBackground(props: BarProps) {
-  const { ownerState, skipAnimation, id, dataIndex, xOrigin, yOrigin, ...other } = props;
-  const theme = useTheme();
-  const animatedProps = useAnimateBar(props);
-  const { width } = useDrawingArea();
-
-  return (
-    <React.Fragment>
-      <rect
-        {...other}
-        fill={(theme.vars || theme).palette.text.primary}
-        opacity={theme.palette.mode === "dark" ? 0.05 : 0.1}
-        x={other.x}
-        width={width}
-      />
-      <rect
-        {...other}
-        filter={ownerState.isHighlighted ? "brightness(120%)" : undefined}
-        opacity={ownerState.isFaded ? 0.3 : 1}
-        data-highlighted={ownerState.isHighlighted || undefined}
-        data-faded={ownerState.isFaded || undefined}
-        {...animatedProps}
-      />
-    </React.Fragment>
-  );
-}
-
-const StyledText = styled("text")(({ theme }) => ({
-  ...theme?.typography?.body2,
-  stroke: "none",
-  fill: (theme.vars || theme).palette.common.white,
-  transition: "opacity 0.2s ease-in, fill 0.2s ease-in",
-  textAnchor: "start",
-  dominantBaseline: "central",
-  pointerEvents: "none",
-  fontWeight: 600,
-}));
-
-function BarLabelAtBase(props: BarLabelProps) {
-  const {
-    seriesId,
-    dataIndex,
-    color,
-    isFaded,
-    isHighlighted,
-    classes,
-    xOrigin,
-    yOrigin,
-    x,
-    y,
-    width,
-    height,
-    layout,
-    skipAnimation,
-    ...otherProps
-  } = props;
-
-  const animatedProps = useAnimate(
-    { x: xOrigin + 8, y: y + height / 2 },
-    {
-      initialProps: { x: xOrigin, y: y + height / 2 },
-      createInterpolator: interpolateObject,
-      transformProps: (p) => p,
-      applyProps: (element: SVGTextElement, p) => {
-        element.setAttribute("x", p.x.toString());
-        element.setAttribute("y", p.y.toString());
-      },
-      skip: skipAnimation,
-    }
-  );
-
-  return <StyledText {...otherProps} {...animatedProps} />;
 }
