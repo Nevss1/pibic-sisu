@@ -1,61 +1,82 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CircularProgress,
+  Container,
+  Typography,
+} from "@mui/material";
+import { useNomeCursos } from "@/src/hooks";
+
+const MotionCard = motion.create(Card);
 
 export default function CursosPage() {
-  const [cursos, setCursos] = useState<string[]>([]);
-
-  async function carregarCursos() {
-    const res = await fetch("/api/cursos");
-    const json = await res.json();
-    setCursos(json.map((c: any) => c.no_curso));
-  }
-
-  useEffect(() => {
-    carregarCursos();
-  }, []);
+  const { data: cursos, isLoading } = useNomeCursos();
 
   return (
-    <div className="min-h-screen bg-gray-100 px-10 py-14">
+    <Container sx={{ paddingTop: 4 }}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 500,
+          letterSpacing: "-0.02em",
+          color: "text.primary",
+          p: 2,
+        }}
+      >
+        Cursos Disponíveis
+      </Typography>
 
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-3">
-          Cursos Disponíveis
-        </h1>
+      <Typography variant="body2" color="text.secondary" sx={{ px: 2, mb: 4 }}>
+        Selecione um curso para visualizar estatísticas detalhadas do SISU-UFMA.
+      </Typography>
 
-        <p className="text-gray-600 mb-10">
-          Selecione um curso abaixo para visualizar estatísticas detalhadas do SISU-UFMA.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {cursos.map((curso) => (
-            <motion.div
-              key={curso}
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", pt: 8 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+            },
+            gap: 3,
+            p: 2,
+          }}
+        >
+          {cursos?.map((c: { no_curso: string }) => (
+            <MotionCard
+              key={c.no_curso}
+              variant="outlined"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.15 }}
             >
-              <Link
-                href={`/cursos/${encodeURIComponent(curso.toLowerCase())}`}
-                className="
-                  block bg-white border border-gray-200 
-                  hover:border-blue-400 hover:shadow-lg 
-                  transition-all rounded-xl p-5
-                "
+              <CardActionArea
+                component={Link}
+                href={`/cursos/${encodeURIComponent(c.no_curso.toLowerCase())}`}
               >
-                <h2 className="text-lg font-semibold text-gray-900">
-                  {curso}
-                </h2>
-
-                <p className="text-sm text-gray-500 mt-1">
-                  Ver estatísticas →
-                </p>
-              </Link>
-            </motion.div>
+                <CardContent>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {c.no_curso}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Ver estatísticas →
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </MotionCard>
           ))}
-        </div>
-      </div>
-    </div>
+        </Box>
+      )}
+    </Container>
   );
 }
