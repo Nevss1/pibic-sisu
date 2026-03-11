@@ -1,10 +1,10 @@
 "use client";
 
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { useCursoFilter } from "./CursoFilterContext";
+import { useYearFilter } from "../app/(pages)/YearFilterContext";
 
-export default function YearFilter() {
-  const { anosDisponiveis, anosSelecionados, setAnosSelecionados } = useCursoFilter();
+export function YearFilter() {
+  const { anosDisponiveis, anosSelecionados, setAnosSelecionados } = useYearFilter();
 
   return (
     <ToggleButtonGroup

@@ -10,12 +10,14 @@ import { interpolateObject } from "@mui/x-charts-vendor/d3-interpolate";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useCandidatosCursos } from "@/src/hooks";
+import { useYearFilter } from "../YearFilterContext";
 
 const BAR_HEIGHT = 36;
 const BAR_MARGIN = 8;
 
-export default function CandidatosBarChart({ ano }: { ano?: string }) {
-  const { data, isLoading } = useCandidatosCursos(ano);
+export default function CandidatosBarChart() {
+  const { anosSelecionados } = useYearFilter();
+  const { data, isLoading } = useCandidatosCursos();
 
   if (isLoading || !data) {
     return (
@@ -25,10 +27,15 @@ export default function CandidatosBarChart({ ano }: { ano?: string }) {
     );
   }
 
-  const dataset = data.map((d) => ({
-    curso: d.no_curso,
-    candidatos: d.total_candidatos,
-  }));
+  const dataset = Object.values(
+    data
+      .filter((d) => anosSelecionados.includes(d.ano))
+      .reduce<Record<string, { curso: string; candidatos: number }>>((acc, d) => {
+        acc[d.no_curso] ??= { curso: d.no_curso, candidatos: 0 };
+        acc[d.no_curso].candidatos += d.total_candidatos;
+        return acc;
+      }, {})
+  ).sort((a, b) => b.candidatos - a.candidatos);
 
   const max = Math.max(...dataset.map((d) => d.candidatos));
   const low = Math.round(max * 0.33);

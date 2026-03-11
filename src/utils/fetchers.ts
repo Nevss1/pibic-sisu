@@ -29,15 +29,13 @@ export async function fetchNomesCursos() {
   return data;
 }
 
-export async function fetchCandidatosCursos(ano?: string, limit?: number) {
-  const { data } = await api.get("/candidatos", {
-    params: { ...(ano ? { ano } : {}), ...(limit ? { limit } : {}) },
-  });
-  return data as { no_curso: string; total_candidatos: number }[];
+export async function fetchCandidatosCursos() {
+  const { data } = await api.get("/candidatos");
+  return data as { no_curso: string; ano: string; total_candidatos: number }[];
 }
 
-export async function fetchDadosCurso(cursoNome: string): Promise<OverviewCurso> {
-  const { data } = await api.get<OverviewCurso>(`/cursos/${cursoNome}/overview`)
-  console.log("dados")
+export async function fetchDadosCurso(cursoNome?: string): Promise<OverviewCurso> {
+  const url = cursoNome ? `/cursos/${encodeURIComponent(cursoNome)}/overview` : `/cursos/overview`
+  const { data } = await api.get<OverviewCurso>(url)
   return data
 }

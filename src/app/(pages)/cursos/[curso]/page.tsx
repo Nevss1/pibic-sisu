@@ -5,7 +5,7 @@ import BarChart from "./BarChart";
 import PieChartGenero from "./PieChart";
 import CursoTabs from "./CursoTabs";
 import { CursoFilterProvider } from "./CursoFilterContext";
-import YearFilter from "./YearFilter";
+import { YearFilter } from "@/src/components";
 
 export default async function CursoPageOverview({
   params,

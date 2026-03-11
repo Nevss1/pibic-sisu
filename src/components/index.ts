@@ -1,2 +1,1 @@
-export { SeletorAno } from "./SeletorAno";
-export { CursoSelect } from "./CursoSelect";
+export { YearFilter } from './YearFilter'
