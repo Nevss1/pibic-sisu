@@ -1,11 +1,11 @@
 import { toTitleCase } from "@/src/utils";
 import { Box, Container, Typography } from "@mui/material";
-import { AreasFilterProvider } from "./AreasFilterContext";
+import { ModalidadesFilterProvider } from "./ModalidadesFilterContext";
 import { YearFilter } from "@/src/components";
 import CursoTabs from "../CursoTabs";
-import AreasCards from "./AreasCards";
+import ModalidadesCards from "./ModalidadesCards";
 
-export default async function AreasPage({
+export default async function ModalidadePage({
   params,
 }: {
   params: Promise<{ curso: string }>;
@@ -26,15 +26,15 @@ export default async function AreasPage({
       >
         {nomeCurso}
       </Typography>
-      <AreasFilterProvider curso={nomeCurso}>
+      <ModalidadesFilterProvider curso={nomeCurso}>
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 4, p: 2 }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <CursoTabs />
             <YearFilter />
           </Box>
-          <AreasCards />
+          <ModalidadesCards />
         </Box>
-      </AreasFilterProvider>
+      </ModalidadesFilterProvider>
     </Container>
   );
 }

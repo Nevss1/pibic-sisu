@@ -43,3 +43,13 @@ export type DadoAreasCurso = {
 }
 
 export type AreasCurso = DadoAreasCurso[]
+
+export type DadoModalidadesCurso = {
+  categoria: string
+  ano: string
+  total_candidatos: number
+  aprovados: number
+  media_nota: number | null
+}
+
+export type ModalidadesCurso = DadoModalidadesCurso[]

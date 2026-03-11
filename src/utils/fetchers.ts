@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AreasCurso, Dados, OverviewCurso } from "../types/sisu";
+import { AreasCurso, Dados, ModalidadesCurso, OverviewCurso } from "../types/sisu";
 
 const api = axios.create({
   baseURL: "/api",
@@ -42,5 +42,10 @@ export async function fetchDadosCurso(cursoNome?: string): Promise<OverviewCurso
 
 export async function fetchAreasNotasCurso(cursoNome: string): Promise<AreasCurso> {
   const { data } = await api.get<AreasCurso>(`/cursos/${encodeURIComponent(cursoNome)}/areas`)
+  return data
+}
+
+export async function fetchModalidadesCurso(cursoNome: string): Promise<ModalidadesCurso> {
+  const { data } = await api.get<ModalidadesCurso>(`/cursos/${encodeURIComponent(cursoNome)}/modalidades`)
   return data
 }

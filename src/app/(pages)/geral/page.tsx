@@ -28,7 +28,6 @@ export default function GeralPage() {
           </Typography>
           <YearFilter />
         </Box>
-
         <CandidatosBarChart />
       </YearFilterProvider>
     </Container>

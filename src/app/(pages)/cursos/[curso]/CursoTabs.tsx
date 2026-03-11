@@ -37,15 +37,15 @@ const CursoTab = styled((props: { label: string }) => (
   },
 }));
 
-const TABS = ["overview", "areas", "modalidade"] as const;
+const TABS = ["overview", "areas", "modalidades"] as const;
 
 function getBasePath(pathname: string) {
-  return pathname.replace(/\/(areas|modalidade)$/, "");
+  return pathname.replace(/\/(areas|modalidades)$/, "");
 }
 
 function getTabIndex(pathname: string) {
   if (pathname.endsWith("/areas")) return 1;
-  if (pathname.endsWith("/modalidade")) return 2;
+  if (pathname.endsWith("/modalidades")) return 2;
   return 0;
 }
 

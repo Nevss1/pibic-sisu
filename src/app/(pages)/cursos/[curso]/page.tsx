@@ -34,13 +34,7 @@ export default async function CursoPageOverview({
         >
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <CursoTabs />
-
-            <Box sx={{ position: 'relative' }}>
-              <Typography variant="caption" sx={{ position: 'absolute', top: -25, width: '100%', textAlign: 'center' }}>
-                Filtrar por ano:
-              </Typography>
-              <YearFilter />
-            </Box>
+            <YearFilter />
           </Box>
           <CursoOverviewCards />
           <Card
