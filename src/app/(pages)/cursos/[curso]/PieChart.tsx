@@ -36,14 +36,13 @@ export default function PieChartGenero() {
               highlightScope: { fade: "global", highlight: "item" },
               faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
               arcLabel: (item) =>
-                `${((item.value / totalInscritos) * 100).toFixed(1)}%`,
-              arcLabelMinAngle: 30,
-              arcLabelRadius: "60%",
+                `${((item.value / totalInscritos) * 100).toFixed(1)}%`,              
               innerRadius: 40,
             },
           ]}
           height={280}
           margin={{ top: 10, bottom: 60, left: 20, right: 20 }}
+          sx={{ "& .MuiPieArcLabel-root": { fill: "#ffffff !important", padding: 20 } }}
           slotProps={{
             legend: {
               direction: "horizontal",

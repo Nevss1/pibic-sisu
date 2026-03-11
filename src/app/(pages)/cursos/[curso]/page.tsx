@@ -5,7 +5,7 @@ import BarChart from "./BarChart";
 import PieChartGenero from "./PieChart";
 import CursoTabs from "./CursoTabs";
 import { CursoFilterProvider } from "./CursoFilterContext";
-import { YearFilter } from "@/src/components";
+import { CampusFilter, YearFilter } from "@/src/components";
 
 export default async function CursoPageOverview({
   params,
@@ -17,23 +17,47 @@ export default async function CursoPageOverview({
 
   return (
     <Container sx={{ paddingTop: 4 }}>
-      <Typography
-        variant="h4"
-        sx={{
-          fontWeight: 500,
-          letterSpacing: "-0.02em",
-          color: "text.primary",
-          p: 2
-        }}
-      >
-        {nomeCurso}
-      </Typography>
       <CursoFilterProvider curso={nomeCurso}>
         <Box
-          sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 4, p: 2 }}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            p: 2
+          }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 500,
+              letterSpacing: "-0.02em",
+              color: "text.primary",
+              p: 2,
+            }}
+          >
+            {nomeCurso}
+          </Typography>
+          <CampusFilter />
+        </Box>
+
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            p: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <CursoTabs />
+            
             <YearFilter />
           </Box>
           <CursoOverviewCards />

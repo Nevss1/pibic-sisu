@@ -17,6 +17,7 @@ export type Dados = Dado[]
 
 export type DadoOverviewCurso = {
   ano: string
+  campus: string
   total_inscritos: number
   aprovados: number
   notas: number[]
@@ -35,6 +36,7 @@ export type OverviewCurso = DadoOverviewCurso[]
 
 export type DadoAreasCurso = {
   ano: string
+  campus: string
   media_matematica: number
   media_linguagens: number
   media_humanas: number
@@ -47,6 +49,7 @@ export type AreasCurso = DadoAreasCurso[]
 export type DadoModalidadesCurso = {
   categoria: string
   ano: string
+  campus: string
   total_candidatos: number
   aprovados: number
   media_nota: number | null
