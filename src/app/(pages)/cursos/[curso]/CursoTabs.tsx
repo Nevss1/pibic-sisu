@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface CursoTabsBarProps {
   children?: React.ReactNode;
@@ -21,13 +21,8 @@ const CursoTabsBar = styled((props: CursoTabsBarProps) => <Tabs {...props} />)((
   },
 }));
 
-interface CourseTabProps {
-  label: string;
-  href: string;
-}
-
-const CursoTab = styled((props: CourseTabProps) => (
-  <Tab {...props} /> ))(({ theme }) => ({
+const CursoTab = styled((props: { label: string }) => (
+  <Tab {...props} />))(({ theme }) => ({
   textTransform: "none",
   fontWeight: theme.typography.fontWeightRegular,
   fontSize: 18,
@@ -42,13 +37,27 @@ const CursoTab = styled((props: CourseTabProps) => (
   },
 }));
 
+const TABS = ["overview", "areas", "modalidade"] as const;
+
+function getBasePath(pathname: string) {
+  return pathname.replace(/\/(areas|modalidade)$/, "");
+}
+
+function getTabIndex(pathname: string) {
+  if (pathname.endsWith("/areas")) return 1;
+  if (pathname.endsWith("/modalidade")) return 2;
+  return 0;
+}
+
 export default function CursoTabs() {
   const pathname = usePathname();
-  console.log(pathname)
-  const [value, setValue] = React.useState(0);
+  const router = useRouter();
+  const basePath = getBasePath(pathname);
+  const value = getTabIndex(pathname);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
+    const segment = TABS[newValue];
+    router.push(segment === "overview" ? basePath : `${basePath}/${segment}`);
   };
 
   return (
@@ -59,9 +68,9 @@ export default function CursoTabs() {
           onChange={handleChange}
           aria-label="styled tabs example"
         >
-          <CursoTab label="Overview" href={`${pathname}`} />
-          <CursoTab label="Áreas" href={`${pathname}/areas`} />
-          <CursoTab label="Modalidade" href={`${pathname}/modalidade`} />
+          <CursoTab label="Overview" />
+          <CursoTab label="Áreas" />
+          <CursoTab label="Modalidade" />
         </CursoTabsBar>
       </Box>
     </Box>

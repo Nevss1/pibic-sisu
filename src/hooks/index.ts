@@ -5,3 +5,4 @@ export * from "./useMetricasGerais";
 export * from "./useNomeCursos";
 export * from './useCursoOverview'
 export * from './useCandidatosCursos'
+export * from './useAreasNotasCurso'

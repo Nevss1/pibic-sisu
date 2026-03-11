@@ -32,3 +32,14 @@ export type DadoOverviewCurso = {
 }
 
 export type OverviewCurso = DadoOverviewCurso[]
+
+export type DadoAreasCurso = {
+  ano: string
+  media_matematica: number
+  media_linguagens: number
+  media_humanas: number
+  media_natureza: number
+  media_redacao: number
+}
+
+export type AreasCurso = DadoAreasCurso[]

@@ -1,30 +1,44 @@
 "use client";
 
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { DadoOverviewCurso } from "@/src/types/sisu";
 import { useCursoFilter } from "./CursoFilterContext";
+
+function avgNum(dados: DadoOverviewCurso[] | undefined, key: keyof DadoOverviewCurso) {
+  if (!dados || dados.length === 0) return undefined;
+  const values = dados.map((d) => d[key] as number).filter((v) => v != null);
+  if (values.length === 0) return undefined;
+  return Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 100) / 100;
+}
+
+function sumNum(dados: DadoOverviewCurso[] | undefined, key: keyof DadoOverviewCurso) {
+  if (!dados || dados.length === 0) return undefined;
+  return dados.reduce((a, d) => a + (d[key] as number), 0);
+}
 
 export default function CursoOverviewCards() {
   const { dadosFiltrados: dados } = useCursoFilter();
 
   const cards = [
-    { label: "Candidatos", value: dados?.[0]?.total_inscritos },
-    { label: "Média de Nota do Candidato", value: dados?.[0]?.media_nota_candidato },
-    { label: "Média de Nota de Corte", value: dados?.[0]?.media_nota_corte },
-    { label: "Taxa de Aprovação", value: dados?.[0] ? `${dados[0].taxa_aprovacao}%` : undefined },
+    { label: "Candidatos", value: sumNum(dados, "total_inscritos") },
+    { label: "Vagas", value: sumNum(dados, "aprovados") },
+    { label: "Média de Nota do Candidato", value: avgNum(dados, "media_nota_candidato") },
+    { label: "Média de Nota de Corte", value: avgNum(dados, "media_nota_corte") },
+    { label: "Taxa de Aprovação", value: avgNum(dados, "taxa_aprovacao") != null ? `${avgNum(dados, "taxa_aprovacao")}%` : undefined },
   ];
 
   return (
     <Box sx={{ boxShadow: "0px 1px 4px rgba(0,0,0,0.08)", borderRadius: 2, border: 1, borderColor: "divider" }}>
-      <Grid container>
+      <Box sx={{ display: "flex", width: "100%" }}>
         {cards.map((card, index) => (
-          <Grid
-            size={{ xs: 12, md: 3 }}
+          <Box
+            key={card.label}
             sx={{
+              flex: 1,
               p: 3,
               borderRight: index < cards.length - 1 ? 1 : 0,
               borderColor: "divider",
             }}
-            key={card.label}
           >
             <Box
               sx={{
@@ -52,9 +66,9 @@ export default function CursoOverviewCards() {
                 {card.value}
               </Typography>
             </Box>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </Box>
   );
 }
