@@ -9,7 +9,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 export const ROUTE_LABELS: Record<string, string> = {
   cursos: "Cursos",
   geral: "Visão Geral",
-  predicao: "Predição",
+  perfil: "Análise de Perfil",
   informacao: "Informações disponíveis",
   conta: "Conta",
   sobre: "Sobre",
@@ -18,7 +18,7 @@ export const ROUTE_LABELS: Record<string, string> = {
 export const NAV_ITEMS = [
   { href: "/cursos", label: "Cursos", icon: <SchoolIcon /> },
   { href: "/geral", label: "Visão Geral", icon: <BarChartIcon /> },
-  { href: "/predicao", label: "Predição", icon: <AutoGraphIcon /> },
+  { href: "/perfil", label: "Análise de Perfil", icon: <AutoGraphIcon /> },
   {
     href: "/informacao",
     label: "Informações disponíveis",

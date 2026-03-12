@@ -4,6 +4,7 @@ import { AreasFilterProvider } from "./AreasFilterContext";
 import { CampusFilter, YearFilter } from "@/src/components";
 import CursoTabs from "../CursoTabs";
 import AreasCards from "./AreasCards";
+import { RadarAreaChart } from "./RadarAreaChart";
 
 export default async function AreasPage({
   params,
@@ -14,7 +15,7 @@ export default async function AreasPage({
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
   return (
-    <Container sx={{ paddingTop: 4 }}>
+    <Container sx={{ paddingTop: 4, paddingBottom: 200, }}>
       <AreasFilterProvider curso={nomeCurso}>
         <Box
           sx={{
@@ -58,6 +59,8 @@ export default async function AreasPage({
             <YearFilter />
           </Box>
           <AreasCards />
+
+          <RadarAreaChart />
         </Box>
       </AreasFilterProvider>
     </Container>

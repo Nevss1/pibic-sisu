@@ -64,7 +64,7 @@ export async function GET(req: Request) {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error("[predicao/opcoes]", message);
+    console.error("[perfil/opcoes]", message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

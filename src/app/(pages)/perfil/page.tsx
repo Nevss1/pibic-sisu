@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from "@mui/material";
-import PredicaoClient from "./PredicaoClient";
+import PerfilClient from "./PerfilClient";
 
-export default function PredicaoPage() {
+export default function PerfilPage() {
   return (
     <Container sx={{ paddingTop: 4, paddingBottom: 6 }}>
       <Box mb={4} p={2}>
@@ -25,7 +25,7 @@ export default function PredicaoPage() {
           semelhante no SISU UFMA.
         </Typography>
       </Box>
-      <PredicaoClient />
+      <PerfilClient />
     </Container>
   );
 }

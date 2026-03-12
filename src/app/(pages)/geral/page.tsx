@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Card, Container, Typography } from "@mui/material";
 import CandidatosBarChart from "./CandidatosChart";
 import { CampusFilter, YearFilter } from "@/src/components";
 import { GeralFilterProvider } from "./GeralFilterContext";
@@ -29,7 +29,9 @@ export default function GeralPage() {
           </Typography>
           <YearFilter />
         </Box>
-        <CandidatosBarChart />
+        <Card variant="outlined">
+          <CandidatosBarChart />
+        </Card>
       </GeralFilterProvider>
     </Container>
   );

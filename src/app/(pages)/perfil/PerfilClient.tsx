@@ -86,7 +86,7 @@ function StatBox({
   );
 }
 
-export default function PredicaoClient() {
+export default function PerfilClient() {
   const [cursos, setCursos] = useState<string[]>([]);
   const [opcoes, setOpcoes] = useState<Opcoes>({ campuses: [], turnos: [], graus: [], modalidades: [] });
   const [loadingOpcoes, setLoadingOpcoes] = useState(false);
@@ -122,7 +122,7 @@ export default function PredicaoClient() {
     setResultado(null);
     setErro("");
     setLoadingOpcoes(true);
-    fetch(`/api/predicao/opcoes?curso=${encodeURIComponent(curso)}`)
+    fetch(`/api/perfil/opcoes?curso=${encodeURIComponent(curso)}`)
       .then((r) => r.json())
       .then((data: Opcoes) => setOpcoes(data))
       .finally(() => setLoadingOpcoes(false));
@@ -136,7 +136,7 @@ export default function PredicaoClient() {
     setGrau("");
     setResultado(null);
     setErro("");
-    fetch(`/api/predicao/opcoes?curso=${encodeURIComponent(curso)}&campus=${encodeURIComponent(campus)}`)
+    fetch(`/api/perfil/opcoes?curso=${encodeURIComponent(curso)}&campus=${encodeURIComponent(campus)}`)
       .then((r) => r.json())
       .then((data: Opcoes) =>
         setOpcoes((prev) => ({ ...prev, turnos: data.turnos, graus: data.graus, modalidades: data.modalidades }))
@@ -161,7 +161,7 @@ export default function PredicaoClient() {
     });
 
     try {
-      const res = await fetch(`/api/predicao?${params}`);
+      const res = await fetch(`/api/perfil?${params}`);
       console.log(res)
       if (!res.ok) throw new Error("Erro na requisição");
       const data: Resultado = await res.json();

@@ -104,7 +104,7 @@ export async function GET(req: Request) {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error("[predicao]", message);
+    console.error("[perfil]", message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

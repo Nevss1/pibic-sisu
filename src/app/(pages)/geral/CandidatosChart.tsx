@@ -7,6 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useCandidatosCursos } from "@/src/hooks";
 import { useYearFilter } from "../YearFilterContext";
 import { useCampusFilter } from "../CampusFilterContext";
+import { CardContent } from "@mui/material";
 
 const BAR_HEIGHT = 32;
 const BAR_GAP = 8;
@@ -96,6 +97,9 @@ export default function CandidatosBarChart() {
 
   return (
     <Box width="100%">
+      <CardContent>
+
+      
       <Typography marginBottom={2} fontWeight={600}>
         Candidatos por curso na UFMA
       </Typography>
@@ -174,6 +178,7 @@ export default function CandidatosBarChart() {
           </svg>
         </div>
       </Box>
+      </CardContent>
     </Box>
   );
 }
