@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useCandidatosCursos } from "@/src/hooks";
 import { useYearFilter } from "../YearFilterContext";
+import { useCampusFilter } from "../CampusFilterContext";
 
 const BAR_HEIGHT = 32;
 const BAR_GAP = 8;
@@ -27,6 +28,7 @@ function truncate(text: string, max: number) {
 
 export default function CandidatosBarChart() {
   const { anosSelecionados } = useYearFilter();
+  const { campusSelecionado } = useCampusFilter();
   const { data, isLoading } = useCandidatosCursos();
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(800);
@@ -47,14 +49,14 @@ export default function CandidatosBarChart() {
     if (!data) return [];
     return Object.values(
       data
-        .filter((d) => anosSelecionados.includes(d.ano))
+        .filter((d) => anosSelecionados.includes(d.ano) && d.campus === campusSelecionado)
         .reduce<Record<string, { curso: string; candidatos: number }>>((acc, d) => {
           acc[d.no_curso] ??= { curso: d.no_curso, candidatos: 0 };
           acc[d.no_curso].candidatos += d.total_candidatos;
           return acc;
         }, {})
     ).sort((a, b) => b.candidatos - a.candidatos);
-  }, [data, anosSelecionados]);
+  }, [data, anosSelecionados, campusSelecionado]);
 
   // FLIP para posição Y: anima tanto subida quanto descida
   useLayoutEffect(() => {

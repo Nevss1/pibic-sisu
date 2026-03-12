@@ -1,12 +1,12 @@
 import { Box, Container, Typography } from "@mui/material";
 import CandidatosBarChart from "./CandidatosChart";
-import { YearFilterProvider } from "../YearFilterContext";
-import { YearFilter } from "@/src/components";
+import { CampusFilter, YearFilter } from "@/src/components";
+import { GeralFilterProvider } from "./GeralFilterContext";
 
 export default function GeralPage() {
   return (
     <Container sx={{ paddingTop: 4 }}>
-      <YearFilterProvider>
+      <GeralFilterProvider>
         <Box
           sx={{
             display: "flex",
@@ -15,6 +15,7 @@ export default function GeralPage() {
             mb: 4,
           }}
         >
+          <CampusFilter />
           <Typography
             variant="h4"
             sx={{
@@ -29,7 +30,7 @@ export default function GeralPage() {
           <YearFilter />
         </Box>
         <CandidatosBarChart />
-      </YearFilterProvider>
+      </GeralFilterProvider>
     </Container>
   );
 }
