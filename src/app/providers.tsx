@@ -10,6 +10,10 @@ const theme = createTheme({
       main: "#D5B071",
       contrastText: "#0d0b08",
     },
+    background: {
+      default: "#FEF9F6",
+      paper: "#FEF9F6",
+    },
   },
   components: {
     MuiListItemButton: {
@@ -46,3 +50,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 }
+
+// Providers.tsx

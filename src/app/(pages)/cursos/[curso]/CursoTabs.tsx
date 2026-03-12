@@ -62,7 +62,7 @@ export default function CursoTabs() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Box sx={{ bgcolor: "#ffffff" }}>
+      <Box>
         <CursoTabsBar
           value={value}
           onChange={handleChange}
