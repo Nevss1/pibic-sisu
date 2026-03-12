@@ -4,6 +4,7 @@ import { useAreasNotasCurso } from "@/src/hooks";
 import { DadoAreasCurso } from "@/src/types/sisu";
 import { createContext, useContext } from "react";
 import { YearFilterProvider, useYearFilter } from "../../../YearFilterContext";
+import { CampusFilterProvider, useCampusFilter } from "../../../CampusFilterContext";
 
 type AreasFilterContextType = {
   dadosFiltrados: DadoAreasCurso[] | undefined;
@@ -20,10 +21,13 @@ export function AreasFilterProvider({
 }) {
   const { data: dados } = useAreasNotasCurso(curso);
   const anosDisponiveis = [...new Set(dados?.map((d) => d.ano) ?? [])].sort();
+  const campusDisponiveis = [...new Set(dados?.map((d) => d.campus) ?? [])].sort();
 
   return (
     <YearFilterProvider anosDisponiveis={anosDisponiveis}>
-      <AreasFilterInner dados={dados}>{children}</AreasFilterInner>
+      <CampusFilterProvider campusDisponiveis={campusDisponiveis}>
+        <AreasFilterInner dados={dados}>{children}</AreasFilterInner>
+      </CampusFilterProvider>
     </YearFilterProvider>
   );
 }
@@ -36,7 +40,8 @@ function AreasFilterInner({
   children: React.ReactNode;
 }) {
   const { anosSelecionados } = useYearFilter();
-  const dadosFiltrados = dados?.filter((d) => anosSelecionados.includes(d.ano));
+  const { campusSelecionado } = useCampusFilter();
+  const dadosFiltrados = dados?.filter((d) => anosSelecionados.includes(d.ano) && d.campus === campusSelecionado);
 
   return (
     <AreasFilterContext.Provider value={{ dadosFiltrados }}>
