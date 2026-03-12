@@ -1,33 +1,31 @@
-import { Box, Typography, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
+import PredicaoClient from "./PredicaoClient";
 
 export default function PredicaoPage() {
   return (
-    <Container maxWidth="sm">
-      <Box
-        py={10}
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        textAlign="center"
-      >
+    <Container sx={{ paddingTop: 4, paddingBottom: 6 }}>
+      <Box mb={4} p={2}>
         <Typography
           variant="h4"
-          gutterBottom
-          fontWeight={600}
-          color="text.primary"
+          sx={{
+            fontWeight: 500,
+            letterSpacing: "-0.02em",
+            color: "text.primary",
+          }}
         >
-          Página em Desenvolvimento
+          Análise de perfil
         </Typography>
-
         <Typography
           variant="body1"
           color="text.secondary"
-          sx={{ maxWidth: 480 }}
+          sx={{ mt: 1, maxWidth: 560 }}
         >
-          Esta seção da plataforma está em fase de construção e será
-          disponibilizada em breve.
+          Informe suas características socioeconômicas e o curso desejado para
+          consultar a taxa histórica de aprovação de candidatos com perfil
+          semelhante no SISU UFMA.
         </Typography>
       </Box>
+      <PredicaoClient />
     </Container>
   );
 }
