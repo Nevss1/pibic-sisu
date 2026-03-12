@@ -6,6 +6,7 @@ import { useNomeCursos } from "@/src/hooks";
 import { useRouter } from "next/navigation";
 import { toTitleCase } from "../utils";
 import { useEffect, useRef, useState } from "react";
+import BackgroundParticles from "./BackgroundParticles";
 
 export default function HomePage() {
   const { data: cursos = [] } = useNomeCursos();
@@ -139,6 +140,8 @@ export default function HomePage() {
       >
         Trabalho de Iniciação Científica - Rafael Neves - PIBIC/CNPq 2025/2026
       </motion.p>
+
+      <BackgroundParticles />
 
       {pendingUrl && (
         <motion.div
