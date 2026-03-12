@@ -90,8 +90,9 @@ function fmtRate(aprovados: number | null, total: number | null) {
 }
 
 export default function ModalidadesCards() {
-  const { dadosFiltrados: dados } = useModalidadesFilter();
-  console.log(dados)
+  const { dadosFiltrados: dados, isLoading } = useModalidadesFilter();
+
+  if (isLoading) return <Box display="flex" justifyContent="center" alignItems="center" height={200}><CircularProgress /></Box>;
 
   return (
     <Box

@@ -2,12 +2,14 @@
 
 import { useModalidadesCurso } from "@/src/hooks";
 import { DadoModalidadesCurso } from "@/src/types/sisu";
+import { Box, CircularProgress } from "@mui/material";
 import { createContext, useContext } from "react";
 import { YearFilterProvider, useYearFilter } from "../../../YearFilterContext";
 import { CampusFilterProvider, useCampusFilter } from "../../../CampusFilterContext";
 
 type ModalidadesFilterContextType = {
   dadosFiltrados: DadoModalidadesCurso[] | undefined;
+  isLoading: boolean;
 };
 
 const ModalidadesFilterContext = createContext<ModalidadesFilterContextType | null>(null);
@@ -19,14 +21,17 @@ export function ModalidadesFilterProvider({
   curso: string;
   children: React.ReactNode;
 }) {
-  const { data: dados } = useModalidadesCurso(curso);
+  const { data: dados, isLoading } = useModalidadesCurso(curso);
+
+  if (isLoading) return <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh"><CircularProgress color="primary" /></Box>;
+
   const anosDisponiveis = [...new Set(dados?.map((d) => d.ano) ?? [])].sort();
   const campusDisponiveis = [...new Set(dados?.map((d) => d.campus) ?? [])].sort();
 
   return (
     <YearFilterProvider anosDisponiveis={anosDisponiveis}>
       <CampusFilterProvider campusDisponiveis={campusDisponiveis}>
-        <ModalidadesFilterInner dados={dados}>{children}</ModalidadesFilterInner>
+        <ModalidadesFilterInner dados={dados} isLoading={isLoading}>{children}</ModalidadesFilterInner>
       </CampusFilterProvider>
     </YearFilterProvider>
   );
@@ -34,9 +39,11 @@ export function ModalidadesFilterProvider({
 
 function ModalidadesFilterInner({
   dados,
+  isLoading,
   children,
 }: {
   dados: DadoModalidadesCurso[] | undefined;
+  isLoading: boolean;
   children: React.ReactNode;
 }) {
   const { anosSelecionados } = useYearFilter();
@@ -44,7 +51,7 @@ function ModalidadesFilterInner({
   const dadosFiltrados = dados?.filter((d) => anosSelecionados.includes(d.ano) && d.campus === campusSelecionado);
 
   return (
-    <ModalidadesFilterContext.Provider value={{ dadosFiltrados }}>
+    <ModalidadesFilterContext.Provider value={{ dadosFiltrados, isLoading }}>
       {children}
     </ModalidadesFilterContext.Provider>
   );

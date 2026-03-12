@@ -26,6 +26,11 @@ export async function fetchAreasNotasCurso(cursoNome: string) {
   return data
 }
 
+export async function fetchAreasNotasUFMA() {
+  const { data } = await api.get<AreasCurso>(`/areas`)
+  return data
+}
+
 export async function fetchModalidadesCurso(cursoNome: string) {
   const { data } = await api.get<ModalidadesCurso>(`/cursos/${encodeURIComponent(cursoNome)}/modalidades`)
   return data

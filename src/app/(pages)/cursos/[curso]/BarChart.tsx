@@ -22,7 +22,7 @@ function buildHistogram(notas: number[], min: number, max: number) {
 
 export default function BarChart() {
   const { dadosFiltrados: dados } = useCursoFilter();
-  
+
   const notas = dados?.flatMap((d) => d?.notas) ?? []
   const min = Math.min(...dados?.map((d) => d.min_nota_candidato) ?? [0])
   const max = Math.max(...(dados?.map((d) => d.max_nota_candidato) ?? [1000]))

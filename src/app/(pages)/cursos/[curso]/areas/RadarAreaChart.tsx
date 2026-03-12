@@ -11,34 +11,46 @@ const AREAS = [
   { label: "Redação", key: "media_redacao" },
 ] as const;
 
-const COLOR = "#D5B071";
+const COLOR_CURSO = "#D5B071";
+const COLOR_UFMA = "#6B9FD4";
 
 export const RadarAreaChart = () => {
-  const { dadosFiltrados: dados } = useAreasFilter();
+  const { dadosFiltrados: dados, dadosUFMAFiltrados: dadosUFMA } = useAreasFilter();
 
-  const mediasGerais =
-    dados && dados.length > 0
-      ? AREAS.map(
-          (a) => dados.reduce((sum, d) => sum + d[a.key], 0) / dados.length,
-        )
+  const calcMedias = (rows: typeof dados) =>
+    rows && rows.length > 0
+      ? AREAS.map((a) => rows.reduce((sum, d) => sum + d[a.key], 0) / rows.length)
       : [];
+
+  const mediasCurso = calcMedias(dados);
+  const mediasUFMA = calcMedias(dadosUFMA);
+
+  const maxNota = Math.ceil(
+    Math.max(...mediasCurso, ...mediasUFMA, 0) / 100
+  ) * 100;
 
   return (
     <RadarChart
       height={300}
-      // divisions={10}
       shape="circular"
+      sx={{ bgcolor: "#FEF9F6", borderRadius: 2 }}
       series={[
         {
-          label: "Nota Média das Áreas",
-          data: mediasGerais,
-          color: COLOR,
+          label: "Nota média do Campus",
+          data: mediasUFMA,
+          color: COLOR_UFMA,
+          fillArea: true,
+        },
+        {
+          label: "Nota Média ",
+          data: mediasCurso,
+          color: COLOR_CURSO,
           fillArea: true,
         },
       ]}
       radar={{
         metrics: AREAS.map((a) => a.label),
-        max: 1000,
+        max: maxNota,
       }}
     >
       <RadarAxis metric="Matemática" divisions={4} labelOrientation="rotated" angle={30} />
