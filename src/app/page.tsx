@@ -58,14 +58,14 @@ export default function HomePage() {
         transition={{ duration: 0.6 }}
         src="/ufma-logo.png"
         alt="UFMA Logo"
-        className="mb-6 size-60 relative z-10"
+        className="mb-4 md:mb-6 size-36 md:size-60 relative z-10"
       />
 
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 text-center relative z-10 px-4"
+        className="text-2xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 text-center relative z-10 px-4"
       >
         SISU UFMA {" "}
         <span style={{ color: "#D5B071" }}>Dashboard Analítico</span>
@@ -75,7 +75,7 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.8 }}
-        className="text-base text-slate-500 mb-10 text-center max-w-lg relative z-10 px-6"
+        className="text-sm md:text-base text-slate-500 mb-6 md:mb-10 text-center max-w-lg relative z-10 px-6"
       >
         Explore séries históricas, notas de corte, distribuições estatísticas e
         indicadores completos dos cursos da UFMA no SISU.
@@ -85,7 +85,7 @@ export default function HomePage() {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1, duration: 0.4 }}
-        className="relative z-10 w-full px-6 flex justify-center"
+        className="relative z-10 w-full px-6 sm:px-10 flex justify-center"
       >
         <Autocomplete
           disablePortal
@@ -115,7 +115,7 @@ export default function HomePage() {
             },
           }}
           sx={{
-            width: "min(320px, 100%)",
+            width: "min(400px, 100%)",
             "& .MuiOutlinedInput-root": {
               color: "#1e1b16",
               "& fieldset": { borderColor: "rgba(213,176,113,0.5)" },
@@ -136,7 +136,7 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.3 }}
         transition={{ delay: 1.4, duration: 1 }}
-        className="mt-12 text-xs text-slate-500 relative z-10"
+        className="mt-8 md:mt-12 text-xs text-slate-500 relative z-10 px-4 text-center"
       >
         Trabalho de Iniciação Científica - Rafael Neves - PIBIC/CNPq 2025/2026
       </motion.p>

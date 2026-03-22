@@ -185,7 +185,7 @@ export default function PerfilClient() {
     <Box
       sx={{
         display: "grid",
-        gridTemplateColumns: { xs: "1fr", md: "380px 1fr" },
+        gridTemplateColumns: { mobile: "1fr", tablet: "380px 1fr" },
         gap: 4,
         paddingBottom: 50,
         alignItems: "start",

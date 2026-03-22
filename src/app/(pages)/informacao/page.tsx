@@ -38,7 +38,7 @@ export default function InformacaoPage() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
+          gridTemplateColumns: { mobile: "1fr", tablet: "repeat(2, 1fr)" },
           gap: 3,
           p: 2,
         }}

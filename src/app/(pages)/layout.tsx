@@ -4,7 +4,6 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
-  AppBar,
   Box,
   Breadcrumbs,
   Divider,
@@ -55,7 +54,9 @@ export default function DashboardLayout({
   });
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: {
+      
+    } }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -76,7 +77,7 @@ export default function DashboardLayout({
             width: "100%",
             alignItems: "center",
             justifyContent: "space-around",
-            minHeight: { xs: '55px !important', sm: '75px !important' },
+            minHeight: { mobile: '55px !important', tabletSmall: '75px !important' },
           }}
         >
           <Box
@@ -124,7 +125,7 @@ export default function DashboardLayout({
           minHeight: "100vh",
         }}
       >
-          <Toolbar sx={{ borderBottom: 1, borderColor: "divider", minHeight: { xs: '56px !important', sm: '76px !important' } }}>
+          <Toolbar sx={{ borderBottom: 1, borderColor: "divider", minHeight: { mobile: '56px !important', tabletSmall: '76px !important' } }}>
             {!open && (
               <IconButton
                 onClick={() => setOpen(true)}

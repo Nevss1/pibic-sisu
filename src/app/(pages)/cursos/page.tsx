@@ -45,9 +45,9 @@ export default function CursosPage() {
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(3, 1fr)",
+              mobile: "1fr",
+              tabletSmall: "repeat(2, 1fr)",
+              tablet: "repeat(3, 1fr)",
             },
             gap: 3,
             p: 2,
