@@ -67,20 +67,30 @@ export async function GET(req: Request) {
       FROM sisu_ufma
       WHERE LOWER(no_curso) = LOWER($1)
     ),
-    dados AS (
+    base AS (
       SELECT * FROM norm
       WHERE campus_norm ILIKE '%' || $2 || '%'
+    ),
+    total_ano AS (
+      SELECT ano, COUNT(*)::int AS total_curso
+      FROM base
+      GROUP BY ano
+    ),
+    filtrado AS (
+      SELECT * FROM base
+      WHERE 1=1
+      ${extraWhere}
     )
     SELECT
-      ano,
+      f.ano,
       COUNT(*)::int                                     AS total,
-      COUNT(*) FILTER (WHERE st_aprovado = 'S')::int   AS aprovados,
-      ROUND(AVG(nu_notacorte)::numeric, 2)::float      AS nota_corte_media
-    FROM dados
-    WHERE 1=1
-    ${extraWhere}
-    GROUP BY ano
-    ORDER BY ano
+      COUNT(*) FILTER (WHERE f.st_aprovado = 'S')::int AS aprovados,
+      ROUND(AVG(f.nu_notacorte)::numeric, 2)::float    AS nota_corte_media,
+      t.total_curso
+    FROM filtrado f
+    JOIN total_ano t ON t.ano = f.ano
+    GROUP BY f.ano, t.total_curso
+    ORDER BY f.ano
   `;
 
   try {

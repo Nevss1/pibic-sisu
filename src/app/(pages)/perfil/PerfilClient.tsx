@@ -29,6 +29,7 @@ type AnoRow = {
   total: number;
   aprovados: number;
   nota_corte_media: number | null;
+  total_curso: number;
 };
 
 type Resultado = {
@@ -340,7 +341,7 @@ export default function PerfilClient() {
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
+                gridTemplateColumns: "repeat(2, 1fr)",
                 gap: 2,
               }}
             >
@@ -348,6 +349,18 @@ export default function PerfilClient() {
                 label="Taxa de aprovação histórica"
                 value={`${resultado.resumo!.taxa}%`}
                 sub="média entre todos os anos"
+              />
+              <StatBox
+                label="Taxa de participação média"
+                value={(() => {
+                  const rows = resultado.rows.filter((r) => r.total_curso > 0);
+                  if (rows.length === 0) return "—";
+                  const media =
+                    rows.reduce((s, r) => s + r.total / r.total_curso, 0) /
+                    rows.length;
+                  return `${(media * 100).toFixed(1)}%`;
+                })()}
+                sub="candidatos do perfil / total do curso"
               />
               <StatBox
                 label="Total de candidatos"
@@ -381,12 +394,12 @@ export default function PerfilClient() {
               <Box
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: "auto 1fr 1fr 1fr 1fr",
-                  gap: "8px 16px",
+                  gridTemplateColumns: "auto 1fr 1fr 1fr 1fr 1fr",
+                  gap: "0px 80px",
                   alignItems: "center",
                 }}
               >
-                {["Ano", "Candidatos", "Aprovados", "Taxa", "Nota de corte"].map(
+                {["Ano", "Candidatos", "Aprovados", "Taxa aprov.", "Participação", "Nota de corte"].map(
                   (h) => (
                     <Typography
                       key={h}
@@ -404,6 +417,10 @@ export default function PerfilClient() {
                     row.total > 0
                       ? ((row.aprovados / row.total) * 100).toFixed(1) + "%"
                       : "—";
+                  const participacao =
+                    row.total_curso > 0
+                      ? ((row.total / row.total_curso) * 100).toFixed(1) + "%"
+                      : "—";
                   return (
                     <>
                       <Typography key={`ano-${row.ano}`} variant="body2" fontWeight={500}>
@@ -417,6 +434,9 @@ export default function PerfilClient() {
                       </Typography>
                       <Typography key={`taxa-${row.ano}`} variant="body2" color="text.secondary">
                         {taxa}
+                      </Typography>
+                      <Typography key={`part-${row.ano}`} variant="body2" color="text.secondary">
+                        {participacao}
                       </Typography>
                       <Typography key={`corte-${row.ano}`} variant="body2" color="text.secondary">
                         {row.nota_corte_media?.toFixed(2) ?? "—"}
