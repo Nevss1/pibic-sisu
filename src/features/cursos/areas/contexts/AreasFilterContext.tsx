@@ -1,11 +1,10 @@
 "use client";
 
+import { CampusFilterProvider, useCampusFilter, useYearFilter, YearFilterProvider } from "@/src/features/shared";
 import { useAreasNotasCurso, useAreasNotasUFMA } from "@/src/hooks";
 import { DadoAreasCurso } from "@/src/types/sisu";
 import { Box, CircularProgress } from "@mui/material";
 import { createContext, useContext } from "react";
-import { YearFilterProvider, useYearFilter } from "../../../YearFilterContext";
-import { CampusFilterProvider, useCampusFilter } from "../../../CampusFilterContext";
 
 type AreasFilterContextType = {
   dadosFiltrados: DadoAreasCurso[] | undefined;

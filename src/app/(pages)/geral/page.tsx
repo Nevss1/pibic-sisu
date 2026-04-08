@@ -1,7 +1,6 @@
 import { Box, Card, Container, Typography } from "@mui/material";
-import CandidatosBarChart from "./CandidatosChart";
 import { CampusFilter, YearFilter } from "@/src/components";
-import { GeralFilterProvider } from "./GeralFilterContext";
+import { CandidatosBarChart, GeralFilterProvider } from "@/src/features/geral";
 
 export default function GeralPage() {
   return (

@@ -2,7 +2,7 @@
 
 import { Box, CardContent, Typography } from "@mui/material";
 import { BarChart as MuiBarChart } from "@mui/x-charts/BarChart";
-import { useCursoFilter } from "./CursoFilterContext";
+import { useCursoFilter } from "../contexts";
 
 const BIN_SIZE = 5;
 
@@ -20,7 +20,7 @@ function buildHistogram(notas: number[], min: number, max: number) {
   return bins;
 }
 
-export default function BarChart() {
+export function BarChart() {
   const { dadosFiltrados: dados } = useCursoFilter();
 
   const notas = dados?.flatMap((d) => d?.notas) ?? []

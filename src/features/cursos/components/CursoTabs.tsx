@@ -49,7 +49,7 @@ function getTabIndex(pathname: string) {
   return 0;
 }
 
-export default function CursoTabs() {
+export function CursoTabs() {
   const pathname = usePathname();
   const router = useRouter();
   const basePath = getBasePath(pathname);

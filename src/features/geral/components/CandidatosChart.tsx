@@ -5,9 +5,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useCandidatosCursos } from "@/src/hooks";
-import { useYearFilter } from "../YearFilterContext";
-import { useCampusFilter } from "../CampusFilterContext";
 import { CardContent } from "@mui/material";
+import { useCampusFilter, useYearFilter } from "../../shared";
 
 const BAR_HEIGHT = 32;
 const BAR_GAP = 8;
@@ -27,7 +26,7 @@ function truncate(text: string, max: number) {
   return text.length > max ? text.slice(0, max) + "…" : text;
 }
 
-export default function CandidatosBarChart() {
+export function CandidatosBarChart() {
   const { anosSelecionados } = useYearFilter();
   const { campusSelecionado } = useCampusFilter();
   const { data, isLoading } = useCandidatosCursos();

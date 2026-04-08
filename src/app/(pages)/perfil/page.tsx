@@ -1,5 +1,5 @@
+import { PerfilClient } from "@/src/features/perfil";
 import { Box, Container, Typography } from "@mui/material";
-import PerfilClient from "./PerfilClient";
 
 export default function PerfilPage() {
   return (

@@ -1,11 +1,8 @@
 import { toTitleCase } from "@/src/utils";
 import { Box, Card, Container, Typography } from "@mui/material";
-import CursoOverviewCards from "./CursoOverviewCards";
-import BarChart from "./BarChart";
-import PieChartGenero from "./PieChart";
-import CursoTabs from "./CursoTabs";
-import { CursoFilterProvider } from "./CursoFilterContext";
 import { CampusFilter, YearFilter } from "@/src/components";
+import { CursoFilterProvider } from "@/src/features/cursos";
+import { CursoTabs, CursoOverviewCards, BarChart, PieChartGenero } from "@/src/features/cursos/components"
 
 export default async function CursoPageOverview({
   params,

@@ -1,8 +1,8 @@
 "use client";
 
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useModalidadesFilter } from "./ModalidadesFilterContext";
+import { useModalidadesFilter } from "../contexts";
 
 const CATEGORIAS = [
   {
@@ -89,7 +89,7 @@ function fmtRate(aprovados: number | null, total: number | null) {
   return ((aprovados / total) * 100).toFixed(1) + "%";
 }
 
-export default function ModalidadesCards() {
+export function ModalidadesCards() {
   const { dadosFiltrados: dados, isLoading } = useModalidadesFilter();
 
   if (isLoading) return <Box display="flex" justifyContent="center" alignItems="center" height={200}><CircularProgress /></Box>;

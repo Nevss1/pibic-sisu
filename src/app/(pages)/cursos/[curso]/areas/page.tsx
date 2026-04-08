@@ -1,10 +1,8 @@
 import { toTitleCase } from "@/src/utils";
 import { Box, Container, Typography } from "@mui/material";
-import { AreasFilterProvider } from "./AreasFilterContext";
 import { CampusFilter, YearFilter } from "@/src/components";
-import CursoTabs from "../CursoTabs";
-import AreasCards from "./AreasCards";
-import { RadarAreaChart } from "./RadarAreaChart";
+import * as Areas from "@/src/features/cursos/areas";
+import { CursoTabs } from "@/src/features/cursos";
 
 export default async function AreasPage({
   params,
@@ -16,7 +14,7 @@ export default async function AreasPage({
 
   return (
     <Container sx={{ paddingTop: 4, paddingBottom: 200, }}>
-      <AreasFilterProvider curso={nomeCurso}>
+      <Areas.AreasFilterProvider curso={nomeCurso}>
         <Box
           sx={{
             display: "flex",
@@ -58,11 +56,11 @@ export default async function AreasPage({
             <CursoTabs />
             <YearFilter />
           </Box>
-          <AreasCards />
+          <Areas.AreasCards />
 
-          <RadarAreaChart />
+          <Areas.RadarAreaChart />
         </Box>
-      </AreasFilterProvider>
+      </Areas.AreasFilterProvider>
     </Container>
   );
 }

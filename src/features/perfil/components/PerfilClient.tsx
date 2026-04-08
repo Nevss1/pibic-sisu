@@ -87,7 +87,7 @@ function StatBox({
   );
 }
 
-export default function PerfilClient() {
+export function PerfilClient() {
   const [cursos, setCursos] = useState<string[]>([]);
   const [opcoes, setOpcoes] = useState<Opcoes>({ campuses: [], turnos: [], graus: [], modalidades: [] });
   const [loadingOpcoes, setLoadingOpcoes] = useState(false);

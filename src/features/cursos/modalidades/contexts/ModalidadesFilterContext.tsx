@@ -1,11 +1,10 @@
 "use client";
 
+import { CampusFilterProvider, useCampusFilter, useYearFilter, YearFilterProvider } from "@/src/features/shared";
 import { useModalidadesCurso } from "@/src/hooks";
 import { DadoModalidadesCurso } from "@/src/types/sisu";
 import { Box, CircularProgress } from "@mui/material";
 import { createContext, useContext } from "react";
-import { YearFilterProvider, useYearFilter } from "../../../YearFilterContext";
-import { CampusFilterProvider, useCampusFilter } from "../../../CampusFilterContext";
 
 type ModalidadesFilterContextType = {
   dadosFiltrados: DadoModalidadesCurso[] | undefined;
