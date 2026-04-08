@@ -54,20 +54,15 @@ export default function DashboardLayout({
   });
 
   return (
-    <Box sx={{ display: {
-      
-    } }}>
+    <Box>
       <Drawer
-        variant="permanent"
+        variant="temporary"
+        open={open}
+        onClose={() => setOpen(false)}
         sx={{
-          width: open ? DRAWER_WIDTH : 0,
-          flexShrink: 0,
-          transition: "width 0.2s",
           "& .MuiDrawer-paper": {
-            width: open ? DRAWER_WIDTH : 0,
+            width: DRAWER_WIDTH,
             boxSizing: "border-box",
-            overflowX: "hidden",
-            transition: "width 0.2s",
           },
         }}
       >
@@ -126,15 +121,13 @@ export default function DashboardLayout({
         }}
       >
           <Toolbar sx={{ borderBottom: 1, borderColor: "divider", minHeight: { mobile: '56px !important', tabletSmall: '76px !important' } }}>
-            {!open && (
-              <IconButton
-                onClick={() => setOpen(true)}
-                edge="start"
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
+            <IconButton
+              onClick={() => setOpen(true)}
+              edge="start"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
             <Breadcrumbs
               separator={<NavigateNextIcon fontSize="small" />}
               aria-label="breadcrumb"
@@ -143,6 +136,7 @@ export default function DashboardLayout({
             </Breadcrumbs>
           </Toolbar>
         <Box sx={{ flex: 1, p: 0 }}>{children}</Box>
+    
       </Box>
     </Box>
   );
