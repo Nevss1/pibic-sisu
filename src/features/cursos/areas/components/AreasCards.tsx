@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import { useAreasFilter } from "./AreasFilterContext";
+import { useAreasFilter } from "../contexts/AreasFilterContext";
 
 const AREAS = [
   { label: "Matemática", key: "media_matematica" },
@@ -18,7 +18,7 @@ function avg(dados: ReturnType<typeof useAreasFilter>["dadosFiltrados"], key: ty
   return Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 100) / 100;
 }
 
-export default function AreasCards() {
+export function AreasCards() {
   const { dadosFiltrados: dados } = useAreasFilter();
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { RadarAxis, RadarChart } from "@mui/x-charts";
-import { useAreasFilter } from "./AreasFilterContext";
+import { useAreasFilter } from "../contexts/AreasFilterContext";
 
 const AREAS = [
   { label: "Matemática", key: "media_matematica" },

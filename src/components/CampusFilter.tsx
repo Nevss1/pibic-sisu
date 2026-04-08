@@ -4,8 +4,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useCampusFilter } from "../app/(pages)/CampusFilterContext";
 import { toTitleCase } from "../utils";
+import { useCampusFilter } from "../features";
 
 export function CampusFilter() {
   const { campusDisponiveis, campusSelecionado, setCampusSelecionado } = useCampusFilter();

@@ -2,7 +2,7 @@
 
 import { Box, Typography } from "@mui/material";
 import { DadoOverviewCurso } from "@/src/types/sisu";
-import { useCursoFilter } from "./CursoFilterContext";
+import { useCursoFilter } from "../contexts";
 
 function avgNum(dados: DadoOverviewCurso[] | undefined, key: keyof DadoOverviewCurso) {
   if (!dados || dados.length === 0) return undefined;
@@ -16,7 +16,7 @@ function sumNum(dados: DadoOverviewCurso[] | undefined, key: keyof DadoOverviewC
   return dados.reduce((a, d) => a + (d[key] as number), 0);
 }
 
-export default function CursoOverviewCards() {
+export function CursoOverviewCards() {
   const { dadosFiltrados: dados } = useCursoFilter();
 
   const cards = [

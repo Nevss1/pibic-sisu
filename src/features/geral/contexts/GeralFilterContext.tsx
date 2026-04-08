@@ -3,8 +3,7 @@
 import { useCursoOverview } from "@/src/hooks";
 import { DadoOverviewCurso } from "@/src/types/sisu";
 import { createContext, useContext } from "react";
-import { useYearFilter, YearFilterProvider } from "../YearFilterContext";
-import { CampusFilterProvider, useCampusFilter } from "../CampusFilterContext";
+import { CampusFilterProvider, useCampusFilter, useYearFilter, YearFilterProvider } from "../../shared";
 
 
 type GeralFilterContextType = {

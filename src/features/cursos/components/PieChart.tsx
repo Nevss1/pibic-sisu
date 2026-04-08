@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, CardContent, Typography } from "@mui/material";
-import { useCursoFilter } from "./CursoFilterContext";
+import { useCursoFilter } from "../contexts";
 import { PieChart as MuiPieChart } from "@mui/x-charts/PieChart";
 
 const CORES_GENERO = {
@@ -9,7 +9,7 @@ const CORES_GENERO = {
   feminino: "#e82d2dd6",
 };
 
-export default function PieChartGenero() {
+export function PieChartGenero() {
   const { dadosFiltrados: dados } = useCursoFilter();
 
   const totalMasculino =

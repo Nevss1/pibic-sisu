@@ -1,9 +1,8 @@
 import { toTitleCase } from "@/src/utils";
 import { Box, Container, Typography } from "@mui/material";
-import { ModalidadesFilterProvider } from "./ModalidadesFilterContext";
 import { CampusFilter, YearFilter } from "@/src/components";
-import CursoTabs from "../CursoTabs";
-import ModalidadesCards from "./ModalidadesCards";
+import * as Modalidades from "@/src/features/cursos/modalidades";
+import { CursoTabs } from "@/src/features/cursos";
 
 export default async function ModalidadePage({
   params,
@@ -15,7 +14,7 @@ export default async function ModalidadePage({
 
   return (
     <Container sx={{ paddingTop: 4 }}>
-      <ModalidadesFilterProvider curso={nomeCurso}>
+      <Modalidades.ModalidadesFilterProvider curso={nomeCurso}>
         <Box
           sx={{
             display: "flex",
@@ -57,9 +56,9 @@ export default async function ModalidadePage({
             <CursoTabs />
             <YearFilter />
           </Box>
-          <ModalidadesCards />
+          <Modalidades.ModalidadesCards />
         </Box>
-      </ModalidadesFilterProvider>
+      </Modalidades.ModalidadesFilterProvider>
     </Container>
   );
 }

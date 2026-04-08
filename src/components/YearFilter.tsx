@@ -1,7 +1,7 @@
 "use client";
 
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { useYearFilter } from "../app/(pages)/YearFilterContext";
+import { useYearFilter } from "../features";
 
 export function YearFilter() {
   const { anosDisponiveis, anosSelecionados, setAnosSelecionados } = useYearFilter();
