@@ -11,7 +11,7 @@ import {
 
 export default function InformacaoPage() {
   return (
-    <Container sx={{ paddingTop: 4 }}>
+    <Container>
       <Typography
         variant="h4"
         sx={{

@@ -3,7 +3,7 @@ import { Box, Container, Typography } from "@mui/material";
 
 export default function PerfilPage() {
   return (
-    <Container sx={{ paddingTop: 4, paddingBottom: 6 }}>
+    <Container sx={{ paddingBottom: 6 }}>
       <Box mb={4} p={2}>
         <Typography
           variant="h4"

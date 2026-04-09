@@ -12,13 +12,14 @@ declare module '@mui/material/styles' {
     tablet: true;
     laptop: true;
     desktop: true;
+    desktopLarge: true;
   }
 }
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#D5B071",
+      main: "#ae8f58",
       contrastText: "#0d0b08",
     },
     background: {
@@ -27,6 +28,14 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiContainer: {
+      defaultProps: {
+        maxWidth: "laptop",
+        sx: {
+          paddingTop: 4,
+        }
+      },
+    },
     MuiListItemButton: {
       styleOverrides: {
         root: {
@@ -44,7 +53,8 @@ const theme = createTheme({
       tabletSmall: 900,
       tablet: 1050,
       laptop: 1200,
-      desktop: 1400,
+      desktop: 1440,
+      desktopLarge: 1800,
     },
   },
 });

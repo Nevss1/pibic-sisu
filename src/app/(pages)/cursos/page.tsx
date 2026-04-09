@@ -19,7 +19,7 @@ export default function CursosPage() {
   const { data: cursos, isLoading } = useNomeCursos();
 
   return (
-    <Container sx={{ paddingTop: 4 }}>
+    <Container>
       <Typography
         variant="h4"
         sx={{

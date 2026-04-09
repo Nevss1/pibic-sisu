@@ -13,7 +13,7 @@ export default async function ModalidadePage({
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
   return (
-    <Container sx={{ paddingTop: 4 }}>
+    <Container>
       <Modalidades.ModalidadesFilterProvider curso={nomeCurso}>
         <Box
           sx={{

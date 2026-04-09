@@ -13,7 +13,7 @@ export default async function AreasPage({
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
   return (
-    <Container sx={{ paddingTop: 4, paddingBottom: 200, }}>
+    <Container sx={{ paddingBottom: 200, }}>
       <Areas.AreasFilterProvider curso={nomeCurso}>
         <Box
           sx={{

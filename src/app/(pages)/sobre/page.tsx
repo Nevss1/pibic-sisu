@@ -2,7 +2,7 @@ import { Box, Typography, Container } from "@mui/material";
 
 export default function SobrePage() {
   return (
-    <Container maxWidth="md">
+    <Container>
       <Box py={6}>
         <Typography
           variant="h4"

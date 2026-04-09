@@ -13,7 +13,7 @@ export default async function CursoPageOverview({
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
   return (
-    <Container sx={{ paddingTop: 4 }}>
+    <Container>
       <CursoFilterProvider curso={nomeCurso}>
         <Box
           sx={{
