@@ -16,6 +16,8 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -30,7 +32,10 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const theme = useTheme();
+  const isLaptop = useMediaQuery(theme.breakpoints.up("laptop"));
   const [open, setOpen] = useState(true);
+
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
   const breadcrumbs = segments.map((segment, index) => {
@@ -53,63 +58,83 @@ export default function DashboardLayout({
     );
   });
 
-  return (
-    <Box>
-      <Drawer
-        variant="temporary"
-        open={open}
-        onClose={() => setOpen(false)}
+  const drawerContent = (
+    <>
+      <Box
         sx={{
-          "& .MuiDrawer-paper": {
-            width: DRAWER_WIDTH,
-            boxSizing: "border-box",
-          },
+          display: "flex",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-around",
+          minHeight: { mobile: "55px !important", tabletSmall: "75px !important" },
         }}
       >
         <Box
+          component="img"
+          src="/ufma-logo.png"
+          alt="UFMA Logo"
+          sx={{ width: 66, height: 66 }}
+        />
+        <Box sx={{ display: "flex", height: "100%" }}>
+          <IconButton onClick={() => setOpen(false)}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </Box>
+      </Box>
+
+      <Divider />
+
+      <List>
+        {NAV_ITEMS.map(({ href, label, icon }) => (
+          <ListItem key={href} disablePadding>
+            <ListItemButton
+              component={Link}
+              href={href}
+              selected={href === "/" ? pathname === "/" : pathname.startsWith(href)}
+            >
+              <ListItemIcon sx={{ minWidth: 36, pl: 2, pr: 1.5 }}>{icon}</ListItemIcon>
+              <ListItemText primary={label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </>
+  );
+
+  return (
+    <Box sx={{ display: "flex" }}>
+      {isLaptop ? (
+        <Drawer
+          variant="permanent"
           sx={{
-            display: "flex",
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "space-around",
-            minHeight: { mobile: '55px !important', tabletSmall: '75px !important' },
+            width: open ? DRAWER_WIDTH : 0,
+            flexShrink: 0,
+            transition: "width 0.2s",
+            "& .MuiDrawer-paper": {
+              width: open ? DRAWER_WIDTH : 0,
+              boxSizing: "border-box",
+              overflowX: "hidden",
+              transition: "width 0.2s",
+            },
           }}
         >
-          <Box
-            component="img"
-            src="/ufma-logo.png"
-            alt="UFMA Logo"
-            sx={{ width: 66, height: 66 }}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              height: '100%',
-            }}
-          >
-            <IconButton onClick={() => setOpen(false)}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Box>
-        </Box>
-
-        <Divider />
-
-        <List>
-          {NAV_ITEMS.map(({ href, label, icon }) => (
-            <ListItem key={href} disablePadding>
-              <ListItemButton
-                component={Link}
-                href={href}
-                selected={href === "/" ? pathname === "/" : pathname.startsWith(href)}
-              >
-                <ListItemIcon sx={{ minWidth: 36, pl: 2, pr: 1.5 }}>{icon}</ListItemIcon>
-                <ListItemText primary={label} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+          {drawerContent}
+        </Drawer>
+      ) : (
+        <Drawer
+          variant="temporary"
+          open={open}
+          onClose={() => setOpen(false)}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: DRAWER_WIDTH,
+              boxSizing: "border-box",
+            },
+          }}
+        >
+          {drawerContent}
+        </Drawer>
+      )}
 
       <Box
         component="main"
@@ -118,9 +143,17 @@ export default function DashboardLayout({
           display: "flex",
           flexDirection: "column",
           minHeight: "100vh",
+          minWidth: 0,
         }}
       >
-          <Toolbar sx={{ borderBottom: 1, borderColor: "divider", minHeight: { mobile: '56px !important', tabletSmall: '76px !important' } }}>
+        <Toolbar
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            minHeight: { mobile: "56px !important", tabletSmall: "76px !important" },
+          }}
+        >
+          {(!isLaptop || !open) && (
             <IconButton
               onClick={() => setOpen(true)}
               edge="start"
@@ -128,15 +161,15 @@ export default function DashboardLayout({
             >
               <MenuIcon />
             </IconButton>
-            <Breadcrumbs
-              separator={<NavigateNextIcon fontSize="small" />}
-              aria-label="breadcrumb"
-            >
-              {breadcrumbs}
-            </Breadcrumbs>
-          </Toolbar>
+          )}
+          <Breadcrumbs
+            separator={<NavigateNextIcon fontSize="small" />}
+            aria-label="breadcrumb"
+          >
+            {breadcrumbs}
+          </Breadcrumbs>
+        </Toolbar>
         <Box sx={{ flex: 1, p: 0 }}>{children}</Box>
-    
       </Box>
     </Box>
   );
