@@ -16,7 +16,8 @@ export async function GET() {
       no_curso,
       ano,
       campus,
-      COUNT(*)::int AS total_candidatos
+      COUNT(*)::int                                     AS total_candidatos,
+      COUNT(*) FILTER (WHERE st_aprovado = 'S')::int    AS aprovados
     FROM dados
     GROUP BY no_curso, ano, campus
     ORDER BY no_curso, ano, campus

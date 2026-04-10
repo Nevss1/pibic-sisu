@@ -12,7 +12,7 @@ export async function fetchNomesCursos() {
 
 export async function fetchCandidatosCursos() {
   const { data } = await api.get("/candidatos");
-  return data as { no_curso: string; ano: string; campus: string; total_candidatos: number }[];
+  return data as { no_curso: string; ano: string; campus: string; total_candidatos: number; aprovados: number }[];
 }
 
 export async function fetchDadosCurso(cursoNome?: string) {
