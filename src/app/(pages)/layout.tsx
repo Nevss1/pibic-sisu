@@ -27,6 +27,7 @@ import { NAV_ITEMS, ROUTE_LABELS } from "@/src/config";
 
 const DRAWER_WIDTH = 260;
 
+
 export default function DashboardLayout({
   children,
 }: {
@@ -44,61 +45,85 @@ export default function DashboardLayout({
       ROUTE_LABELS[segment] ?? toTitleCase(decodeURIComponent(segment));
     const isLast = index === segments.length - 1;
     return isLast ? (
-      <Typography key={href} sx={{ color: "text.primary" }}>
+      <Typography key={href} sx={{ color: "text.primary", fontSize: 14 }}>
         {label}
       </Typography>
     ) : (
       <Link
         key={href}
         href={href}
-        style={{ color: "inherit", textDecoration: "none" }}
+        style={{ color: "inherit", textDecoration: "none", fontSize: 14 }}
       >
         {label}
       </Link>
     );
   });
 
+  const isSelected = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
   const drawerContent = (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box
         sx={{
           display: "flex",
-          width: "100%",
           alignItems: "center",
-          justifyContent: "space-around",
-          minHeight: { mobile: "55px !important", tabletSmall: "75px !important" },
+          justifyContent: "space-between",
+          px: 2,
+          minHeight: { mobile: "64px", tabletSmall: "76px" },
+          background: "linear-gradient(135deg, rgba(174,143,88,0.10) 0%, rgba(174,143,88,0.03) 100%)",
         }}
       >
-        <Box
-          component="img"
-          src="/ufma-logo.png"
-          alt="UFMA Logo"
-          sx={{ width: 66, height: 66 }}
-        />
-        <Box sx={{ display: "flex", height: "100%" }}>
-          <IconButton onClick={() => setOpen(false)}>
-            <ChevronLeftIcon />
-          </IconButton>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Box
+            component="img"
+            src="/ufma-logo.png"
+            alt="UFMA Logo"
+            sx={{ width: 38, height: 38 }}
+          />
+          <Box>
+            <Typography variant="subtitle2" fontWeight={700} lineHeight={1.2} letterSpacing="-0.01em">
+              SISU UFMA
+            </Typography>
+            <Typography variant="caption" color="text.secondary" lineHeight={1}>
+              Análise de dados
+            </Typography>
+          </Box>
         </Box>
+        <IconButton onClick={() => setOpen(false)} sx={{ p: 0.5 }}>
+          <ChevronLeftIcon fontSize="small" />
+        </IconButton>
       </Box>
 
       <Divider />
 
-      <List>
+      <List sx={{ px: 1.5, pt: 1 }}>
         {NAV_ITEMS.map(({ href, label, icon }) => (
-          <ListItem key={href} disablePadding>
+          <ListItem key={href} disablePadding sx={{ mb: 0.5 }}>
             <ListItemButton
               component={Link}
               href={href}
-              selected={href === "/" ? pathname === "/" : pathname.startsWith(href)}
+              selected={isSelected(href)}
+              sx={{ borderRadius: 2, py: 1 }}
             >
-              <ListItemIcon sx={{ minWidth: 36, pl: 2, pr: 1.5 }}>{icon}</ListItemIcon>
-              <ListItemText primary={label} />
+              <ListItemIcon sx={{ minWidth: 36, color: isSelected(href) ? "primary.main" : "text.secondary" }}>
+                {icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={label}
+                slotProps={{
+                  primary: {
+                    fontSize: 14,
+                    fontWeight: isSelected(href) ? 600 : 400,
+                    color: isSelected(href) ? "text.primary" : "text.secondary",
+                  },
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-    </>
+    </Box>
   );
 
   return (
@@ -115,6 +140,8 @@ export default function DashboardLayout({
               boxSizing: "border-box",
               overflowX: "hidden",
               transition: "width 0.2s",
+              borderRight: "1px solid",
+              borderColor: "divider",
             },
           }}
         >
@@ -148,9 +175,15 @@ export default function DashboardLayout({
       >
         <Toolbar
           sx={{
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
             borderBottom: 1,
             borderColor: "divider",
             minHeight: { mobile: "56px !important", tabletSmall: "76px !important" },
+            px: 3,
+            background: "rgba(254, 249, 246, 0.85)",
+            backdropFilter: "blur(10px)",
           }}
         >
           {(!isLaptop || !open) && (
@@ -163,7 +196,7 @@ export default function DashboardLayout({
             </IconButton>
           )}
           <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="small" />}
+            separator={<NavigateNextIcon sx={{ fontSize: 16 }} />}
             aria-label="breadcrumb"
           >
             {breadcrumbs}
