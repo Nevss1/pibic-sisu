@@ -4,33 +4,34 @@ import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useModalidadesFilter } from "../contexts";
 
+// "Cota geral" agrega todos os subgrupos de COTA e pode sobrepor PPI, Indígenas e PcD.
 const CATEGORIAS = [
   {
     label: "Ampla concorrência",
-    key: "Ampla concorrência",
+    keys: ["Ampla concorrência"],
     descricao: [
       "Vagas sem cotas, abertas a todos os candidatos independente de escola ou renda.",
     ],
   },
   {
     label: "Bônus Maranhão",
-    key: "Bônus Maranhão",
+    keys: ["Bônus Maranhão"],
     descricao: [
       "Vagas com bônus regional destinadas a candidatos oriundos do Maranhão.",
       "Categoria específica da UFMA, não presente em outras IES.",
     ],
   },
   {
-    label: "Escola pública",
-    key: "Escola pública",
+    label: "Cota geral",
+    keys: ["Escola pública", "PPI", "Indígenas", "PcD"],
     descricao: [
-      "Candidatos que cursaram integralmente o ensino médio em escola pública, sem recorte racial.",
-      "Inclui modalidades com e sem recorte de renda (indistinguíveis nesta versão dos dados).",
+      "Total de candidatos em qualquer modalidade de cota (L1–L4 e PcD).",
+      "Categoria macro — inclui PPI, Indígenas e PcD. Útil para comparar cotas vs ampla concorrência.",
     ],
   },
   {
     label: "PPI",
-    key: "PPI",
+    keys: ["PPI"],
     descricao: [
       "Candidatos autodeclarados pretos ou pardos que cursaram o ensino médio em escola pública.",
       "Inclui variações com e sem recorte de renda.",
@@ -38,14 +39,14 @@ const CATEGORIAS = [
   },
   {
     label: "Indígenas",
-    key: "Indígenas",
+    keys: ["Indígenas"],
     descricao: [
       "Candidatos autodeclarados indígenas que cursaram o ensino médio em escola pública.",
     ],
   },
   {
     label: "PcD",
-    key: "PcD",
+    keys: ["PcD"],
     descricao: [
       "Modalidades destinadas a pessoas com deficiência (PcD).",
       "Inclui subgrupos PP+PcD (pretos/pardos com deficiência) e outros recortes de deficiência.",
@@ -55,10 +56,10 @@ const CATEGORIAS = [
 
 function aggregateByCategoria(
   dados: ReturnType<typeof useModalidadesFilter>["dadosFiltrados"],
-  categoria: string
+  keys: readonly string[]
 ) {
   if (!dados) return { total_candidatos: null, aprovados: null, media_nota: null };
-  const rows = dados.filter((d) => d.categoria === categoria);
+  const rows = dados.filter((d) => keys.includes(d.categoria));
   if (rows.length === 0) return { total_candidatos: null, aprovados: null, media_nota: null };
 
   const total_candidatos = rows.reduce((a, b) => a + b.total_candidatos, 0);
@@ -101,10 +102,10 @@ export function ModalidadesCards() {
       }}
     >
       {CATEGORIAS.map((categoria) => {
-        const { total_candidatos, aprovados, media_nota } = aggregateByCategoria(dados, categoria.key);
+        const { total_candidatos, aprovados, media_nota } = aggregateByCategoria(dados, categoria.keys);
         return (
           <Box
-            key={categoria.key}
+            key={categoria.label}
             sx={{
               p: 3,
               borderRadius: 2,
