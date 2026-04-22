@@ -3,24 +3,15 @@ import { pool } from "@/src/lib/db";
 
 export async function GET() {
   const result = await pool.query(`
-    WITH dados AS (
-      SELECT *,
-        CASE
-          WHEN no_campus ILIKE '%complexo santa amélia%' THEN 'Cidade Universitária'
-          WHEN no_campus ILIKE '%ciências sociais, saúde%' THEN 'CAMPUS DE IMPERATRIZ'
-          ELSE no_campus
-        END AS campus
-      FROM sisu_ufma
-    )
     SELECT
-      no_curso,
+      nome_curso AS no_curso,
       ano,
-      campus,
-      COUNT(*)::int                                     AS total_candidatos,
-      COUNT(*) FILTER (WHERE st_aprovado = 'S')::int    AS aprovados
-    FROM dados
-    GROUP BY no_curso, ano, campus
-    ORDER BY no_curso, ano, campus
+      nome_campus AS campus,
+      COUNT(*)::int                                    AS total_candidatos,
+      COUNT(*) FILTER (WHERE aprovado = 'S')::int     AS aprovados
+    FROM silver_sisu_ufma
+    GROUP BY nome_curso, ano, nome_campus
+    ORDER BY nome_curso, ano, nome_campus
   `);
 
   return NextResponse.json(result.rows);

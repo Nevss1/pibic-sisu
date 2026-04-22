@@ -10,23 +10,22 @@ const CATEGORIAS = [
     key: "Ampla concorrência",
     descricao: [
       "Vagas sem cotas, abertas a todos os candidatos independente de escola ou renda.",
-      'Inclui vagas regionais de ampla concorrência (ex: vagas de medicina para alunos do Maranhão).',
+    ],
+  },
+  {
+    label: "Bônus Maranhão",
+    key: "Bônus Maranhão",
+    descricao: [
+      "Vagas com bônus regional destinadas a candidatos oriundos do Maranhão.",
+      "Categoria específica da UFMA, não presente em outras IES.",
     ],
   },
   {
     label: "Escola pública",
     key: "Escola pública",
     descricao: [
-      "Candidatos que cursaram integralmente o ensino médio em escolas públicas, sem recorte de renda ou raça.",
-      'Inclui modalidades com a cláusula "independentemente da renda" e cotas regionais de escola pública/privada do Maranhão.',
-    ],
-  },
-  {
-    label: "Baixa renda (EP + renda)",
-    key: "Baixa renda (EP + renda)",
-    descricao: [
-      "Candidatos de escola pública com renda familiar bruta per capita igual ou inferior a 1,5 salário mínimo.",
-      "Não inclui recorte racial ou de deficiência (esses entram em PPI ou PcD).",
+      "Candidatos que cursaram integralmente o ensino médio em escola pública, sem recorte racial.",
+      "Inclui modalidades com e sem recorte de renda (indistinguíveis nesta versão dos dados).",
     ],
   },
   {
@@ -34,7 +33,7 @@ const CATEGORIAS = [
     key: "PPI",
     descricao: [
       "Candidatos autodeclarados pretos ou pardos que cursaram o ensino médio em escola pública.",
-      "Inclui variações com e sem recorte de renda (até 1,5 salário mínimo ou independentemente da renda).",
+      "Inclui variações com e sem recorte de renda.",
     ],
   },
   {
@@ -42,15 +41,14 @@ const CATEGORIAS = [
     key: "Indígenas",
     descricao: [
       "Candidatos autodeclarados indígenas que cursaram o ensino médio em escola pública.",
-      "Inclui variações com e sem recorte de renda.",
     ],
   },
   {
     label: "PcD",
     key: "PcD",
     descricao: [
-      "Todas as modalidades destinadas a pessoas com deficiência (PcD).",
-      "Inclui submodalidades com recorte racial (pretos/pardos PcD) e/ou de renda.",
+      "Modalidades destinadas a pessoas com deficiência (PcD).",
+      "Inclui subgrupos PP+PcD (pretos/pardos com deficiência) e outros recortes de deficiência.",
     ],
   },
 ] as const;

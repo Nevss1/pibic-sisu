@@ -27,15 +27,15 @@ export async function GET(req: Request) {
     params.push(modalidade);
   }
   if (sexo) {
-    conditions.push(`tp_sexo = $${idx++}`);
+    conditions.push(`sexo = $${idx++}`);
     params.push(sexo);
   }
   if (turno) {
-    conditions.push(`LOWER(ds_turno) = LOWER($${idx++})`);
+    conditions.push(`LOWER(turno) = LOWER($${idx++})`);
     params.push(turno);
   }
   if (grau) {
-    conditions.push(`LOWER(ds_grau) = LOWER($${idx++})`);
+    conditions.push(`LOWER(grau) = LOWER($${idx++})`);
     params.push(grau);
   }
 
@@ -46,26 +46,17 @@ export async function GET(req: Request) {
     WITH norm AS (
       SELECT *,
         CASE
-          WHEN LOWER(ds_mod_concorrencia) = 'ampla concorrência'
-            OR LOWER(ds_mod_concorrencia) LIKE '%vagas de ampla concorrência%'
-            THEN 'Ampla concorrência'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%com deficiência%'
-            THEN 'PcD'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%indígenas%'
-            THEN 'Indígenas'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%pretos ou pardos%'
-            THEN 'PPI'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%1,5 salário%'
-            THEN 'Baixa renda (EP + renda)'
-          ELSE 'Escola pública'
+          WHEN grupo_concorrencia = 'AC'                                         THEN 'Ampla concorrência'
+          WHEN grupo_concorrencia = 'BONUS_MA'                                   THEN 'Bônus Maranhão'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'SOCIAL'         THEN 'Escola pública'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'PP'             THEN 'PPI'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'I'              THEN 'Indígenas'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota IN ('D','DD','PPD') THEN 'PcD'
+          ELSE grupo_concorrencia
         END AS categoria,
-        CASE
-          WHEN no_campus ILIKE '%complexo santa amélia%' THEN 'Cidade Universitária'
-          WHEN no_campus ILIKE '%ciências sociais, saúde%' THEN 'CAMPUS DE IMPERATRIZ'
-          ELSE no_campus
-        END AS campus_norm
-      FROM sisu_ufma
-      WHERE LOWER(no_curso) = LOWER($1)
+        nome_campus AS campus_norm
+      FROM silver_sisu_ufma
+      WHERE LOWER(nome_curso) = LOWER($1)
     ),
     base AS (
       SELECT * FROM norm
@@ -83,9 +74,9 @@ export async function GET(req: Request) {
     )
     SELECT
       f.ano,
-      COUNT(*)::int                                     AS total,
-      COUNT(*) FILTER (WHERE f.st_aprovado = 'S')::int AS aprovados,
-      ROUND(AVG(f.nu_notacorte)::numeric, 2)::float    AS nota_corte_media,
+      COUNT(*)::int                                    AS total,
+      COUNT(*) FILTER (WHERE f.aprovado = 'S')::int   AS aprovados,
+      ROUND(AVG(f.nota_corte)::numeric, 2)::float     AS nota_corte_media,
       t.total_curso
     FROM filtrado f
     JOIN total_ano t ON t.ano = f.ano

@@ -4,36 +4,27 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const result = await pool.query(
     `
-    WITH dados AS (
-      SELECT *,
-        CASE
-          WHEN no_campus ILIKE '%complexo santa amélia%' THEN 'Cidade Universitária'
-          WHEN no_campus ILIKE '%ciências sociais, saúde%' THEN 'CAMPUS DE IMPERATRIZ'
-          ELSE no_campus
-        END AS campus
-      FROM sisu_ufma
-    )
     SELECT
       ano,
-      campus,
+      nome_campus AS campus,
       COUNT(*)::int                                                                AS total_inscritos,
-      COUNT(*) FILTER (WHERE st_aprovado = 'S')::int                             AS aprovados,
-      ARRAY_AGG(nu_nota_candidato ORDER BY nu_nota_candidato)                    AS notas,
-      ROUND(AVG(nu_nota_candidato)::numeric, 2)::float                           AS media_nota_candidato,
-      ROUND(AVG(nu_notacorte)::numeric, 2)::float                                AS media_nota_corte,
-      ROUND(MIN(nu_nota_candidato)::numeric, 2)::float                           AS min_nota_candidato,
-      ROUND(MAX(nu_nota_candidato)::numeric, 2)::float                           AS max_nota_candidato,
-      ROUND(MIN(nu_notacorte)::numeric, 2)::float                                AS min_nota_corte,
-      ROUND(MAX(nu_notacorte)::numeric, 2)::float                                AS max_nota_corte,
-      COUNT(*) FILTER (WHERE tp_sexo = 'M')::int                                 AS inscritos_masculino,
-      COUNT(*) FILTER (WHERE tp_sexo = 'F')::int                                 AS inscritos_feminino,
+      COUNT(*) FILTER (WHERE aprovado = 'S')::int                                AS aprovados,
+      ARRAY_AGG(nota_candidato ORDER BY nota_candidato)                          AS notas,
+      ROUND(AVG(nota_candidato)::numeric, 2)::float                              AS media_nota_candidato,
+      ROUND(AVG(nota_corte)::numeric, 2)::float                                  AS media_nota_corte,
+      ROUND(MIN(nota_candidato)::numeric, 2)::float                              AS min_nota_candidato,
+      ROUND(MAX(nota_candidato)::numeric, 2)::float                              AS max_nota_candidato,
+      ROUND(MIN(nota_corte)::numeric, 2)::float                                  AS min_nota_corte,
+      ROUND(MAX(nota_corte)::numeric, 2)::float                                  AS max_nota_corte,
+      COUNT(*) FILTER (WHERE sexo = 'M')::int                                    AS inscritos_masculino,
+      COUNT(*) FILTER (WHERE sexo = 'F')::int                                    AS inscritos_feminino,
       ROUND(
-        ((COUNT(*) FILTER (WHERE st_aprovado = 'S')::float / COUNT(*)::float) * 100)::numeric,
+        ((COUNT(*) FILTER (WHERE aprovado = 'S')::float / COUNT(*)::float) * 100)::numeric,
         2
       )::float                                                                    AS taxa_aprovacao
-    FROM dados
-    GROUP BY ano, campus
-    ORDER BY ano, campus
+    FROM silver_sisu_ufma
+    GROUP BY ano, nome_campus
+    ORDER BY ano, nome_campus
     `
   );
 

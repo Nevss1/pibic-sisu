@@ -6,8 +6,8 @@ import { pool } from "@/src/lib/db";
 export async function GET() {
   const result = await pool.query(
     `
-    SELECT DISTINCT no_curso 
-    FROM sisu_ufma
+    SELECT DISTINCT nome_curso AS no_curso
+    FROM silver_sisu_ufma
     ORDER BY no_curso
     `
   );
