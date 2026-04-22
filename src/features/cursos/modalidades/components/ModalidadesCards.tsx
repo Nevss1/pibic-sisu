@@ -4,63 +4,62 @@ import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useModalidadesFilter } from "../contexts";
 
+// "Cota geral" agrega todos os subgrupos de COTA e pode sobrepor PPI, Indígenas e PcD.
 const CATEGORIAS = [
   {
     label: "Ampla concorrência",
-    key: "Ampla concorrência",
+    keys: ["Ampla concorrência"],
     descricao: [
       "Vagas sem cotas, abertas a todos os candidatos independente de escola ou renda.",
-      'Inclui vagas regionais de ampla concorrência (ex: vagas de medicina para alunos do Maranhão).',
     ],
   },
   {
-    label: "Escola pública",
-    key: "Escola pública",
+    label: "Bônus Maranhão",
+    keys: ["Bônus Maranhão"],
     descricao: [
-      "Candidatos que cursaram integralmente o ensino médio em escolas públicas, sem recorte de renda ou raça.",
-      'Inclui modalidades com a cláusula "independentemente da renda" e cotas regionais de escola pública/privada do Maranhão.',
+      "Vagas com bônus regional destinadas a candidatos oriundos do Maranhão.",
+      "Categoria específica da UFMA, não presente em outras IES.",
     ],
   },
   {
-    label: "Baixa renda (EP + renda)",
-    key: "Baixa renda (EP + renda)",
+    label: "Cota geral",
+    keys: ["Escola pública", "PPI", "Indígenas", "PcD"],
     descricao: [
-      "Candidatos de escola pública com renda familiar bruta per capita igual ou inferior a 1,5 salário mínimo.",
-      "Não inclui recorte racial ou de deficiência (esses entram em PPI ou PcD).",
+      "Total de candidatos em qualquer modalidade de cota (L1–L4 e PcD).",
+      "Categoria macro — inclui PPI, Indígenas e PcD. Útil para comparar cotas vs ampla concorrência.",
     ],
   },
   {
     label: "PPI",
-    key: "PPI",
+    keys: ["PPI"],
     descricao: [
       "Candidatos autodeclarados pretos ou pardos que cursaram o ensino médio em escola pública.",
-      "Inclui variações com e sem recorte de renda (até 1,5 salário mínimo ou independentemente da renda).",
-    ],
-  },
-  {
-    label: "Indígenas",
-    key: "Indígenas",
-    descricao: [
-      "Candidatos autodeclarados indígenas que cursaram o ensino médio em escola pública.",
       "Inclui variações com e sem recorte de renda.",
     ],
   },
   {
-    label: "PcD",
-    key: "PcD",
+    label: "Indígenas",
+    keys: ["Indígenas"],
     descricao: [
-      "Todas as modalidades destinadas a pessoas com deficiência (PcD).",
-      "Inclui submodalidades com recorte racial (pretos/pardos PcD) e/ou de renda.",
+      "Candidatos autodeclarados indígenas que cursaram o ensino médio em escola pública.",
+    ],
+  },
+  {
+    label: "PcD",
+    keys: ["PcD"],
+    descricao: [
+      "Modalidades destinadas a pessoas com deficiência (PcD).",
+      "Inclui subgrupos PP+PcD (pretos/pardos com deficiência) e outros recortes de deficiência.",
     ],
   },
 ] as const;
 
 function aggregateByCategoria(
   dados: ReturnType<typeof useModalidadesFilter>["dadosFiltrados"],
-  categoria: string
+  keys: readonly string[]
 ) {
   if (!dados) return { total_candidatos: null, aprovados: null, media_nota: null };
-  const rows = dados.filter((d) => d.categoria === categoria);
+  const rows = dados.filter((d) => keys.includes(d.categoria));
   if (rows.length === 0) return { total_candidatos: null, aprovados: null, media_nota: null };
 
   const total_candidatos = rows.reduce((a, b) => a + b.total_candidatos, 0);
@@ -103,10 +102,10 @@ export function ModalidadesCards() {
       }}
     >
       {CATEGORIAS.map((categoria) => {
-        const { total_candidatos, aprovados, media_nota } = aggregateByCategoria(dados, categoria.key);
+        const { total_candidatos, aprovados, media_nota } = aggregateByCategoria(dados, categoria.keys);
         return (
           <Box
-            key={categoria.key}
+            key={categoria.label}
             sx={{
               p: 3,
               borderRadius: 2,

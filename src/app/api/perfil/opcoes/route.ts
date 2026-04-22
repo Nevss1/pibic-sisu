@@ -19,35 +19,26 @@ export async function GET(req: Request) {
   const sql = `
     WITH norm AS (
       SELECT
+        nome_campus AS campus_norm,
+        turno,
+        grau,
         CASE
-          WHEN no_campus ILIKE '%complexo santa amélia%' THEN 'Cidade Universitária'
-          WHEN no_campus ILIKE '%ciências sociais, saúde%' THEN 'CAMPUS DE IMPERATRIZ'
-          ELSE no_campus
-        END AS campus_norm,
-        ds_turno,
-        ds_grau,
-        CASE
-          WHEN LOWER(ds_mod_concorrencia) = 'ampla concorrência'
-            OR LOWER(ds_mod_concorrencia) LIKE '%vagas de ampla concorrência%'
-            THEN 'Ampla concorrência'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%com deficiência%'
-            THEN 'PcD'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%indígenas%'
-            THEN 'Indígenas'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%pretos ou pardos%'
-            THEN 'PPI'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%1,5 salário%'
-            THEN 'Baixa renda (EP + renda)'
-          ELSE 'Escola pública'
+          WHEN grupo_concorrencia = 'AC'                                         THEN 'Ampla concorrência'
+          WHEN grupo_concorrencia = 'BONUS_MA'                                   THEN 'Bônus Maranhão'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'SOCIAL'         THEN 'Escola pública'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'PP'             THEN 'PPI'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'I'              THEN 'Indígenas'
+          WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota IN ('D','DD','PPD') THEN 'PcD'
+          ELSE grupo_concorrencia
         END AS categoria
-      FROM sisu_ufma
-      WHERE LOWER(no_curso) = LOWER($1)
+      FROM silver_sisu_ufma
+      WHERE LOWER(nome_curso) = LOWER($1)
     )
     SELECT
-      ARRAY_AGG(DISTINCT campus_norm ORDER BY campus_norm)   AS campuses,
-      ARRAY_AGG(DISTINCT ds_turno    ORDER BY ds_turno)      AS turnos,
-      ARRAY_AGG(DISTINCT ds_grau     ORDER BY ds_grau)       AS graus,
-      ARRAY_AGG(DISTINCT categoria   ORDER BY categoria)     AS modalidades
+      ARRAY_AGG(DISTINCT campus_norm ORDER BY campus_norm)  AS campuses,
+      ARRAY_AGG(DISTINCT turno       ORDER BY turno)        AS turnos,
+      ARRAY_AGG(DISTINCT grau        ORDER BY grau)         AS graus,
+      ARRAY_AGG(DISTINCT categoria   ORDER BY categoria)    AS modalidades
     FROM norm
     WHERE 1=1
     ${campusFilter}

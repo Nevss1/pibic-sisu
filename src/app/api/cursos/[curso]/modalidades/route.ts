@@ -10,40 +10,25 @@ export async function GET(
 
   const result = await pool.query(
     `
-    WITH dados AS (
-      SELECT *,
-        CASE
-          WHEN no_campus ILIKE '%complexo santa amélia%' THEN 'Cidade Universitária'
-          WHEN no_campus ILIKE '%ciências sociais, saúde%' THEN 'CAMPUS DE IMPERATRIZ'
-          ELSE no_campus
-        END AS campus,
-        CASE
-          WHEN LOWER(ds_mod_concorrencia) = 'ampla concorrência'
-            OR LOWER(ds_mod_concorrencia) LIKE '%vagas de ampla concorrência%'
-            THEN 'Ampla concorrência'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%com deficiência%'
-            THEN 'PcD'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%indígenas%'
-            THEN 'Indígenas'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%pretos ou pardos%'
-            THEN 'PPI'
-          WHEN LOWER(ds_mod_concorrencia) LIKE '%1,5 salário%'
-            THEN 'Baixa renda (EP + renda)'
-          ELSE 'Escola pública'
-        END AS categoria
-      FROM sisu_ufma
-      WHERE LOWER(no_curso) = LOWER($1)
-    )
     SELECT
-      categoria,
+      CASE
+        WHEN grupo_concorrencia = 'AC'                                         THEN 'Ampla concorrência'
+        WHEN grupo_concorrencia = 'BONUS_MA'                                   THEN 'Bônus Maranhão'
+        WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'SOCIAL'         THEN 'Escola pública'
+        WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'PP'             THEN 'PPI'
+        WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota = 'I'              THEN 'Indígenas'
+        WHEN grupo_concorrencia = 'COTA' AND subgrupo_cota IN ('D','DD','PPD') THEN 'PcD'
+        ELSE grupo_concorrencia
+      END AS categoria,
       ano,
-      campus,
-      COUNT(*)::int                                                AS total_candidatos,
-      COUNT(*) FILTER (WHERE st_aprovado = 'S')::int             AS aprovados,
-      ROUND(AVG(nu_nota_candidato)::numeric, 2)::float           AS media_nota
-    FROM dados
-    GROUP BY categoria, ano, campus
-    ORDER BY ano, campus, total_candidatos DESC
+      nome_campus AS campus,
+      COUNT(*)::int                                               AS total_candidatos,
+      COUNT(*) FILTER (WHERE aprovado = 'S')::int                AS aprovados,
+      ROUND(AVG(nota_candidato)::numeric, 2)::float              AS media_nota
+    FROM silver_sisu_ufma
+    WHERE LOWER(nome_curso) = LOWER($1)
+    GROUP BY grupo_concorrencia, subgrupo_cota, ano, nome_campus
+    ORDER BY ano, nome_campus, total_candidatos DESC
     `,
     [nomeCurso]
   );
