@@ -1,6 +1,6 @@
 import { Box, Card, Container, Typography } from "@mui/material";
 import { CampusFilter, YearFilter } from "@/src/components";
-import { CandidatosBarChart, GeralFilterProvider } from "@/src/features/geral";
+import { CandidatosBarChart, EvolucaoTemporalChart, GeralFilterProvider } from "@/src/features/geral";
 
 export default function GeralPage() {
   return (
@@ -40,6 +40,10 @@ export default function GeralPage() {
 
         <Card variant="outlined">
           <CandidatosBarChart />
+        </Card>
+
+        <Card variant="outlined" sx={{ mt: 3 }}>
+          <EvolucaoTemporalChart />
         </Card>
       </GeralFilterProvider>
     </Container>
