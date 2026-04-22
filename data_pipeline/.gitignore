@@ -5,3 +5,5 @@ venv/
 # Arquivos de sistema
 __pycache__/
 *.pyc
+
+sisu_ufma_2017_2023.csv
