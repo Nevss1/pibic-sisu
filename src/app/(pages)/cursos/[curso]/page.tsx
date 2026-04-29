@@ -2,7 +2,7 @@ import { toTitleCase } from "@/src/utils";
 import { Box, Card, Container, Typography } from "@mui/material";
 import { CampusFilter, YearFilter } from "@/src/components";
 import { CursoFilterProvider } from "@/src/features/cursos";
-import { CursoTabs, CursoOverviewCards, BarChart, PieChartGenero } from "@/src/features/cursos/components"
+import { CursoTabs, CursoOverviewCards, NotasHistogram, PieChartGenero } from "@/src/features/cursos/components"
 
 export default async function CursoPageOverview({
   params,
@@ -67,7 +67,7 @@ export default async function CursoPageOverview({
             }}
           >
             <Box sx={{ flex: 1, borderRight: 1, borderColor: "divider" }}>
-              <BarChart />
+              <NotasHistogram />
             </Box>
             <PieChartGenero />
           </Card>

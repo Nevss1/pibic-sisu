@@ -1,4 +1,4 @@
-export * from './BarChart'
+export * from './NotasHistogram'
 export * from './CursoOverviewCards'
 export * from './PieChart'
 export * from './CursoTabs'
