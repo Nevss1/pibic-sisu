@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, CardContent, Typography } from "@mui/material";
+import { Box, CardContent, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useCursoFilter } from "../contexts";
 import { PieChart as MuiPieChart } from "@mui/x-charts/PieChart";
 
@@ -11,23 +11,25 @@ const CORES_GENERO = {
 
 export function PieChartGenero() {
   const { dadosFiltrados: dados } = useCursoFilter();
+  const theme = useTheme();
+  const isLaptop = useMediaQuery(theme.breakpoints.up("laptop"));
 
-  const totalMasculino =
-    dados?.reduce((acc, d) => acc + d.inscritos_masculino, 0) ?? 0;
-  const totalFeminino =
-    dados?.reduce((acc, d) => acc + d.inscritos_feminino, 0) ?? 0;
+  const totalMasculino = dados?.reduce((acc, d) => acc + d.inscritos_masculino, 0) ?? 0;
+  const totalFeminino = dados?.reduce((acc, d) => acc + d.inscritos_feminino, 0) ?? 0;
   const totalInscritos = totalMasculino + totalFeminino || 1;
 
   const seriesData = [
-    { id: 0, value: totalMasculino, label: "Homens", color: CORES_GENERO.masculino },
-    { id: 1, value: totalFeminino, label: "Mulheres", color: CORES_GENERO.feminino },
+    { id: 0, value: totalMasculino, label: "Homens",  color: CORES_GENERO.masculino },
+    { id: 1, value: totalFeminino,  label: "Mulheres", color: CORES_GENERO.feminino },
   ];
 
+  const chartHeight = isLaptop ? 260 : 220;
+
   return (
-    <Box>
+    <Box sx={{ minWidth: { laptop: 280 } }}>
       <CardContent>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Distribuição de Inscritos por Gênero
+          Distribuição por gênero
         </Typography>
         <MuiPieChart
           series={[
@@ -35,14 +37,13 @@ export function PieChartGenero() {
               data: seriesData,
               highlightScope: { fade: "global", highlight: "item" },
               faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
-              arcLabel: (item) =>
-                `${((item.value / totalInscritos) * 100).toFixed(1)}%`,              
-              innerRadius: 40,
+              arcLabel: (item) => `${((item.value / totalInscritos) * 100).toFixed(1)}%`,
+              innerRadius: 36,
             },
           ]}
-          height={280}
-          margin={{ top: 10, bottom: 60, left: 20, right: 20 }}
-          sx={{ "& .MuiPieArcLabel-root": { fill: "#ffffff !important", padding: 20 } }}
+          height={chartHeight}
+          margin={{ top: 10, bottom: 56, left: 16, right: 16 }}
+          sx={{ "& .MuiPieArcLabel-root": { fill: "#ffffff !important" } }}
           slotProps={{
             legend: {
               direction: "horizontal",

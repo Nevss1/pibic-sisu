@@ -15,7 +15,10 @@ export function CampusFilter() {
   };
 
   return (
-    <FormControl size="small" sx={{ minWidth: 260 }}>
+    <FormControl
+      size="small"
+      sx={{ width: { xs: "100%", mobile: "auto" }, minWidth: { mobile: 220 } }}
+    >
       <InputLabel>Campus</InputLabel>
       <Select value={campusSelecionado} onChange={handleChange} label="Campus">
         {campusDisponiveis.map((campus) => (
