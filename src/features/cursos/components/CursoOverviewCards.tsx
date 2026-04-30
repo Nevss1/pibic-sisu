@@ -19,56 +19,86 @@ function sumNum(dados: DadoOverviewCurso[] | undefined, key: keyof DadoOverviewC
 export function CursoOverviewCards() {
   const { dadosFiltrados: dados } = useCursoFilter();
 
+  const totalCandidatos = sumNum(dados, "total_inscritos");
+  const totalVagas = sumNum(dados, "aprovados");
+  const taxaAprovacao = avgNum(dados, "taxa_aprovacao");
+
   const cards = [
-    { label: "Candidatos", value: sumNum(dados, "total_inscritos") },
-    { label: "Vagas", value: sumNum(dados, "aprovados") },
-    { label: "Média de Nota do Candidato", value: avgNum(dados, "media_nota_candidato") },
-    { label: "Média de Nota de Corte", value: avgNum(dados, "media_nota_corte") },
-    { label: "Taxa de Aprovação", value: avgNum(dados, "taxa_aprovacao") != null ? `${avgNum(dados, "taxa_aprovacao")}%` : undefined },
+    {
+      label: "Candidatos",
+      value: totalCandidatos != null ? totalCandidatos.toLocaleString("pt-BR") : undefined,
+    },
+    {
+      label: "Vagas preenchidas",
+      value: totalVagas != null ? totalVagas.toLocaleString("pt-BR") : undefined,
+    },
+    {
+      label: "Nota média candidato",
+      value: avgNum(dados, "media_nota_candidato"),
+    },
+    {
+      label: "Nota média de corte",
+      value: avgNum(dados, "media_nota_corte"),
+    },
+    {
+      label: "Taxa de aprovação",
+      value: taxaAprovacao != null ? `${taxaAprovacao}%` : undefined,
+    },
   ];
 
   return (
-    <Box sx={{ boxShadow: "0px 1px 4px rgba(0,0,0,0.08)", borderRadius: 2, border: 1, borderColor: "divider" }}>
-      <Box sx={{ display: "flex", width: "100%" }}>
-        {cards.map((card, index) => (
-          <Box
-            key={card.label}
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "repeat(2, 1fr)",
+          laptop: "repeat(5, 1fr)",
+        },
+        gap: 1.5,
+      }}
+    >
+      {cards.map((card, index) => (
+        <Box
+          key={card.label}
+          sx={{
+            p: { xs: 2, mobile: 2.5 },
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            gridColumn: {
+              xs: index === cards.length - 1 ? "1 / -1" : "auto",
+              laptop: "auto",
+            },
+          }}
+        >
+          <Typography
+            variant="caption"
             sx={{
-              flex: 1,
-              p: 3,
-              borderRight: index < cards.length - 1 ? 1 : 0,
-              borderColor: "divider",
+              color: "text.secondary",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              fontSize: "0.6875rem",
+              fontWeight: 500,
             }}
           >
-            <Box
-              sx={{
-                height: 100,
-                display: "flex",
-                justifyContent: "space-between",
-                flexDirection: "column",
-                minHeight: 100,
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 400, color: "text.primary", fontSize: 16 }}
-              >
-                {card.label}
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: 500,
-                  color: "text.primary",
-                  fontSize: 24,
-                  fontFamily: "var(--font-archivo), sans-serif",
-                }}
-              >
-                {card.value}
-              </Typography>
-            </Box>
-          </Box>
-        ))}
-      </Box>
+            {card.label}
+          </Typography>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: "text.primary",
+              fontSize: { xs: 22, mobile: 26 },
+              fontFamily: "var(--font-archivo), sans-serif",
+              lineHeight: 1.1,
+            }}
+          >
+            {card.value ?? "—"}
+          </Typography>
+        </Box>
+      ))}
     </Box>
   );
 }

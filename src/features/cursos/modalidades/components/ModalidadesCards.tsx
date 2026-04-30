@@ -97,7 +97,11 @@ export function ModalidadesCards() {
     <Box
       sx={{
         display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
+        gridTemplateColumns: {
+          xs: "1fr",
+          tabletSmall: "repeat(2, 1fr)",
+          laptop: "repeat(3, 1fr)",
+        },
         gap: 2,
       }}
     >

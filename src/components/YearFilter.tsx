@@ -13,9 +13,10 @@ export function YearFilter() {
         if (newAnos.length > 0) setAnosSelecionados(newAnos);
       }}
       size="small"
+      sx={{ display: "flex", flexWrap: "wrap", gap: "2px" }}
     >
       {anosDisponiveis.map((ano) => (
-        <ToggleButton key={ano} value={ano} sx={{ px: 2 }}>
+        <ToggleButton key={ano} value={ano} sx={{ px: { xs: 1.5, mobile: 2 } }}>
           {ano}
         </ToggleButton>
       ))}

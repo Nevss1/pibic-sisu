@@ -1,50 +1,22 @@
-import { Box, Card, Container, Typography } from "@mui/material";
-import { CampusFilter, YearFilter } from "@/src/components";
+import { Box, Card, Container } from "@mui/material";
+import { PageHeader } from "@/src/components";
 import { CandidatosBarChart, EvolucaoTemporalChart, GeralFilterProvider } from "@/src/features/geral";
 
 export default function GeralPage() {
   return (
     <Container>
       <GeralFilterProvider>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            p: 2,
-          }}
-        >
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 500,
-              letterSpacing: "-0.02em",
-              color: "text.primary",
-            }}
-          >
-            Panorama geral
-          </Typography>
-          <CampusFilter />
+        <PageHeader title="Panorama geral" />
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3, px: 2, pb: 4 }}>
+          <Card variant="outlined">
+            <CandidatosBarChart />
+          </Card>
+
+          <Card variant="outlined">
+            <EvolucaoTemporalChart />
+          </Card>
         </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            px: 2,
-            mb: 4,
-          }}
-        >
-          <YearFilter />
-        </Box>
-
-        <Card variant="outlined">
-          <CandidatosBarChart />
-        </Card>
-
-        <Card variant="outlined" sx={{ mt: 3 }}>
-          <EvolucaoTemporalChart />
-        </Card>
       </GeralFilterProvider>
     </Container>
   );

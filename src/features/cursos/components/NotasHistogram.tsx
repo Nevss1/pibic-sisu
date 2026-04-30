@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, CardContent, Typography } from "@mui/material";
+import { Box, CardContent, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { useCursoFilter } from "../contexts";
 
@@ -19,18 +19,21 @@ function buildHistogram(notas: number[], min: number, max: number) {
 
 export function NotasHistogram() {
   const { dadosFiltrados: dados } = useCursoFilter();
+  const theme = useTheme();
+  const isLaptop = useMediaQuery(theme.breakpoints.up("laptop"));
 
   const notas = dados?.flatMap((d) => d?.notas ?? []) ?? [];
   const min = dados?.length ? Math.min(...dados.map((d) => d.min_nota_candidato)) : 0;
   const max = dados?.length ? Math.max(...dados.map((d) => d.max_nota_candidato)) : 0;
 
   const bins = notas.length > 0 ? buildHistogram(notas, min, max) : [];
+  const chartHeight = isLaptop ? 300 : 220;
 
   return (
     <Box>
       <CardContent>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Distribuição das Notas dos Candidatos
+          Distribuição das notas dos candidatos
         </Typography>
         {bins.length === 0 ? (
           <Typography variant="body2" color="text.secondary">
@@ -40,8 +43,8 @@ export function NotasHistogram() {
           <BarChart
             xAxis={[{ data: bins.map((b) => b.label), scaleType: "band", label: "Nota" }]}
             series={[{ data: bins.map((b) => b.count), label: "Candidatos", color: "#D5B071" }]}
-            height={320}
-            margin={{ left: 60, right: 20, top: 20, bottom: 50 }}
+            height={chartHeight}
+            margin={{ left: 50, right: 16, top: 16, bottom: 46 }}
           />
         )}
       </CardContent>
