@@ -13,10 +13,18 @@ import { useCampusFilter, useYearFilter } from "@/src/features";
 const BAR_HEIGHT = 28;
 const BAR_GAP = 10;
 const STEP = BAR_HEIGHT + BAR_GAP;
-const LABEL_WIDTH = 200;
-const MARGIN = { top: 6, right: 90 };
 const EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
 const DURATION = "500ms";
+
+function getChartLayout(containerWidth: number) {
+  if (containerWidth < 480) {
+    return { labelWidth: 100, marginRight: 44, truncateMax: 12, fontSize: 10 };
+  }
+  if (containerWidth < 700) {
+    return { labelWidth: 140, marginRight: 60, truncateMax: 18, fontSize: 11 };
+  }
+  return { labelWidth: 200, marginRight: 90, truncateMax: 26, fontSize: 12 };
+}
 
 const TIERS = [
   { max: 6, color: "#4e9a8f", label: "< 6x",   description: "Baixíssima — menos de 6 candidatos por vaga" },
@@ -116,15 +124,16 @@ export function CandidatosBarChart() {
     );
   }
 
+  const { labelWidth, marginRight, truncateMax, fontSize } = getChartLayout(width);
   const maxVal = Math.max(...dataset.map((d) => d.candidatos), 1);
-  const innerWidth = width - LABEL_WIDTH - MARGIN.right;
-  const svgHeight = dataset.length * STEP + MARGIN.top;
+  const innerWidth = width - labelWidth - marginRight;
+  const svgHeight = dataset.length * STEP + 6;
   const fgOpacity = theme.palette.mode === "dark" ? 0.05 : 0.08;
 
   return (
     <Box width="100%" sx={{ position: "relative" }}>
       <CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 2 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography fontWeight={600}>Inscritos e concorrência por curso</Typography>
             <Tooltip
@@ -135,11 +144,11 @@ export function CandidatosBarChart() {
               <InfoOutlinedIcon sx={{ fontSize: 16, color: "text.disabled", cursor: "help" }} />
             </Tooltip>
           </Box>
-          <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
             {TIERS.map((tier) => (
               <Tooltip key={tier.label} title={tier.description} arrow placement="top">
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, cursor: "help" }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: "2px", bgcolor: tier.color }} />
+                  <Box sx={{ width: 9, height: 9, borderRadius: "2px", bgcolor: tier.color }} />
                   <Typography variant="caption" color="text.secondary">{tier.label}</Typography>
                 </Box>
               </Tooltip>
@@ -158,7 +167,7 @@ export function CandidatosBarChart() {
         >
           <div ref={containerRef} style={{ width: "100%" }}>
             <svg width={width} height={svgHeight} style={{ display: "block", overflow: "visible" }}>
-              <g transform={`translate(${LABEL_WIDTH}, ${MARGIN.top})`}>
+              <g transform={`translate(${labelWidth}, 6)`}>
                 {dataset.map((d) => {
                   const ratio = d.candidatos / maxVal;
                   const barWidth = ratio * innerWidth;
@@ -207,7 +216,7 @@ export function CandidatosBarChart() {
                         dominantBaseline="central"
                         fill="white"
                         fontWeight={600}
-                        fontSize={11}
+                        fontSize={fontSize}
                         style={{ pointerEvents: "none" }}
                       >
                         {d.candidatos.toLocaleString("pt-BR")}
@@ -224,7 +233,7 @@ export function CandidatosBarChart() {
                           y={BAR_HEIGHT / 2}
                           dominantBaseline="central"
                           fill="currentColor"
-                          fontSize={11}
+                          fontSize={fontSize}
                           opacity={0.6}
                           style={{ pointerEvents: "none" }}
                         >
@@ -237,11 +246,11 @@ export function CandidatosBarChart() {
                         y={BAR_HEIGHT / 2}
                         textAnchor="end"
                         dominantBaseline="central"
-                        fontSize={12}
+                        fontSize={fontSize}
                         fill="currentColor"
                         style={{ pointerEvents: "none" }}
                       >
-                        {truncate(d.curso, 26)}
+                        {truncate(d.curso, truncateMax)}
                       </text>
                     </g>
                   );

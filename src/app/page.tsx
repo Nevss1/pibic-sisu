@@ -1,9 +1,10 @@
 "use client";
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { useNomeCursos } from "@/src/hooks";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toTitleCase } from "../utils";
 import { useEffect, useRef, useState } from "react";
 import BackgroundParticles from "./BackgroundParticles";
@@ -24,7 +25,7 @@ export default function HomePage() {
       if (!spotlightRef.current) return;
       spotlightRef.current.style.background = `radial-gradient(700px circle at ${springX.get()}px ${springY.get()}px, rgba(213,176,113,0.22), transparent 70%)`;
     };
-    update(); // render inicial no centro
+    update();
     const unsubX = springX.on("change", update);
     const unsubY = springY.on("change", update);
     return () => { unsubX(); unsubY(); };
@@ -43,7 +44,6 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col items-center justify-center overflow-hidden relative" style={{ backgroundColor: "#FEF9F6" }}>
       <div ref={spotlightRef} className="absolute inset-0 pointer-events-none transition-none" />
 
-      {/* Grid de fundo sutil */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.07]"
         style={{
@@ -132,10 +132,86 @@ export default function HomePage() {
         />
       </motion.div>
 
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3, duration: 0.5 }}
+        className="relative z-10 w-full px-6 sm:px-10 flex justify-center"
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            mt: 2,
+            width: "min(400px, 100%)",
+          }}
+        >
+          <Box sx={{ flex: 1, height: "1px", bgcolor: "rgba(174,143,88,0.25)" }} />
+          <span style={{ fontSize: 12, color: "rgba(100,116,139,0.7)" }}>ou</span>
+          <Box sx={{ flex: 1, height: "1px", bgcolor: "rgba(174,143,88,0.25)" }} />
+        </Box>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.45, duration: 0.4 }}
+        className="relative z-10 w-full px-6 sm:px-10 flex justify-center mt-3"
+      >
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1.5,
+            width: "min(400px, 100%)",
+            flexDirection: { xs: "column", mobile: "row" },
+          }}
+        >
+          <Button
+            component={Link}
+            href="/cursos"
+            variant="outlined"
+            size="small"
+            fullWidth
+            sx={{
+              borderColor: "rgba(174,143,88,0.45)",
+              color: "rgba(30,27,22,0.75)",
+              fontSize: 13,
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "#ae8f58",
+                backgroundColor: "rgba(174,143,88,0.06)",
+              },
+            }}
+          >
+            Explorar cursos
+          </Button>
+          <Button
+            component={Link}
+            href="/perfil"
+            variant="outlined"
+            size="small"
+            fullWidth
+            sx={{
+              borderColor: "rgba(174,143,88,0.45)",
+              color: "rgba(30,27,22,0.75)",
+              fontSize: 13,
+              textTransform: "none",
+              "&:hover": {
+                borderColor: "#ae8f58",
+                backgroundColor: "rgba(174,143,88,0.06)",
+              },
+            }}
+          >
+            Analisar meu perfil
+          </Button>
+        </Box>
+      </motion.div>
+
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.3 }}
-        transition={{ delay: 1.4, duration: 1 }}
+        transition={{ delay: 1.6, duration: 1 }}
         className="mt-8 md:mt-12 text-xs text-slate-500 relative z-10 px-4 text-center"
       >
         Trabalho de Iniciação Científica - Rafael Neves - PIBIC/CNPq 2025/2026

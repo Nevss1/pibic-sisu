@@ -13,9 +13,11 @@ import {
   TextField,
   Typography,
   Alert,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 type Opcoes = {
   campuses: string[];
@@ -36,6 +38,90 @@ type Resultado = {
   rows: AnoRow[];
   resumo: { total: number; aprovados: number; taxa: number } | null;
 };
+
+function TabelaHistorico({ rows }: { rows: AnoRow[] }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("mobile"));
+
+  if (isMobile) {
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+        {rows.map((row) => {
+          const taxa = row.total > 0 ? ((row.aprovados / row.total) * 100).toFixed(1) + "%" : "—";
+          const participacao = row.total_curso > 0 ? ((row.total / row.total_curso) * 100).toFixed(1) + "%" : "—";
+          return (
+            <Box
+              key={row.ano}
+              sx={{ p: 2, border: 1, borderColor: "divider", borderRadius: 1.5 }}
+            >
+              <Typography variant="subtitle2" fontWeight={600} mb={1}>
+                {row.ano}
+              </Typography>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                {[
+                  { label: "Candidatos",    value: row.total.toLocaleString("pt-BR") },
+                  { label: "Aprovados",     value: row.aprovados.toLocaleString("pt-BR") },
+                  { label: "Taxa aprov.",   value: taxa },
+                  { label: "Participação",  value: participacao },
+                  { label: "Nota de corte", value: row.nota_corte_media?.toFixed(2) ?? "—" },
+                ].map(({ label, value }) => (
+                  <Box key={label}>
+                    <Typography
+                      variant="caption"
+                      color="text.disabled"
+                      sx={{ textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.625rem" }}
+                    >
+                      {label}
+                    </Typography>
+                    <Typography variant="body2" fontWeight={500}>{value}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          );
+        })}
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "auto 1fr 1fr 1fr 1fr 1fr",
+        columnGap: 4,
+        rowGap: 1,
+        alignItems: "center",
+      }}
+    >
+      {["Ano", "Candidatos", "Aprovados", "Taxa aprov.", "Participação", "Nota de corte"].map((h) => (
+        <Typography
+          key={h}
+          variant="caption"
+          color="text.disabled"
+          fontWeight={600}
+          sx={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
+        >
+          {h}
+        </Typography>
+      ))}
+      {rows.map((row) => {
+        const taxa = row.total > 0 ? ((row.aprovados / row.total) * 100).toFixed(1) + "%" : "—";
+        const participacao = row.total_curso > 0 ? ((row.total / row.total_curso) * 100).toFixed(1) + "%" : "—";
+        return (
+          <Fragment key={row.ano}>
+            <Typography variant="body2" fontWeight={500}>{row.ano}</Typography>
+            <Typography variant="body2" color="text.secondary">{row.total.toLocaleString("pt-BR")}</Typography>
+            <Typography variant="body2" color="text.secondary">{row.aprovados.toLocaleString("pt-BR")}</Typography>
+            <Typography variant="body2" color="text.secondary">{taxa}</Typography>
+            <Typography variant="body2" color="text.secondary">{participacao}</Typography>
+            <Typography variant="body2" color="text.secondary">{row.nota_corte_media?.toFixed(2) ?? "—"}</Typography>
+          </Fragment>
+        );
+      })}
+    </Box>
+  );
+}
 
 function StatBox({
   label,
@@ -103,14 +189,12 @@ export function PerfilClient() {
   const [resultado, setResultado] = useState<Resultado | null>(null);
   const [erro, setErro] = useState("");
 
-  // Carrega lista de cursos uma vez
   useEffect(() => {
     fetch("/api/cursos")
       .then((r) => r.json())
       .then((data: { no_curso: string }[]) => setCursos(data.map((d) => d.no_curso)));
   }, []);
 
-  // Quando curso muda → busca campuses disponíveis, reseta dependentes
   useEffect(() => {
     if (!curso) {
       setOpcoes({ campuses: [], turnos: [], graus: [], modalidades: [] });
@@ -341,7 +425,7 @@ export function PerfilClient() {
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
+                gridTemplateColumns: { xs: "1fr", mobile: "repeat(2, 1fr)" },
                 gap: 2,
               }}
             >
@@ -391,60 +475,7 @@ export function PerfilClient() {
               >
                 Histórico por ano
               </Typography>
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "auto 1fr 1fr 1fr 1fr 1fr",
-                  gap: "0px 80px",
-                  alignItems: "center",
-                }}
-              >
-                {["Ano", "Candidatos", "Aprovados", "Taxa aprov.", "Participação", "Nota de corte"].map(
-                  (h) => (
-                    <Typography
-                      key={h}
-                      variant="caption"
-                      color="text.disabled"
-                      fontWeight={600}
-                      sx={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
-                    >
-                      {h}
-                    </Typography>
-                  )
-                )}
-                {resultado.rows.map((row) => {
-                  const taxa =
-                    row.total > 0
-                      ? ((row.aprovados / row.total) * 100).toFixed(1) + "%"
-                      : "—";
-                  const participacao =
-                    row.total_curso > 0
-                      ? ((row.total / row.total_curso) * 100).toFixed(1) + "%"
-                      : "—";
-                  return (
-                    <>
-                      <Typography key={`ano-${row.ano}`} variant="body2" fontWeight={500}>
-                        {row.ano}
-                      </Typography>
-                      <Typography key={`total-${row.ano}`} variant="body2" color="text.secondary">
-                        {row.total.toLocaleString("pt-BR")}
-                      </Typography>
-                      <Typography key={`aprov-${row.ano}`} variant="body2" color="text.secondary">
-                        {row.aprovados.toLocaleString("pt-BR")}
-                      </Typography>
-                      <Typography key={`taxa-${row.ano}`} variant="body2" color="text.secondary">
-                        {taxa}
-                      </Typography>
-                      <Typography key={`part-${row.ano}`} variant="body2" color="text.secondary">
-                        {participacao}
-                      </Typography>
-                      <Typography key={`corte-${row.ano}`} variant="body2" color="text.secondary">
-                        {row.nota_corte_media?.toFixed(2) ?? "—"}
-                      </Typography>
-                    </>
-                  );
-                })}
-              </Box>
+              <TabelaHistorico rows={resultado.rows} />
             </Box>
 
             {/* Aviso */}
