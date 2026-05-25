@@ -38,7 +38,7 @@ export function PageHeader({ title, tabs, extraFilters }: PageHeaderProps) {
         }}
       >
         {tabs}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: { xs: "flex-start", mobile: "flex-end" }, gap: 1 }}>
           {extraFilters}
           <YearFilter />
         </Box>
