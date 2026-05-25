@@ -126,6 +126,15 @@ const theme = createTheme({
         },
       },
     },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          fontSize: "0.75rem",
+          lineHeight: 1,
+        },
+      },
+    },
   },
   breakpoints: {
     values: {

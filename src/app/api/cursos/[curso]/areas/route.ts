@@ -2,15 +2,18 @@ import { pool } from "@/src/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ curso: string }> }
 ) {
   const { curso } = await params;
   const nomeCurso = decodeURIComponent(curso);
+  const { searchParams } = new URL(req.url);
+  const edicao = searchParams.get("edicao") ? Number(searchParams.get("edicao")) : null;
 
   const result = await pool.query(
     `
     SELECT
+      edicao,
       ano,
       nome_campus AS campus,
       ROUND(AVG(nota_m)::numeric, 2)::float        AS media_matematica,
@@ -20,10 +23,11 @@ export async function GET(
       ROUND(AVG(nota_r)::numeric, 2)::float        AS media_redacao
     FROM silver_sisu_ufma
     WHERE LOWER(nome_curso) = LOWER($1)
-    GROUP BY ano, nome_campus
-    ORDER BY ano, nome_campus
+      AND ($2::int IS NULL OR edicao = $2::int)
+    GROUP BY edicao, ano, nome_campus
+    ORDER BY edicao, ano, nome_campus
     `,
-    [nomeCurso]
+    [nomeCurso, edicao]
   );
 
   return NextResponse.json(result.rows);

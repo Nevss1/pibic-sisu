@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(lsof -ti:3000)",
+      "Bash(curl -s http://localhost:3000/api/candidatos)",
+      "Bash(curl -s http://localhost:3000/api/areas)"
+    ]
+  }
+}

@@ -2,16 +2,19 @@ import { pool } from "@/src/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ curso: string }> }
 ) {
   const { curso } = await params;
   const nomeCurso = decodeURIComponent(curso);
+  const { searchParams } = new URL(req.url);
+  const edicao = searchParams.get("edicao") ? Number(searchParams.get("edicao")) : null;
 
   const [goldResult, notasResult] = await Promise.all([
     pool.query(
       `
       SELECT
+        edicao,
         ano,
         nome_campus                                                                           AS campus,
         SUM(total_candidatos)::int                                                            AS total_inscritos,
@@ -36,33 +39,36 @@ export async function GET(
         )::float                                                                              AS taxa_aprovacao
       FROM gold_overview_curso_ano_campus
       WHERE LOWER(nome_curso) = LOWER($1)
-      GROUP BY ano, nome_campus
-      ORDER BY ano, nome_campus
+        AND ($2::int IS NULL OR edicao = $2::int)
+      GROUP BY edicao, ano, nome_campus
+      ORDER BY edicao, ano, nome_campus
       `,
-      [nomeCurso]
+      [nomeCurso, edicao]
     ),
     pool.query(
       `
       SELECT
+        edicao,
         ano,
         nome_campus                                                      AS campus,
         ARRAY_AGG(nota_candidato ORDER BY nota_candidato)               AS notas
       FROM silver_sisu_ufma
       WHERE LOWER(nome_curso) = LOWER($1)
         AND nota_candidato IS NOT NULL
-      GROUP BY ano, nome_campus
+        AND ($2::int IS NULL OR edicao = $2::int)
+      GROUP BY edicao, ano, nome_campus
       `,
-      [nomeCurso]
+      [nomeCurso, edicao]
     ),
   ]);
 
   const notasMap = new Map(
-    notasResult.rows.map((r) => [`${r.ano}__${r.campus}`, r.notas as number[]])
+    notasResult.rows.map((r) => [`${r.edicao}__${r.ano}__${r.campus}`, r.notas as number[]])
   );
 
   const rows = goldResult.rows.map((row) => ({
     ...row,
-    notas: notasMap.get(`${row.ano}__${row.campus}`) ?? [],
+    notas: notasMap.get(`${row.edicao}__${row.ano}__${row.campus}`) ?? [],
   }));
 
   return NextResponse.json(rows);

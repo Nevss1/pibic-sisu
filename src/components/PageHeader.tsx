@@ -7,9 +7,10 @@ import { YearFilter } from "./YearFilter";
 interface PageHeaderProps {
   title: string;
   tabs?: React.ReactNode;
+  extraFilters?: React.ReactNode;
 }
 
-export function PageHeader({ title, tabs }: PageHeaderProps) {
+export function PageHeader({ title, tabs, extraFilters }: PageHeaderProps) {
   return (
     <Box sx={{ px: 2, pt: 2 }}>
       <Box
@@ -37,7 +38,10 @@ export function PageHeader({ title, tabs }: PageHeaderProps) {
         }}
       >
         {tabs}
-        <YearFilter />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {extraFilters}
+          <YearFilter />
+        </Box>
       </Box>
     </Box>
   );

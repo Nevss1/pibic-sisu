@@ -1,6 +1,6 @@
 import { toTitleCase } from "@/src/utils";
 import { Box, Container } from "@mui/material";
-import { PageHeader } from "@/src/components";
+import { EditionFilter, PageHeader } from "@/src/components";
 import * as Areas from "@/src/features/cursos/areas";
 import { CursoTabs } from "@/src/features/cursos";
 
@@ -15,7 +15,7 @@ export default async function AreasPage({
   return (
     <Container sx={{ paddingBottom: 200 }}>
       <Areas.AreasFilterProvider curso={nomeCurso}>
-        <PageHeader title={nomeCurso} tabs={<CursoTabs />} />
+        <PageHeader title={nomeCurso} tabs={<CursoTabs />} extraFilters={<EditionFilter />} />
 
         <Box
           sx={{
