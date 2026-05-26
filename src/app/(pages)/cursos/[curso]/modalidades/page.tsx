@@ -27,6 +27,7 @@ export default async function ModalidadePage({
           }}
         >
           <Modalidades.ModalidadesCards />
+          <Modalidades.ModalidadesTemporalChart />
         </Box>
       </Modalidades.ModalidadesFilterProvider>
     </Container>

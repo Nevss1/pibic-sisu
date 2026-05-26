@@ -8,6 +8,7 @@ import { createContext, useContext } from "react";
 
 type ModalidadesFilterContextType = {
   dadosFiltrados: DadoModalidadesCurso[] | undefined;
+  dadosTodosPeriodos: DadoModalidadesCurso[] | undefined;
   isLoading: boolean;
 };
 
@@ -48,9 +49,10 @@ function ModalidadesFilterInner({
   const { anosSelecionados } = useYearFilter();
   const { campusSelecionado } = useCampusFilter();
   const dadosFiltrados = dados?.filter((d) => anosSelecionados.includes(d.ano) && d.campus === campusSelecionado);
+  const dadosTodosPeriodos = dados?.filter((d) => d.campus === campusSelecionado);
 
   return (
-    <ModalidadesFilterContext.Provider value={{ dadosFiltrados, isLoading }}>
+    <ModalidadesFilterContext.Provider value={{ dadosFiltrados, dadosTodosPeriodos, isLoading }}>
       {children}
     </ModalidadesFilterContext.Provider>
   );
