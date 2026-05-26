@@ -8,9 +8,10 @@ export function YearFilter() {
 
   return (
     <ToggleButtonGroup
-      value={anosSelecionados}
-      onChange={(_, newAnos: string[]) => {
-        if (newAnos.length > 0) setAnosSelecionados(newAnos);
+      exclusive
+      value={anosSelecionados[0] ?? null}
+      onChange={(_, newAno: string | null) => {
+        if (newAno) setAnosSelecionados([newAno]);
       }}
       size="small"
       sx={{ display: "flex", flexWrap: "wrap", gap: "2px" }}

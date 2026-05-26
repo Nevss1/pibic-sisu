@@ -23,7 +23,7 @@ export function YearFilterProvider({
 
   useEffect(() => {
     if (anosDisponiveis.length > 0 && anosSelecionados.length === 0) {
-      setAnosSelecionados(anosDisponiveis);
+      setAnosSelecionados([anosDisponiveis[anosDisponiveis.length - 1]]);
     }
   }, [anosDisponiveis.join(",")]);
 
