@@ -36,7 +36,12 @@ export async function GET(
         ROUND(
           (SUM(total_aprovados)::float / NULLIF(SUM(total_candidatos), 0) * 100)::numeric,
           2
-        )::float                                                                              AS taxa_aprovacao
+        )::float                                                                              AS taxa_aprovacao,
+        SUM(total_efetivadas)::int                                                            AS total_efetivadas,
+        ROUND(
+          (SUM(total_efetivadas)::float / NULLIF(SUM(total_aprovados), 0) * 100)::numeric,
+          2
+        )::float                                                                              AS taxa_efetivacao_sobre_aprovados
       FROM gold_overview_curso_ano_campus
       WHERE LOWER(nome_curso) = LOWER($1)
         AND ($2::int IS NULL OR edicao = $2::int)

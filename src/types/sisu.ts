@@ -26,6 +26,8 @@ export type DadoOverviewCurso = {
   inscritos_masculino: number
   inscritos_feminino: number
   taxa_aprovacao: number
+  total_efetivadas: number
+  taxa_efetivacao_sobre_aprovados: number
 }
 
 export type OverviewCurso = DadoOverviewCurso[]
