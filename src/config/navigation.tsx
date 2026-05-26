@@ -2,7 +2,6 @@ import SchoolIcon from "@mui/icons-material/School";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import AutoGraphIcon from "@mui/icons-material/AutoGraph";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 
@@ -11,7 +10,6 @@ export const ROUTE_LABELS: Record<string, string> = {
   geral: "Visão Geral",
   perfil: "Análise de Perfil",
   informacao: "Informações disponíveis",
-  conta: "Conta",
   sobre: "Sobre",
 };
 
@@ -24,7 +22,6 @@ export const NAV_ITEMS = [
     label: "Informações disponíveis",
     icon: <MenuBookIcon />,
   },
-  { href: "/conta", label: "Conta", icon: <AccountCircleIcon /> },
   { href: "/sobre", label: "Sobre", icon: <InfoOutlinedIcon /> },
   { href: "/", label: "Sair", icon: <LogoutIcon /> },
 ];
