@@ -2,7 +2,7 @@ import { toTitleCase } from "@/src/utils";
 import { Box, Card, Container } from "@mui/material";
 import { EditionFilter, PageHeader } from "@/src/components";
 import { CursoFilterProvider } from "@/src/features/cursos";
-import { CursoTabs, CursoOverviewCards, NotasHistogram, PieChartGenero } from "@/src/features/cursos/components"
+import { CursoTabs, CursoOverviewCards, NotasHistogram, PieChartGenero, NotaCorteTemporalChart } from "@/src/features/cursos/components"
 
 export default async function CursoPageOverview({
   params,
@@ -26,6 +26,9 @@ export default async function CursoPageOverview({
           }}
         >
           <CursoOverviewCards />
+          <Card variant="outlined">
+            <NotaCorteTemporalChart />
+          </Card>
           <Card
             variant="outlined"
             sx={{

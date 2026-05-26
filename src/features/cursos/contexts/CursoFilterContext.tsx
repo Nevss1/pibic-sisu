@@ -9,6 +9,7 @@ import { createContext, useContext } from "react";
 
 type CursoFilterContextType = {
   dadosFiltrados: DadoOverviewCurso[] | undefined;
+  dadosTodosPeriodos: DadoOverviewCurso[] | undefined;
   isLoading: boolean;
 };
 
@@ -49,9 +50,10 @@ function CursoFilterInner({
   const { anosSelecionados } = useYearFilter();
   const { campusSelecionado } = useCampusFilter();
   const dadosFiltrados = dados?.filter((d) => anosSelecionados.includes(d.ano) && d.campus === campusSelecionado);
+  const dadosTodosPeriodos = dados?.filter((d) => d.campus === campusSelecionado);
 
   return (
-    <CursoFilterContext.Provider value={{ dadosFiltrados, isLoading }}>
+    <CursoFilterContext.Provider value={{ dadosFiltrados, dadosTodosPeriodos, isLoading }}>
       {children}
     </CursoFilterContext.Provider>
   );
