@@ -3,6 +3,7 @@ import { Box, Card, Container } from "@mui/material";
 import { EditionFilter, PageHeader } from "@/src/components";
 import { CursoFilterProvider } from "@/src/features/cursos";
 import { CursoTabs, CursoOverviewCards, NotasHistogram, PieChartGenero, NotaCorteTemporalChart } from "@/src/features/cursos/components"
+import { dashboardChartCardSx } from "@/src/config/dashboardStyles";
 
 export default async function CursoPageOverview({
   params,
@@ -15,7 +16,12 @@ export default async function CursoPageOverview({
   return (
     <Container>
       <CursoFilterProvider curso={nomeCurso}>
-        <PageHeader title={nomeCurso} tabs={<CursoTabs />} extraFilters={<EditionFilter />} />
+        <PageHeader
+          title={nomeCurso}
+          tabs={<CursoTabs />}
+          extraFilters={<EditionFilter contained />}
+          filtersPanel
+        />
 
         <Box
           sx={{
@@ -26,29 +32,38 @@ export default async function CursoPageOverview({
           }}
         >
           <CursoOverviewCards />
-          <Card variant="outlined">
-            <NotaCorteTemporalChart />
-          </Card>
           <Card
             variant="outlined"
+            sx={dashboardChartCardSx}
+          >
+            <NotaCorteTemporalChart />
+          </Card>
+          <Box
             sx={{
               display: "flex",
               flexDirection: { xs: "column", laptop: "row" },
-              flexGrow: 1,
+              gap: 3,
             }}
           >
-            <Box
+            <Card
+              variant="outlined"
               sx={{
+                ...dashboardChartCardSx,
                 flex: 1,
-                borderRight: { xs: 0, laptop: 1 },
-                borderBottom: { xs: 1, laptop: 0 },
-                borderColor: "divider",
               }}
             >
               <NotasHistogram />
-            </Box>
-            <PieChartGenero />
-          </Card>
+            </Card>
+            <Card
+              variant="outlined"
+              sx={{
+                ...dashboardChartCardSx,
+                minWidth: { laptop: 320 },
+              }}
+            >
+              <PieChartGenero />
+            </Card>
+          </Box>
         </Box>
       </CursoFilterProvider>
     </Container>

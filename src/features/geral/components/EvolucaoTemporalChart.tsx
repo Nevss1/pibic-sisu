@@ -52,14 +52,14 @@ export function EvolucaoTemporalChart() {
   }
 
   const isDark = theme.palette.mode === "dark";
-  const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
+  const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(154, 106, 33, 0.12)";
   const textColor = theme.palette.text.secondary;
 
   return (
-    <CardContent>
+    <CardContent sx={{ p: { xs: 2.5, mobile: 3 } }}>
       <Typography
         variant="subtitle1"
-        sx={{ fontWeight: 600, mb: 0.5 }}
+        sx={{ fontWeight: 700, mb: 0.5 }}
       >
         Evolução temporal
       </Typography>
@@ -69,7 +69,7 @@ export function EvolucaoTemporalChart() {
 
       <ResponsiveContainer width="100%" height={320}>
         <ComposedChart data={chartData} margin={{ top: 4, right: 56, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+          <CartesianGrid strokeDasharray="4 4" stroke={gridColor} vertical={false} />
           <XAxis
             dataKey="ano"
             tick={{ fill: textColor, fontSize: 12 }}
@@ -96,9 +96,10 @@ export function EvolucaoTemporalChart() {
           />
           <Tooltip
             contentStyle={{
-              background: theme.palette.background.paper,
-              border: `1px solid ${theme.palette.divider}`,
-              borderRadius: 8,
+              background: "rgba(255, 255, 255, 0.96)",
+              border: "1px solid rgba(174, 143, 88, 0.18)",
+              borderRadius: 12,
+              boxShadow: "0 10px 28px rgba(70, 50, 20, 0.12)",
               fontSize: 13,
             }}
             labelStyle={{ fontWeight: 600, marginBottom: 4, color: theme.palette.text.primary }}

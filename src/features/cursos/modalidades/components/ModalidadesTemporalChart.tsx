@@ -15,6 +15,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import type { TooltipProps } from "recharts";
 import { useModalidadesFilter } from "../contexts";
 import type { DadoModalidadesCurso } from "@/src/types/sisu";
+import { dashboardChartCardSx } from "@/src/config/dashboardStyles";
 
 const CATEGORIAS = [
   "Ampla concorrência",
@@ -93,9 +94,10 @@ function CustomTooltip({
   return (
     <Box
       sx={{
-        background: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: 2,
+        background: "rgba(255, 255, 255, 0.96)",
+        border: "1px solid rgba(174, 143, 88, 0.18)",
+        borderRadius: 3,
+        boxShadow: "0 10px 28px rgba(70, 50, 20, 0.12)",
         p: 1.5,
         minWidth: 240,
         fontSize: 13,
@@ -144,7 +146,7 @@ function CustomTooltip({
       })}
       <Box
         sx={{
-          borderTop: `1px solid ${theme.palette.divider}`,
+          borderTop: "1px solid rgba(174, 143, 88, 0.18)",
           mt: 1,
           pt: 1,
         }}
@@ -169,21 +171,18 @@ export function ModalidadesTemporalChart() {
   const gridColor =
     theme.palette.mode === "dark"
       ? "rgba(255,255,255,0.08)"
-      : "rgba(0,0,0,0.08)";
+      : "rgba(154, 106, 33, 0.12)";
   const textColor = theme.palette.text.secondary;
 
   if (!chartData.length) {
     return (
       <Box
         sx={{
-          p: 3,
-          borderRadius: 2,
-          border: 1,
-          borderColor: "divider",
-          boxShadow: "0px 1px 4px rgba(0,0,0,0.08)",
+          ...dashboardChartCardSx,
+          p: { xs: 2.5, mobile: 3 },
         }}
       >
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
           Candidatos por modalidade ao longo dos anos
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -196,14 +195,11 @@ export function ModalidadesTemporalChart() {
   return (
     <Box
       sx={{
-        p: 3,
-        borderRadius: 2,
-        border: 1,
-        borderColor: "divider",
-        boxShadow: "0px 1px 4px rgba(0,0,0,0.08)",
+        ...dashboardChartCardSx,
+        p: { xs: 2.5, mobile: 3 },
       }}
     >
-      <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
         Candidatos por modalidade ao longo dos anos
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -216,7 +212,7 @@ export function ModalidadesTemporalChart() {
           margin={{ top: 4, right: 16, left: 0, bottom: 0 }}
         >
           <CartesianGrid
-            strokeDasharray="3 3"
+            strokeDasharray="4 4"
             stroke={gridColor}
             vertical={false}
           />
@@ -235,7 +231,7 @@ export function ModalidadesTemporalChart() {
           />
           <Tooltip
             content={<CustomTooltip auxData={auxData} />}
-            cursor={{ fill: "rgba(0,0,0,0.04)" }}
+            cursor={{ fill: "rgba(213, 166, 66, 0.08)" }}
           />
           <Legend wrapperStyle={{ fontSize: 12, paddingTop: 16 }} />
           {CATEGORIAS.map((cat) => (

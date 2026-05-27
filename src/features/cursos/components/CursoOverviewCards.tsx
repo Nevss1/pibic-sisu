@@ -4,6 +4,7 @@ import { Box, Tooltip, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { DadoOverviewCurso } from "@/src/types/sisu";
 import { useCursoFilter } from "../contexts";
+import { dashboardMetricCardSx } from "@/src/config/dashboardStyles";
 
 function avgNum(dados: DadoOverviewCurso[] | undefined, key: keyof DadoOverviewCurso) {
   if (!dados || dados.length === 0) return undefined;
@@ -75,10 +76,8 @@ export function CursoOverviewCards() {
         <Box
           key={card.label}
           sx={{
-            p: { xs: 2, mobile: 2.5 },
-            border: 1,
-            borderColor: "divider",
-            borderRadius: 2,
+            ...dashboardMetricCardSx,
+            p: { xs: 2.25, mobile: 2.75 },
             display: "flex",
             flexDirection: "column",
             gap: 1,
@@ -88,24 +87,24 @@ export function CursoOverviewCards() {
             <Typography
               variant="caption"
               sx={{
-                color: "text.secondary",
+                color: "#7A6A58",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 fontSize: "0.6875rem",
-                fontWeight: 500,
+                fontWeight: 700,
               }}
             >
               {card.label}
             </Typography>
             <Tooltip title={card.info} placement="top" arrow>
-              <InfoOutlinedIcon sx={{ fontSize: 13, color: "text.disabled", cursor: "help" }} />
+              <InfoOutlinedIcon sx={{ fontSize: 14, color: "rgba(122, 84, 32, 0.48)", cursor: "help" }} />
             </Tooltip>
           </Box>
           <Typography
             sx={{
-              fontWeight: 600,
-              color: "text.primary",
-              fontSize: { xs: 22, mobile: 26 },
+              fontWeight: 700,
+              color: "#7A5420",
+              fontSize: { xs: 24, mobile: 28 },
               fontFamily: "var(--font-archivo), sans-serif",
               lineHeight: 1.1,
             }}
@@ -113,12 +112,12 @@ export function CursoOverviewCards() {
             {card.value ?? "—"}
           </Typography>
           {"description" in card && card.description && (
-            <Typography variant="caption" sx={{ color: "text.secondary", fontSize: "0.7rem" }}>
+            <Typography variant="caption" sx={{ color: "#6B7280", fontSize: "0.7rem" }}>
               {card.description}
             </Typography>
           )}
           {"detail" in card && card.detail && (
-            <Typography variant="caption" sx={{ color: "text.disabled", fontSize: "0.7rem" }}>
+            <Typography variant="caption" sx={{ color: "#8B8A86", fontSize: "0.7rem" }}>
               {card.detail}
             </Typography>
           )}

@@ -6,6 +6,7 @@ import {
   ListItem,
   Typography,
 } from "@mui/material";
+import { dashboardGlassCardSx } from "@/src/config/dashboardStyles";
 
 function Section({
   title,
@@ -50,7 +51,7 @@ function BulletList({ items }: { items: string[] }) {
 export default function SobrePage() {
   return (
     <Container>
-      <Box sx={{ py: 2, px: 2 }}>
+      <Box sx={{ ...dashboardGlassCardSx, my: 2, p: { xs: 2.5, mobile: 3 } }}>
         <Typography
           variant="h4"
           fontWeight={500}

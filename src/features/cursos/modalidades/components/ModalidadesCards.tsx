@@ -3,6 +3,7 @@
 import { Box, CircularProgress, Tooltip, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useModalidadesFilter } from "../contexts";
+import { dashboardMetricCardSx } from "@/src/config/dashboardStyles";
 
 // "Cota geral" agrega todos os subgrupos de COTA e pode sobrepor PPI, Indígenas e PcD.
 const CATEGORIAS = [
@@ -111,11 +112,8 @@ export function ModalidadesCards() {
           <Box
             key={categoria.label}
             sx={{
+              ...dashboardMetricCardSx,
               p: 3,
-              borderRadius: 2,
-              border: 1,
-              borderColor: "divider",
-              boxShadow: "0px 1px 4px rgba(0,0,0,0.08)",
               display: "flex",
               flexDirection: "column",
               gap: 2,
@@ -123,8 +121,14 @@ export function ModalidadesCards() {
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
               <Typography
-                variant="body2"
-                sx={{ fontWeight: 400, color: "text.secondary", fontSize: 14 }}
+                variant="caption"
+                sx={{
+                  color: "#7A6A58",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  fontSize: "0.6875rem",
+                  fontWeight: 700,
+                }}
               >
                 {categoria.label}
               </Typography>
@@ -142,7 +146,7 @@ export function ModalidadesCards() {
                 placement="top"
               >
                 <InfoOutlinedIcon
-                  sx={{ fontSize: 15, color: "text.disabled", cursor: "default" }}
+                  sx={{ fontSize: 15, color: "rgba(122, 84, 32, 0.48)", cursor: "default" }}
                 />
               </Tooltip>
             </Box>
@@ -150,7 +154,7 @@ export function ModalidadesCards() {
               <Typography
                 sx={{
                   fontWeight: 500,
-                  color: "text.primary",
+                  color: "#7A5420",
                   fontSize: 28,
                   fontFamily: "var(--font-archivo), sans-serif",
                   lineHeight: 1,
@@ -167,7 +171,7 @@ export function ModalidadesCards() {
                 <Typography
                   sx={{
                     fontWeight: 500,
-                    color: "text.primary",
+                    color: "#7A5420",
                     fontSize: 18,
                     fontFamily: "var(--font-archivo), sans-serif",
                   }}
@@ -182,7 +186,7 @@ export function ModalidadesCards() {
                 <Typography
                   sx={{
                     fontWeight: 500,
-                    color: "text.primary",
+                    color: "#7A5420",
                     fontSize: 18,
                     fontFamily: "var(--font-archivo), sans-serif",
                   }}
@@ -197,7 +201,7 @@ export function ModalidadesCards() {
                 <Typography
                   sx={{
                     fontWeight: 500,
-                    color: "text.primary",
+                    color: "#7A5420",
                     fontSize: 18,
                     fontFamily: "var(--font-archivo), sans-serif",
                   }}

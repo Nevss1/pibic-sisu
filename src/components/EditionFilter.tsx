@@ -9,7 +9,11 @@ const EDICOES = [
   { value: "2", label: "2ª ed." },
 ];
 
-export function EditionFilter() {
+type EditionFilterProps = {
+  contained?: boolean;
+};
+
+export function EditionFilter({ contained = false }: EditionFilterProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -35,9 +39,48 @@ export function EditionFilter() {
       exclusive
       onChange={handleChange}
       size="small"
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: contained ? 0.75 : 0,
+        "& .MuiToggleButtonGroup-grouped": contained
+          ? {
+              m: 0,
+              border: "1px solid rgba(174, 143, 88, 0.18)",
+              borderRadius: "999px !important",
+            }
+          : undefined,
+      }}
     >
       {EDICOES.map(({ value, label }) => (
-        <ToggleButton key={value} value={value} sx={{ px: { xs: 1.5, mobile: 2 } }}>
+        <ToggleButton
+          key={value}
+          value={value}
+          sx={{
+            px: { xs: 1.5, mobile: 2 },
+            ...(contained
+              ? {
+                  minHeight: 30,
+                  bgcolor: "rgba(255, 252, 248, 0.72)",
+                  color: "#5F554A",
+                  fontWeight: 600,
+                  "&:hover": {
+                    bgcolor: "rgba(213, 166, 66, 0.12)",
+                    borderColor: "rgba(174, 143, 88, 0.28)",
+                  },
+                  "&.Mui-selected": {
+                    bgcolor: "#7A5420",
+                    borderColor: "#7A5420",
+                    color: "#ffffff",
+                    "&:hover": {
+                      bgcolor: "#6B481B",
+                      borderColor: "#6B481B",
+                    },
+                  },
+                }
+              : {}),
+          }}
+        >
           {label}
         </ToggleButton>
       ))}

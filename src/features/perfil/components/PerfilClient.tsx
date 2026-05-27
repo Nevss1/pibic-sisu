@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Fragment, useEffect, useState } from "react";
+import { dashboardGlassCardSx, dashboardMetricCardSx } from "@/src/config/dashboardStyles";
 
 type Opcoes = {
   campuses: string[];
@@ -52,7 +53,7 @@ function TabelaHistorico({ rows }: { rows: AnoRow[] }) {
           return (
             <Box
               key={row.ano}
-              sx={{ p: 2, border: 1, borderColor: "divider", borderRadius: 1.5 }}
+              sx={{ ...dashboardGlassCardSx, p: 2 }}
             >
               <Typography variant="subtitle2" fontWeight={600} mb={1}>
                 {row.ano}
@@ -68,12 +69,17 @@ function TabelaHistorico({ rows }: { rows: AnoRow[] }) {
                   <Box key={label}>
                     <Typography
                       variant="caption"
-                      color="text.disabled"
-                      sx={{ textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.625rem" }}
+                      sx={{
+                        color: "#7A6A58",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        fontSize: "0.625rem",
+                      }}
                     >
                       {label}
                     </Typography>
-                    <Typography variant="body2" fontWeight={500}>{value}</Typography>
+                    <Typography variant="body2" sx={{ color: "#7A5420", fontWeight: 700 }}>{value}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -92,15 +98,19 @@ function TabelaHistorico({ rows }: { rows: AnoRow[] }) {
         columnGap: 4,
         rowGap: 1,
         alignItems: "center",
+        overflowX: "auto",
       }}
     >
       {["Ano", "Candidatos", "Aprovados", "Taxa aprov.", "Participação", "Nota de corte"].map((h) => (
         <Typography
           key={h}
           variant="caption"
-          color="text.disabled"
-          fontWeight={600}
-          sx={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
+          sx={{
+            color: "#7A6A58",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+          }}
         >
           {h}
         </Typography>
@@ -110,7 +120,7 @@ function TabelaHistorico({ rows }: { rows: AnoRow[] }) {
         const participacao = row.total_curso > 0 ? ((row.total / row.total_curso) * 100).toFixed(1) + "%" : "—";
         return (
           <Fragment key={row.ano}>
-            <Typography variant="body2" fontWeight={500}>{row.ano}</Typography>
+            <Typography variant="body2" sx={{ color: "#7A5420", fontWeight: 700 }}>{row.ano}</Typography>
             <Typography variant="body2" color="text.secondary">{row.total.toLocaleString("pt-BR")}</Typography>
             <Typography variant="body2" color="text.secondary">{row.aprovados.toLocaleString("pt-BR")}</Typography>
             <Typography variant="body2" color="text.secondary">{taxa}</Typography>
@@ -135,10 +145,8 @@ function StatBox({
   return (
     <Box
       sx={{
+        ...dashboardMetricCardSx,
         p: 3,
-        borderRadius: 2,
-        border: 1,
-        borderColor: "divider",
         display: "flex",
         flexDirection: "column",
         gap: 0.5,
@@ -147,8 +155,10 @@ function StatBox({
       <Typography
         sx={{
           fontSize: 13,
-          color: "text.secondary",
-          fontWeight: 400,
+          color: "#7A6A58",
+          fontWeight: 700,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
         }}
       >
         {label}
@@ -156,8 +166,8 @@ function StatBox({
       <Typography
         sx={{
           fontSize: 28,
-          fontWeight: 500,
-          color: "text.primary",
+          fontWeight: 700,
+          color: "#7A5420",
           fontFamily: "var(--font-archivo), sans-serif",
           lineHeight: 1,
         }}
@@ -284,14 +294,22 @@ export function PerfilClient() {
           display: "flex",
           flexDirection: "column",
           gap: 2.5,
+          ...dashboardGlassCardSx,
           p: 3,
-          borderRadius: 2,
-          border: 1,
-          borderColor: "divider",
+          "& .MuiOutlinedInput-root": {
+            bgcolor: "rgba(255, 252, 248, 0.76)",
+            borderRadius: "12px",
+            "& fieldset": { borderColor: "rgba(174, 143, 88, 0.18)" },
+            "&:hover fieldset": { borderColor: "rgba(174, 143, 88, 0.32)" },
+            "&.Mui-focused fieldset": { borderColor: "#D5A642", borderWidth: 1 },
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#9A6A21",
+          },
         }}
       >
         <Box>
-          <Typography variant="body1" fontWeight={500} gutterBottom>
+          <Typography variant="body1" sx={{ color: "#7A5420", fontWeight: 700 }} gutterBottom>
             Seu perfil
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -399,10 +417,8 @@ export function PerfilClient() {
         {!temResultado && !erro && !loading && (
           <Box
             sx={{
+              ...dashboardGlassCardSx,
               p: 6,
-              borderRadius: 2,
-              border: 1,
-              borderColor: "divider",
               textAlign: "center",
               color: "text.disabled",
             }}
@@ -461,16 +477,14 @@ export function PerfilClient() {
             {/* Tabela por ano */}
             <Box
               sx={{
+                ...dashboardGlassCardSx,
                 p: 3,
-                borderRadius: 2,
-                border: 1,
-                borderColor: "divider",
               }}
             >
               <Typography
                 variant="body2"
-                fontWeight={500}
-                color="text.secondary"
+                fontWeight={700}
+                color="#7A5420"
                 mb={2}
               >
                 Histórico por ano
@@ -481,11 +495,10 @@ export function PerfilClient() {
             {/* Aviso */}
             <Box
               sx={{
+                ...dashboardGlassCardSx,
                 display: "flex",
                 gap: 1.5,
                 p: 2.5,
-                borderRadius: 2,
-                bgcolor: "action.hover",
                 alignItems: "flex-start",
               }}
             >

@@ -15,7 +15,12 @@ export default async function AreasPage({
   return (
     <Container sx={{ paddingBottom: 200 }}>
       <Areas.AreasFilterProvider curso={nomeCurso}>
-        <PageHeader title={nomeCurso} tabs={<CursoTabs />} extraFilters={<EditionFilter />} />
+        <PageHeader
+          title={nomeCurso}
+          tabs={<CursoTabs />}
+          extraFilters={<EditionFilter contained />}
+          filtersPanel
+        />
 
         <Box
           sx={{

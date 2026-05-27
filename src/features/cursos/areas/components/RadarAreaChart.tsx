@@ -2,6 +2,8 @@
 
 import { RadarAxis, RadarChart } from "@mui/x-charts";
 import { useAreasFilter } from "../contexts/AreasFilterContext";
+import { Box, Typography } from "@mui/material";
+import { dashboardChartCardSx } from "@/src/config/dashboardStyles";
 
 const AREAS = [
   { label: "Matemática", key: "media_matematica" },
@@ -30,30 +32,44 @@ export const RadarAreaChart = () => {
   ) * 100;
 
   return (
-    <RadarChart
-      height={300}
-      shape="circular"
-      sx={{ bgcolor: "#FEF9F6", borderRadius: 2 }}
-      series={[
-        {
-          label: "Nota média do Campus",
-          data: mediasUFMA,
-          color: COLOR_UFMA,
-          fillArea: true,
-        },
-        {
-          label: "Nota Média ",
-          data: mediasCurso,
-          color: COLOR_CURSO,
-          fillArea: true,
-        },
-      ]}
-      radar={{
-        metrics: AREAS.map((a) => a.label),
-        max: maxNota,
-      }}
-    >
-      <RadarAxis metric="Matemática" divisions={4} labelOrientation="rotated" angle={30} />
-    </RadarChart>
+    <Box sx={{ ...dashboardChartCardSx, p: { xs: 2.5, mobile: 3 } }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
+        Notas médias por área
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Comparativo entre o curso selecionado e a média do campus
+      </Typography>
+
+      <RadarChart
+        height={320}
+        shape="circular"
+        sx={{
+          "& .MuiChartsLegend-label": {
+            fill: "#6B7280",
+            fontSize: 12,
+          },
+        }}
+        series={[
+          {
+            label: "Nota média do Campus",
+            data: mediasUFMA,
+            color: COLOR_UFMA,
+            fillArea: true,
+          },
+          {
+            label: "Nota média",
+            data: mediasCurso,
+            color: COLOR_CURSO,
+            fillArea: true,
+          },
+        ]}
+        radar={{
+          metrics: AREAS.map((a) => a.label),
+          max: maxNota,
+        }}
+      >
+        <RadarAxis metric="Matemática" divisions={4} labelOrientation="rotated" angle={30} />
+      </RadarChart>
+    </Box>
   );
 };

@@ -19,6 +19,7 @@ import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { useCandidatosCursos } from "@/src/hooks";
 import { toTitleCase } from "@/src/utils";
+import { dashboardMetricCardSx } from "@/src/config/dashboardStyles";
 
 const TIERS = [
   { max: 6,        key: "low"      as const, label: "Baixíssima" },
@@ -120,7 +121,16 @@ export default function CursosPage() {
               ),
             },
           }}
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2,
+            "& .MuiOutlinedInput-root": {
+              bgcolor: "rgba(255, 255, 255, 0.72)",
+              borderRadius: "14px",
+              "& fieldset": { borderColor: "rgba(174, 143, 88, 0.14)" },
+              "&:hover fieldset": { borderColor: "rgba(174, 143, 88, 0.28)" },
+              "&.Mui-focused fieldset": { borderColor: "#D5A642", borderWidth: 1 },
+            },
+          }}
         />
 
         {/* Área — scroll horizontal, sem quebra de linha */}
@@ -142,8 +152,16 @@ export default function CursosPage() {
               size="small"
               onClick={() => setAreaFiltro(a.label)}
               variant={areaFiltro === a.label ? "filled" : "outlined"}
-              color={areaFiltro === a.label ? "primary" : "default"}
-              sx={{ flexShrink: 0 }}
+              sx={{
+                flexShrink: 0,
+                borderColor: areaFiltro === a.label ? "#7A5420" : "rgba(174, 143, 88, 0.22)",
+                bgcolor: areaFiltro === a.label ? "#7A5420" : "rgba(255, 255, 255, 0.58)",
+                color: areaFiltro === a.label ? "#ffffff" : "#5F554A",
+                fontWeight: 600,
+                "&:hover": {
+                  bgcolor: areaFiltro === a.label ? "#6B481B" : "rgba(213, 166, 66, 0.12)",
+                },
+              }}
             />
           ))}
         </Box>
@@ -176,6 +194,7 @@ export default function CursosPage() {
               <MotionCard
                 key={c.nome}
                 variant="outlined"
+                sx={dashboardMetricCardSx}
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.15 }}
               >
@@ -183,8 +202,11 @@ export default function CursosPage() {
                   component={Link}
                   href={`/cursos/${encodeURIComponent(c.nome.toLowerCase())}`}
                 >
-                  <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                    <Typography variant="subtitle1" fontWeight={600} lineHeight={1.3}>
+                  <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1.5, p: 2.5 }}>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ color: "#7A5420", fontWeight: 700, lineHeight: 1.3 }}
+                    >
                       {toTitleCase(c.nome)}
                     </Typography>
 

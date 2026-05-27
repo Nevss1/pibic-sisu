@@ -17,15 +17,15 @@ const CursoTabsBar = styled((props: CursoTabsBarProps) => <Tabs {...props} />)((
   "& .MuiTabs-indicator": {
     display: "flex",
     justifyContent: "center",
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: "#D5A642",
   },
 }));
 
 const CursoTab = styled((props: { label: string }) => (
   <Tab {...props} />))(({ theme }) => ({
   textTransform: "none",
-  fontWeight: theme.typography.fontWeightRegular,
-  fontSize: 18,
+  fontWeight: 600,
+  fontSize: 15,
   marginRight: theme.spacing(1),
   color: theme.palette.text.secondary,
   "&.Mui-selected": {

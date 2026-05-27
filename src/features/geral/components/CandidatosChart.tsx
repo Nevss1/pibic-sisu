@@ -132,10 +132,10 @@ export function CandidatosBarChart() {
 
   return (
     <Box width="100%" sx={{ position: "relative" }}>
-      <CardContent>
+      <CardContent sx={{ p: { xs: 2.5, mobile: 3 } }}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 2 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography fontWeight={600}>Inscritos e concorrência por curso</Typography>
+            <Typography fontWeight={700}>Inscritos e concorrência por curso</Typography>
             <Tooltip
               title="Concorrência = total de inscritos ÷ vagas preenchidas no curso. Calculado com base nos anos selecionados."
               arrow
@@ -162,7 +162,7 @@ export function CandidatosBarChart() {
             overflowY: "auto",
             overflowX: "hidden",
             "&::-webkit-scrollbar": { width: 6 },
-            "&::-webkit-scrollbar-thumb": { borderRadius: 3, bgcolor: "divider" },
+            "&::-webkit-scrollbar-thumb": { borderRadius: 3, bgcolor: "rgba(174, 143, 88, 0.28)" },
           }}
         >
           <div ref={containerRef} style={{ width: "100%" }}>
@@ -269,13 +269,12 @@ export function CandidatosBarChart() {
             left: hovered.x + 12,
             zIndex: 9999,
             pointerEvents: "none",
-            bgcolor: "background.paper",
-            border: 1,
-            borderColor: "divider",
-            borderRadius: 2,
+            bgcolor: "rgba(255, 255, 255, 0.96)",
+            border: "1px solid rgba(174, 143, 88, 0.18)",
+            borderRadius: 3,
             p: 1.5,
             minWidth: 200,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+            boxShadow: "0 10px 28px rgba(70, 50, 20, 0.12)",
           }}
         >
           <Typography variant="caption" fontWeight={600} display="block" mb={1}>

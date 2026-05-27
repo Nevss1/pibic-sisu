@@ -27,12 +27,12 @@ export function NotasHistogram() {
   const max = dados?.length ? Math.max(...dados.map((d) => d.max_nota_candidato)) : 0;
 
   const bins = notas.length > 0 ? buildHistogram(notas, min, max) : [];
-  const chartHeight = isLaptop ? 300 : 220;
+  const chartHeight = isLaptop ? 320 : 240;
 
   return (
     <Box>
-      <CardContent>
-        <Typography variant="h6" sx={{ mb: 2 }}>
+      <CardContent sx={{ p: { xs: 2.5, mobile: 3 } }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
           Distribuição das notas dos candidatos
         </Typography>
         {bins.length === 0 ? (
@@ -42,9 +42,30 @@ export function NotasHistogram() {
         ) : (
           <BarChart
             xAxis={[{ data: bins.map((b) => b.label), scaleType: "band", label: "Nota" }]}
-            series={[{ data: bins.map((b) => b.count), label: "Candidatos", color: "#D5B071" }]}
+            yAxis={[{ label: "Candidatos" }]}
+            series={[{ data: bins.map((b) => b.count), label: "Candidatos", color: "#D5A642" }]}
             height={chartHeight}
-            margin={{ left: 50, right: 16, top: 16, bottom: 46 }}
+            margin={{ left: 54, right: 16, top: 18, bottom: 48 }}
+            grid={{ horizontal: true }}
+            sx={{
+              "& .MuiChartsGrid-line": {
+                stroke: "rgba(154, 106, 33, 0.12)",
+                strokeDasharray: "4 4",
+              },
+              "& .MuiChartsAxis-line, & .MuiChartsAxis-tick": {
+                stroke: "rgba(154, 106, 33, 0.18)",
+              },
+              "& .MuiChartsAxis-tickLabel, & .MuiChartsAxis-label": {
+                fill: theme.palette.text.secondary,
+              },
+              "& .MuiBarElement-root": {
+                filter: "drop-shadow(0 4px 7px rgba(154, 106, 33, 0.14))",
+              },
+              "& .MuiChartsLegend-label": {
+                fill: theme.palette.text.secondary,
+                fontSize: 12,
+              },
+            }}
           />
         )}
       </CardContent>

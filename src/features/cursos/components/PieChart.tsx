@@ -5,8 +5,8 @@ import { useCursoFilter } from "../contexts";
 import { PieChart as MuiPieChart } from "@mui/x-charts/PieChart";
 
 const CORES_GENERO = {
-  masculino: "#2b68e3",
-  feminino: "#e82d2dd6",
+  masculino: "#2563EB",
+  feminino: "#EF4444",
 };
 
 export function PieChartGenero() {
@@ -23,12 +23,12 @@ export function PieChartGenero() {
     { id: 1, value: totalFeminino,  label: "Mulheres", color: CORES_GENERO.feminino },
   ];
 
-  const chartHeight = isLaptop ? 260 : 220;
+  const chartHeight = isLaptop ? 280 : 240;
 
   return (
     <Box sx={{ minWidth: { laptop: 280 } }}>
-      <CardContent>
-        <Typography variant="h6" sx={{ mb: 2 }}>
+      <CardContent sx={{ p: { xs: 2.5, mobile: 3 } }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
           Distribuição por gênero
         </Typography>
         <MuiPieChart
@@ -43,7 +43,19 @@ export function PieChartGenero() {
           ]}
           height={chartHeight}
           margin={{ top: 10, bottom: 56, left: 16, right: 16 }}
-          sx={{ "& .MuiPieArcLabel-root": { fill: "#ffffff !important" } }}
+          sx={{
+            "& .MuiPieArcLabel-root": {
+              fill: "#ffffff !important",
+              fontWeight: 700,
+            },
+            "& .MuiPieArc-root": {
+              filter: "drop-shadow(0 5px 10px rgba(70, 50, 20, 0.12))",
+            },
+            "& .MuiChartsLegend-label": {
+              fill: theme.palette.text.secondary,
+              fontSize: 12,
+            },
+          }}
           slotProps={{
             legend: {
               direction: "horizontal",

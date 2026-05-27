@@ -2,6 +2,7 @@
 
 import { Box, Typography } from "@mui/material";
 import { useAreasFilter } from "../contexts/AreasFilterContext";
+import { dashboardMetricCardSx } from "@/src/config/dashboardStyles";
 
 const AREAS = [
   { label: "Matemática", key: "media_matematica" },
@@ -24,52 +25,52 @@ export function AreasCards() {
   return (
     <Box
       sx={{
-        boxShadow: "0px 1px 4px rgba(0,0,0,0.08)",
-        borderRadius: 2,
-        border: 1,
-        borderColor: "divider",
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "repeat(2, 1fr)",
+          laptop: "repeat(5, 1fr)",
+        },
+        gap: 1.5,
       }}
     >
-      <Box sx={{ display: "flex", width: "100%" }}>
-        {AREAS.map((area, index) => (
-          <Box
-            key={area.key}
+      {AREAS.map((area) => (
+        <Box
+          key={area.key}
+          sx={{
+            ...dashboardMetricCardSx,
+            p: { xs: 2.25, mobile: 2.75 },
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            minHeight: 118,
+          }}
+        >
+          <Typography
+            variant="caption"
             sx={{
-              flex: 1,
-              p: 3,
-              borderRight: index < AREAS.length - 1 ? 1 : 0,
-              borderColor: "divider",
+              color: "#7A6A58",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              fontSize: "0.6875rem",
+              fontWeight: 700,
             }}
           >
-            <Box
-              sx={{
-                height: 100,
-                display: "flex",
-                justifyContent: "space-between",
-                flexDirection: "column",
-                minHeight: 100,
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 400, color: "text.primary", fontSize: 16 }}
-              >
-                {area.label}
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: 500,
-                  color: "text.primary",
-                  fontSize: 24,
-                  fontFamily: "var(--font-archivo), sans-serif",
-                }}
-              >
-                {avg(dados, area.key) ?? "—"}
-              </Typography>
-            </Box>
-          </Box>
-        ))}
-      </Box>
+            {area.label}
+          </Typography>
+          <Typography
+            sx={{
+              fontWeight: 700,
+              color: "#7A5420",
+              fontSize: { xs: 24, mobile: 28 },
+              fontFamily: "var(--font-archivo), sans-serif",
+              lineHeight: 1.1,
+              mt: "auto",
+            }}
+          >
+            {avg(dados, area.key) ?? "—"}
+          </Typography>
+        </Box>
+      ))}
     </Box>
   );
 }

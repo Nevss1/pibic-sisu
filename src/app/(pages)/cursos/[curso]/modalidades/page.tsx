@@ -15,7 +15,12 @@ export default async function ModalidadePage({
   return (
     <Container>
       <Modalidades.ModalidadesFilterProvider curso={nomeCurso}>
-        <PageHeader title={nomeCurso} tabs={<CursoTabs />} extraFilters={<EditionFilter />} />
+        <PageHeader
+          title={nomeCurso}
+          tabs={<CursoTabs />}
+          extraFilters={<EditionFilter contained />}
+          filtersPanel
+        />
 
         <Box
           sx={{
