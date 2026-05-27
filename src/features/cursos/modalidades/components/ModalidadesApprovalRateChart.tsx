@@ -11,7 +11,7 @@ import {
   Tooltip,
   Cell,
 } from "recharts";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import type { TooltipProps } from "recharts";
 import { useModalidadesFilter } from "../contexts";
 import { dashboardChartCardSx } from "@/src/config/dashboardStyles";
@@ -118,6 +118,7 @@ function truncateLabel(label: string, maxLen: number) {
 
 export function ModalidadesApprovalRateChart() {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
   const { dadosFiltrados } = useModalidadesFilter();
 
   const chartData = useMemo(() => buildChartData(dadosFiltrados), [dadosFiltrados]);
@@ -130,6 +131,8 @@ export function ModalidadesApprovalRateChart() {
 
   // Altura dinâmica: ~52px por barra, mínimo 280px
   const chartHeight = Math.max(280, chartData.length * 56 + 40);
+  const maxRate = Math.max(...chartData.map((item) => item.taxa), 0);
+  const xMax = Math.min(100, Math.max(10, Math.ceil(maxRate * 1.25)));
 
   if (!chartData.length) {
     return (
@@ -160,8 +163,13 @@ export function ModalidadesApprovalRateChart() {
         <BarChart
           layout="vertical"
           data={chartData}
-          margin={{ top: 0, right: 56, left: 0, bottom: 0 }}
-          barCategoryGap="28%"
+          margin={{
+            top: 0,
+            right: isMobile ? 34 : 56,
+            left: isMobile ? -8 : 0,
+            bottom: 0,
+          }}
+          barCategoryGap={isMobile ? "24%" : "28%"}
         >
           <CartesianGrid
             strokeDasharray="4 4"
@@ -170,20 +178,21 @@ export function ModalidadesApprovalRateChart() {
           />
           <XAxis
             type="number"
-            domain={[0, 100]}
+            domain={[0, xMax]}
             tickFormatter={(v) => `${v}%`}
-            tick={{ fill: textColor, fontSize: 12 }}
+            tick={{ fill: textColor, fontSize: isMobile ? 11 : 12 }}
             axisLine={false}
             tickLine={false}
+            tickCount={isMobile ? 4 : 6}
           />
           <YAxis
             type="category"
             dataKey="label"
-            width={130}
-            tick={{ fill: textColor, fontSize: 12 }}
+            width={isMobile ? 96 : 130}
+            tick={{ fill: textColor, fontSize: isMobile ? 11 : 12 }}
             axisLine={false}
             tickLine={false}
-            tickFormatter={(v) => truncateLabel(v, 18)}
+            tickFormatter={(v) => truncateLabel(v, isMobile ? 13 : 18)}
           />
           <Tooltip
             content={<CustomTooltip />}
@@ -196,7 +205,7 @@ export function ModalidadesApprovalRateChart() {
               position: "right",
               formatter: (v: number) => `${v.toFixed(1)}%`,
               fill: textColor,
-              fontSize: 12,
+              fontSize: isMobile ? 11 : 12,
             }}
           >
             {chartData.map((entry) => (
