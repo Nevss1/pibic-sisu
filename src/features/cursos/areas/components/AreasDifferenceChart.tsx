@@ -60,10 +60,10 @@ function fmtSigned(v: number | null): string {
 // ─── tipos internos ────────────────────────────────────────────────────────────
 
 type ChartEntry = {
-  label:    string;
+  label:     string;
   diferenca: number | null;
-  curso:    number | null;
-  campus:   number | null;
+  curso:     number | null;
+  campus:    number | null;
 };
 
 // ─── tooltip customizado ───────────────────────────────────────────────────────
@@ -131,7 +131,7 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   );
 }
 
-// ─── label inline (SVG text) ───────────────────────────────────────────────────
+// ─── label inline (SVG text) — usado apenas no desktop ────────────────────────
 
 interface LabelProps {
   x?:      number;
@@ -144,10 +144,10 @@ interface LabelProps {
 function BarLabel({ x = 0, y = 0, width = 0, height = 0, value }: LabelProps) {
   if (value == null || !isFinite(value)) return null;
 
-  // posiciona o label fora da barra: para positivos, à direita; negativos, à esquerda
+  // posiciona o label fora da barra: positivos à direita, negativos à esquerda
   const isPositive = value >= 0;
-  const lx     = isPositive ? x + width + 6 : x + width - 6;
-  const anchor = isPositive ? "start" : "end";
+  const lx         = isPositive ? x + width + 6 : x + width - 6;
+  const anchor      = isPositive ? "start" : "end";
 
   return (
     <text
@@ -163,19 +163,110 @@ function BarLabel({ x = 0, y = 0, width = 0, height = 0, value }: LabelProps) {
   );
 }
 
+// ─── versão mobile: lista de barras compactas ──────────────────────────────────
+
+function MobileBarList({ data }: { data: ChartEntry[] }) {
+  const maxAbs = Math.max(...data.map((d) => Math.abs(d.diferenca ?? 0)), 1);
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+      {data.map((entry) => {
+        const { label, diferenca, curso, campus } = entry;
+        const isPositive = diferenca != null && diferenca >= 0;
+        const barColor   =
+          diferenca == null
+            ? "rgba(154,106,33,0.22)"
+            : isPositive
+            ? COLOR_POSITIVE
+            : COLOR_NEGATIVE;
+
+        // largura proporcional ao maior valor absoluto; mínimo 4% para visibilidade
+        const barFraction =
+          diferenca == null
+            ? 0
+            : Math.max(Math.abs(diferenca) / maxAbs, 0.04);
+
+        return (
+          <Box key={label}>
+            {/* linha: nome da área + valor com sinal */}
+            <Box
+              sx={{
+                display:        "flex",
+                justifyContent: "space-between",
+                alignItems:     "baseline",
+                mb:             0.75,
+                gap:            1,
+              }}
+            >
+              <Typography
+                sx={{ fontSize: 13, fontWeight: 500, color: "text.primary", flexShrink: 0 }}
+              >
+                {label}
+              </Typography>
+
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                <Typography
+                  sx={{
+                    fontSize:           13,
+                    fontWeight:         700,
+                    color:              barColor,
+                    fontVariantNumeric: "tabular-nums",
+                    whiteSpace:         "nowrap",
+                  }}
+                >
+                  {fmtSigned(diferenca)}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: 10, color: "text.disabled", whiteSpace: "nowrap" }}
+                >
+                  curso: {fmtNota(curso)} / campus: {fmtNota(campus)}
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* trilho + barra proporcional */}
+            <Box
+              sx={{
+                width:        "100%",
+                height:       10,
+                bgcolor:      "rgba(154, 106, 33, 0.08)",
+                borderRadius: "6px",
+                overflow:     "hidden",
+              }}
+            >
+              <Box
+                sx={{
+                  width:        `${barFraction * 100}%`,
+                  height:       "100%",
+                  bgcolor:      barColor,
+                  borderRadius: "6px",
+                  transition:   "width 0.4s ease",
+                }}
+              />
+            </Box>
+          </Box>
+        );
+      })}
+    </Box>
+  );
+}
+
 // ─── componente principal ──────────────────────────────────────────────────────
 
 export function AreasDifferenceChart() {
-  const theme    = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("mobile"));
+  const theme = useTheme();
+
+  // tabletSmall = 600px — corrige o breakpoint anterior (mobile=390px era abaixo
+  // do tamanho real dos celulares, fazendo isMobile ser sempre false em phones)
+  const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
 
   const { dadosFiltrados: dados, dadosUFMAFiltrados: dadosUFMA } = useAreasFilter();
 
   const chartData = useMemo<ChartEntry[]>(
     () =>
       AREAS.map(({ label, key }) => {
-        const curso  = avg(dados, key);
-        const campus = avg(dadosUFMA, key);
+        const curso   = avg(dados, key);
+        const campus  = avg(dadosUFMA, key);
         const diferenca =
           curso != null && campus != null
             ? Math.round((curso - campus) * 100) / 100
@@ -188,17 +279,11 @@ export function AreasDifferenceChart() {
   const hasData = chartData.some((d) => d.diferenca != null);
 
   // domínio simétrico em torno de zero, arredondado para múltiplo de 10
-  const maxAbs = Math.max(
-    ...chartData.map((d) => Math.abs(d.diferenca ?? 0)),
-    10
-  );
+  const maxAbs    = Math.max(...chartData.map((d) => Math.abs(d.diferenca ?? 0)), 10);
   const axisLimit = Math.ceil(maxAbs / 10) * 10 + 10;
 
-  const gridColor  = "rgba(154, 106, 33, 0.12)";
-  const textColor  = theme.palette.text.secondary;
-
-  // margem esquerda maior em mobile para caber os labels das áreas
-  const marginLeft = isMobile ? 82 : 96;
+  const gridColor = "rgba(154, 106, 33, 0.12)";
+  const textColor = theme.palette.text.secondary;
 
   return (
     <Box sx={{ ...dashboardChartCardSx, p: { xs: 2.5, mobile: 3 } }}>
@@ -206,19 +291,24 @@ export function AreasDifferenceChart() {
         Diferença em relação à média do campus
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Valores positivos indicam desempenho acima da média do campus; valores negativos indicam desempenho abaixo.
+        Valores positivos indicam desempenho acima da média do campus; valores
+        negativos indicam desempenho abaixo.
       </Typography>
 
       {!hasData ? (
         <Typography variant="body2" color="text.secondary">
           Sem dados disponíveis para o filtro selecionado.
         </Typography>
+      ) : isMobile ? (
+        /* ── mobile: lista de barras compactas, sem eixos sobrepostos ── */
+        <MobileBarList data={chartData} />
       ) : (
-        <ResponsiveContainer width="100%" height={isMobile ? 300 : 320}>
+        /* ── desktop: gráfico divergente horizontal ── */
+        <ResponsiveContainer width="100%" height={320}>
           <BarChart
             layout="vertical"
             data={chartData}
-            margin={{ top: 4, right: isMobile ? 48 : 60, left: 0, bottom: 8 }}
+            margin={{ top: 4, right: 60, left: 0, bottom: 8 }}
             barCategoryGap="30%"
           >
             <CartesianGrid
@@ -232,7 +322,7 @@ export function AreasDifferenceChart() {
               type="number"
               domain={[-axisLimit, axisLimit]}
               tickFormatter={(v) => fmtSigned(v)}
-              tick={{ fill: textColor, fontSize: isMobile ? 10 : 12 }}
+              tick={{ fill: textColor, fontSize: 12 }}
               axisLine={false}
               tickLine={false}
             />
@@ -241,8 +331,8 @@ export function AreasDifferenceChart() {
             <YAxis
               type="category"
               dataKey="label"
-              width={marginLeft}
-              tick={{ fill: textColor, fontSize: isMobile ? 11 : 12 }}
+              width={96}
+              tick={{ fill: textColor, fontSize: 12 }}
               axisLine={false}
               tickLine={false}
             />
@@ -253,17 +343,9 @@ export function AreasDifferenceChart() {
             />
 
             {/* linha de referência no zero */}
-            <ReferenceLine
-              x={0}
-              stroke={COLOR_ZERO}
-              strokeWidth={2}
-            />
+            <ReferenceLine x={0} stroke={COLOR_ZERO} strokeWidth={2} />
 
-            <Bar
-              dataKey="diferenca"
-              radius={[0, 4, 4, 0]}
-              label={<BarLabel />}
-            >
+            <Bar dataKey="diferenca" radius={[0, 4, 4, 0]} label={<BarLabel />}>
               {chartData.map((entry) => (
                 <Cell
                   key={entry.label}
