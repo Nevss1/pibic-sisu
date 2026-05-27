@@ -32,7 +32,7 @@ export default async function AreasPage({
           }}
         >
           <Areas.AreasCards />
-          <Areas.RadarAreaChart />
+          <Areas.AreasComparisonChart />
         </Box>
       </Areas.AreasFilterProvider>
     </Container>
