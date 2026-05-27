@@ -31,21 +31,39 @@ const TIERS = [
 
 const AREAS = [
   { label: "Todos" },
-  { label: "Saúde",      keywords: ["medicina", "enfermagem", "odontologia", "farmácia", "fisioterapia", "nutrição", "psicologia", "veterinária", "biomedicina", "saúde coletiva"] },
-  { label: "Engenharia", keywords: ["engenharia"] },
-  { label: "Tecnologia", keywords: ["computação", "sistemas de informação", "informática", "tecnologia"] },
-  { label: "Humanas",    keywords: ["direito", "história", "geografia", "pedagogia", "letras", "filosofia", "sociologia", "serviço social", "ciências sociais", "arquivologia"] },
-  { label: "Negócios",   keywords: ["administração", "economia", "ciências contábeis", "contábeis", "turismo", "secretariado"] },
-  { label: "Ciências",   keywords: ["química", "física", "matemática", "biologia", "estatística", "ciências naturais", "oceanografia"] },
-  { label: "Artes",      keywords: ["música", "teatro", "artes", "design", "dança", "educação artística"] },
-  { label: "Educação",   keywords: ["educação física", "licenciatura"] },
-  { label: "Outros",     keywords: [] },
+  { label: "Exatas e Tecnologia",   keywords: ["computação", "sistemas", "engenharia", "matemática", "física", "química", "estatística", "tecnologia", "ciência e tecnologia", "informática"] },
+  { label: "Saúde",                 keywords: ["medicina", "enfermagem", "farmácia", "odontologia", "nutrição", "educação física", "saúde coletiva", "fisioterapia", "biomedicina", "saúde"] },
+  { label: "Biológicas e Natureza", keywords: ["biologia", "biológicas", "ciências naturais", "natureza", "oceanografia"] },
+  { label: "Humanas",               keywords: ["história", "geografia", "filosofia", "psicologia", "ciências sociais", "sociologia", "antropologia"] },
+  { label: "Sociais Aplicadas",     keywords: ["administração", "contábeis", "econômicas", "economia", "direito", "serviço social", "comunicação", "jornalismo", "turismo", "biblioteconomia", "gestão", "secretariado", "arquivologia"] },
+  { label: "Linguagens e Artes",    keywords: ["letras", "artes", "música", "teatro", "linguagem", "língua", "português", "inglês", "espanhol", "libras", "design", "dança"] },
+  { label: "Educação",              keywords: ["pedagogia"] },
+  { label: "Agrárias",              keywords: ["agronomia", "zootecnia", "pesca", "veterinária", "agrárias", "agro"] },
+  { label: "Outros",                keywords: [] },
+];
+
+// Prioridade de classificação separada da ordem visual das chips.
+// Categorias mais específicas ou com keywords que se sobrepõem a outras
+// (ex: "Agrárias" antes de "Exatas" para "Engenharia de Pesca" → Agrárias,
+//  "Saúde" antes de "Exatas" para "Educação Física" não cair em Física/Exatas).
+const CLASSIFY_PRIORITY = [
+  "Agrárias",
+  "Saúde",
+  "Biológicas e Natureza",
+  "Educação",
+  "Linguagens e Artes",
+  "Humanas",
+  "Sociais Aplicadas",
+  "Exatas e Tecnologia",
 ];
 
 function getCursoArea(nome: string): string {
   const lower = nome.toLowerCase();
-  const match = AREAS.slice(1, -1).find((a) => a.keywords?.some((k) => lower.includes(k)));
-  return match?.label ?? "Outros";
+  for (const label of CLASSIFY_PRIORITY) {
+    const area = AREAS.find((a) => a.label === label);
+    if (area?.keywords?.some((k) => lower.includes(k))) return label;
+  }
+  return "Outros";
 }
 
 function getTier(ratio: number) {
