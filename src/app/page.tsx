@@ -1,24 +1,201 @@
 "use client";
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { Autocomplete, Box, Button, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Popover,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useNomeCursos } from "@/src/hooks";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { toTitleCase } from "../utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import BackgroundParticles from "./BackgroundParticles";
 
 export default function HomePage() {
   const { data: cursos = [] } = useNomeCursos();
   const router = useRouter();
+  const theme = useTheme();
+  const isDesktopSelector = useMediaQuery(theme.breakpoints.up("tabletSmall"), {
+    noSsr: true,
+  });
 
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
+  const [selectedCurso, setSelectedCurso] = useState<string | null>(null);
+  const [desktopSelectorAnchor, setDesktopSelectorAnchor] = useState<HTMLElement | null>(null);
+  const [mobileSelectorOpen, setMobileSelectorOpen] = useState(false);
+  const [selectorSearch, setSelectorSearch] = useState("");
   const spotlightRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(typeof window !== "undefined" ? window.innerWidth / 2 : 0);
   const mouseY = useMotionValue(typeof window !== "undefined" ? window.innerHeight / 2 : 0);
   const springX = useSpring(mouseX, { stiffness: 80, damping: 25 });
   const springY = useSpring(mouseY, { stiffness: 80, damping: 25 });
+
+  const cursoOptions = useMemo(
+    () => cursos.map((c: { no_curso: string }) => toTitleCase(c.no_curso)),
+    [cursos]
+  );
+
+  const filteredCursoOptions = useMemo(() => {
+    const search = selectorSearch.trim().toLowerCase();
+    if (!search) return cursoOptions;
+    return cursoOptions.filter((curso: string) =>
+      curso.toLowerCase().includes(search)
+    );
+  }, [cursoOptions, selectorSearch]);
+
+  const selectedCursoUrl = selectedCurso
+    ? `/cursos/${encodeURIComponent(selectedCurso.toLowerCase())}`
+    : "/cursos";
+  const selectorOpen = Boolean(desktopSelectorAnchor) || mobileSelectorOpen;
+
+  const closeCourseSelector = () => {
+    setDesktopSelectorAnchor(null);
+    setMobileSelectorOpen(false);
+    setSelectorSearch("");
+  };
+
+  const openCourseSelector = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    if (isDesktopSelector) {
+      setDesktopSelectorAnchor(event.currentTarget);
+      return;
+    }
+
+    setMobileSelectorOpen(true);
+  };
+
+  const navigateWithFade = (url: string) => {
+    if (pendingUrl) return;
+    closeCourseSelector();
+    setPendingUrl(url);
+  };
+
+  const courseSelectorContent = (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: { xs: "100%", tabletSmall: 420 },
+        maxWidth: "calc(100vw - 32px)",
+        height: { xs: "auto", tabletSmall: 460 },
+        maxHeight: { xs: "min(82dvh, 720px)", tabletSmall: "min(72vh, 460px)" },
+        p: 2,
+        pb: { xs: "calc(16px + env(safe-area-inset-bottom))", tabletSmall: 2 },
+        boxSizing: "border-box",
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2, mb: 1.5 }}>
+        <Typography variant="h6" sx={{ color: "#1e1b16" }}>
+          Selecionar curso
+        </Typography>
+        <Button
+          onClick={closeCourseSelector}
+          sx={{
+            minWidth: 0,
+            color: "rgba(30,27,22,0.72)",
+            fontSize: 14,
+            textTransform: "none",
+          }}
+        >
+          Cancelar
+        </Button>
+      </Box>
+
+      <TextField
+        value={selectorSearch}
+        onChange={(event) => setSelectorSearch(event.target.value)}
+        placeholder="Buscar curso..."
+        fullWidth
+        size="small"
+        sx={{
+          mb: 1.5,
+          "& .MuiInputBase-input": {
+            fontSize: 16,
+          },
+          "& .MuiOutlinedInput-root": {
+            color: "#1e1b16",
+            backgroundColor: "#fff",
+            "& fieldset": { borderColor: "rgba(213,176,113,0.45)" },
+            "&:hover fieldset": { borderColor: "rgba(213,176,113,0.7)" },
+            "&.Mui-focused fieldset": { borderColor: "#D5B071" },
+          },
+        }}
+      />
+
+      <List
+        id="home-course-selector-list"
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
+          px: 0,
+          py: 0.5,
+        }}
+      >
+        {filteredCursoOptions.length === 0 ? (
+          <Typography
+            sx={{
+              px: 1.5,
+              py: 2,
+              color: "rgba(30,27,22,0.58)",
+              fontSize: 14,
+            }}
+          >
+            Nenhum curso encontrado.
+          </Typography>
+        ) : filteredCursoOptions.map((curso: string) => (
+          <ListItemButton
+            key={curso}
+            selected={curso === selectedCurso}
+            onClick={() => {
+              setSelectedCurso(curso);
+              navigateWithFade(`/cursos/${encodeURIComponent(curso.toLowerCase())}`);
+            }}
+            sx={{
+              minHeight: 52,
+              alignItems: "flex-start",
+              borderRadius: 2,
+              px: 1.5,
+              py: 1.1,
+              mb: 0.25,
+              "&.Mui-selected": {
+                backgroundColor: "rgba(213,176,113,0.15)",
+                "&:hover": { backgroundColor: "rgba(213,176,113,0.2)" },
+              },
+              "&:hover": {
+                backgroundColor: "rgba(213,176,113,0.08)",
+              },
+            }}
+          >
+            <ListItemText
+              primary={curso}
+              slotProps={{
+                primary: {
+                  sx: {
+                    color: curso === selectedCurso ? "#8a6e3a" : "rgba(30,27,22,0.82)",
+                    fontSize: 15,
+                    lineHeight: 1.35,
+                    whiteSpace: "normal",
+                    overflowWrap: "anywhere",
+                  },
+                },
+              }}
+            />
+          </ListItemButton>
+        ))}
+      </List>
+    </Box>
+  );
 
   useEffect(() => {
     const update = () => {
@@ -87,49 +264,47 @@ export default function HomePage() {
         transition={{ delay: 1, duration: 0.4 }}
         className="relative z-10 w-full px-6 sm:px-10 flex justify-center"
       >
-        <Autocomplete
-          disablePortal
-          options={cursos.map((c: { no_curso: string }) =>
-            toTitleCase(c.no_curso)
-          )}
-          onChange={(_, value) => {
-            if (value)
-              setPendingUrl(`/cursos/${encodeURIComponent((value as string).toLowerCase())}`);
-          }}
-          slotProps={{
-            paper: {
-              sx: {
-                backgroundColor: "#FEF9F6",
-                border: "1px solid rgba(213,176,113,0.35)",
-                "& .MuiAutocomplete-option": {
-                  color: "rgba(30,27,22,0.8)",
-                  '&[aria-selected="true"]': {
-                    backgroundColor: "rgba(213,176,113,0.15) !important",
-                    color: "#D5B071",
-                  },
-                  '&.Mui-focused': {
-                    backgroundColor: "rgba(213,176,113,0.08) !important",
-                  },
-                },
-              },
-            },
-          }}
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={openCourseSelector}
+          aria-haspopup="dialog"
+          aria-expanded={selectorOpen}
+          aria-controls={selectorOpen ? "home-course-selector-list" : undefined}
           sx={{
             width: "min(400px, 100%)",
-            "& .MuiOutlinedInput-root": {
-              color: "#1e1b16",
-              "& fieldset": { borderColor: "rgba(213,176,113,0.5)" },
-              "&:hover fieldset": { borderColor: "rgba(213,176,113,0.7)" },
-              "&.Mui-focused fieldset": { borderColor: "#D5B071" },
+            minHeight: 56,
+            justifyContent: "space-between",
+            gap: 1.5,
+            px: 1.75,
+            color: selectedCurso ? "#1e1b16" : "rgba(100,116,139,0.9)",
+            backgroundColor: "rgba(255,255,255,0.48)",
+            borderColor: "rgba(213,176,113,0.5)",
+            borderRadius: 2,
+            fontSize: 16,
+            lineHeight: 1.35,
+            textAlign: "left",
+            textTransform: "none",
+            overflow: "hidden",
+            backdropFilter: "blur(8px)",
+            "&:hover": {
+              borderColor: "rgba(213,176,113,0.7)",
+              backgroundColor: "rgba(213,176,113,0.06)",
             },
-            "& .MuiInputLabel-root": { color: "rgba(100,116,139,0.9)" },
-            "& .MuiInputLabel-root.Mui-focused": { color: "#B8922E" },
-            "& .MuiSvgIcon-root": { color: "rgba(100,116,139,0.7)" },
           }}
-          renderInput={(params) => (
-            <TextField {...params} label="Digite seu curso" />
-          )}
-        />
+        >
+          <Box component="span" sx={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+            {selectedCurso ?? "Selecionar curso"}
+          </Box>
+          <KeyboardArrowDownIcon
+            sx={{
+              flexShrink: 0,
+              color: "rgba(100,116,139,0.75)",
+              transform: selectorOpen ? "rotate(180deg)" : "rotate(0deg)",
+              transition: "transform 0.18s ease",
+            }}
+          />
+        </Button>
       </motion.div>
 
       <motion.div
@@ -168,8 +343,7 @@ export default function HomePage() {
           }}
         >
           <Button
-            component={Link}
-            href="/cursos"
+            onClick={() => navigateWithFade(selectedCursoUrl)}
             variant="outlined"
             size="small"
             fullWidth
@@ -187,8 +361,7 @@ export default function HomePage() {
             Explorar cursos
           </Button>
           <Button
-            component={Link}
-            href="/perfil"
+            onClick={() => navigateWithFade("/perfil")}
             variant="outlined"
             size="small"
             fullWidth
@@ -218,6 +391,51 @@ export default function HomePage() {
       </motion.p>
 
       <BackgroundParticles />
+
+      <Popover
+        open={Boolean(desktopSelectorAnchor)}
+        anchorEl={desktopSelectorAnchor}
+        onClose={closeCourseSelector}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        transformOrigin={{ vertical: "top", horizontal: "center" }}
+        sx={{
+          display: { xs: "none", tabletSmall: "block" },
+        }}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              borderRadius: 2,
+              backgroundColor: "#FEF9F6",
+              border: "1px solid rgba(213,176,113,0.28)",
+              boxShadow: "0 18px 50px rgba(30,27,22,0.14)",
+              overflow: "hidden",
+            },
+          },
+        }}
+      >
+        {courseSelectorContent}
+      </Popover>
+
+      <Drawer
+        anchor="bottom"
+        open={mobileSelectorOpen}
+        onClose={closeCourseSelector}
+        sx={{
+          display: { tabletSmall: "none" },
+          "& .MuiDrawer-paper": {
+            width: "100%",
+            maxWidth: "100vw",
+            maxHeight: "min(82dvh, 720px)",
+            borderTopLeftRadius: 18,
+            borderTopRightRadius: 18,
+            backgroundColor: "#FEF9F6",
+            overflow: "hidden",
+          },
+        }}
+      >
+        {courseSelectorContent}
+      </Drawer>
 
       {pendingUrl && (
         <motion.div
