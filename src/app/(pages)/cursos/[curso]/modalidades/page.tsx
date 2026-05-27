@@ -33,6 +33,7 @@ export default async function ModalidadePage({
         >
           <Modalidades.ModalidadesCards />
           <Modalidades.ModalidadesTemporalChart />
+          <Modalidades.ModalidadesApprovalRateChart />
         </Box>
       </Modalidades.ModalidadesFilterProvider>
     </Container>
