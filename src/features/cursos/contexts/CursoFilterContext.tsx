@@ -8,6 +8,7 @@ import { Box, CircularProgress } from "@mui/material";
 import { createContext, useContext } from "react";
 
 type CursoFilterContextType = {
+  curso: string;
   dadosFiltrados: DadoOverviewCurso[] | undefined;
   dadosTodosPeriodos: DadoOverviewCurso[] | undefined;
   isLoading: boolean;
@@ -32,17 +33,19 @@ export function CursoFilterProvider({
   return (
     <YearFilterProvider anosDisponiveis={anosDisponiveis}>
       <CampusFilterProvider campusDisponiveis={campusDisponiveis}>
-        <CursoFilterInner dados={dados} isLoading={isLoading}>{children}</CursoFilterInner>
+        <CursoFilterInner curso={curso ?? ""} dados={dados} isLoading={isLoading}>{children}</CursoFilterInner>
       </CampusFilterProvider>
     </YearFilterProvider>
   );
 }
 
 function CursoFilterInner({
+  curso,
   dados,
   isLoading,
   children,
 }: {
+  curso: string;
   dados: DadoOverviewCurso[] | undefined;
   isLoading: boolean;
   children: React.ReactNode;
@@ -53,7 +56,7 @@ function CursoFilterInner({
   const dadosTodosPeriodos = dados?.filter((d) => d.campus === campusSelecionado);
 
   return (
-    <CursoFilterContext.Provider value={{ dadosFiltrados, dadosTodosPeriodos, isLoading }}>
+    <CursoFilterContext.Provider value={{ curso, dadosFiltrados, dadosTodosPeriodos, isLoading }}>
       {children}
     </CursoFilterContext.Provider>
   );

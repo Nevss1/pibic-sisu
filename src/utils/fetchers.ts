@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AreasCurso, ModalidadesCurso, OverviewCurso } from "../types/sisu";
+import { AreasCurso, GeneroCurso, ModalidadesCurso, OverviewCurso } from "../types/sisu";
 
 const api = axios.create({
   baseURL: "/api",
@@ -35,6 +35,13 @@ export async function fetchAreasNotasUFMA() {
 
 export async function fetchModalidadesCurso(cursoNome: string, edicao?: string) {
   const { data } = await api.get<ModalidadesCurso>(`/cursos/${encodeURIComponent(cursoNome)}/modalidades`, {
+    params: edicao ? { edicao } : {},
+  })
+  return data
+}
+
+export async function fetchGeneroCurso(cursoNome: string, edicao?: string) {
+  const { data } = await api.get<GeneroCurso>(`/cursos/${encodeURIComponent(cursoNome)}/genero`, {
     params: edicao ? { edicao } : {},
   })
   return data

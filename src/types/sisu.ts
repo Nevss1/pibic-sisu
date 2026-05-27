@@ -56,3 +56,14 @@ export type DadoModalidadesCurso = {
 }
 
 export type ModalidadesCurso = DadoModalidadesCurso[]
+
+export type DadoGeneroCurso = {
+  ano: string
+  campus: string
+  sexo: string
+  total_candidatos: number
+  aprovados: number
+  taxa_aprovacao: number
+}
+
+export type GeneroCurso = DadoGeneroCurso[]
