@@ -156,6 +156,9 @@ export default function DashboardLayout({
             "& .MuiDrawer-paper": {
               width: DRAWER_WIDTH,
               boxSizing: "border-box",
+              height: "100dvh",
+              paddingTop: "max(env(safe-area-inset-top), 12px)",
+              overflowY: "auto",
             },
           }}
         >
