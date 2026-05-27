@@ -19,6 +19,7 @@ import {
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Fragment, useEffect, useState } from "react";
 import { dashboardGlassCardSx, dashboardMetricCardSx } from "@/src/config/dashboardStyles";
+import { PerfilTemporalChart } from "./PerfilTemporalChart";
 
 type Opcoes = {
   campuses: string[];
@@ -27,7 +28,7 @@ type Opcoes = {
   modalidades: string[];
 };
 
-type AnoRow = {
+export type AnoRow = {
   ano: number;
   total: number;
   aprovados: number;
@@ -491,6 +492,9 @@ export function PerfilClient() {
               </Typography>
               <TabelaHistorico rows={resultado.rows} />
             </Box>
+
+            {/* Gráfico temporal */}
+            <PerfilTemporalChart rows={resultado.rows} />
 
             {/* Aviso */}
             <Box
