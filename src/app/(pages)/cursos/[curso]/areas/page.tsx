@@ -13,7 +13,7 @@ export default async function AreasPage({
   const nomeCurso = toTitleCase(decodeURIComponent(curso));
 
   return (
-    <Container sx={{ paddingBottom: 200 }}>
+    <Container>
       <Areas.AreasFilterProvider curso={nomeCurso}>
         <PageHeader
           title={nomeCurso}
@@ -32,7 +32,7 @@ export default async function AreasPage({
           }}
         >
           <Areas.AreasCards />
-          <Areas.AreasComparisonChart />
+          <Areas.AreasDifferenceChart />
         </Box>
       </Areas.AreasFilterProvider>
     </Container>
