@@ -67,3 +67,26 @@ export type DadoGeneroCurso = {
 }
 
 export type GeneroCurso = DadoGeneroCurso[]
+
+/**
+ * Linha retornada por GET /api/faixas-etarias.
+ *
+ * A idade estimada é calculada internamente como (ano - dt_nascimento).
+ * O frontend nunca recebe dt_nascimento nem idades individuais —
+ * apenas faixas etárias agregadas.
+ */
+export type DadoFaixaEtaria = {
+  /** Ano do processo seletivo (ex: "2023") */
+  ano: string
+  /** Campus (ex: "São Luís") */
+  campus: string
+  /**
+   * Faixa etária estimada.
+   * Valores possíveis: 'Menos de 18' | '18 a 20' | '21 a 24' | '25 a 29' | '30 a 39' | '40 ou mais'
+   */
+  faixa_etaria: string
+  /** Total de inscrições nessa faixa, campus e ano */
+  total_candidatos: number
+}
+
+export type FaixasEtarias = DadoFaixaEtaria[]

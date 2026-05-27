@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AreasCurso, GeneroCurso, ModalidadesCurso, OverviewCurso } from "../types/sisu";
+import { AreasCurso, FaixasEtarias, GeneroCurso, ModalidadesCurso, OverviewCurso } from "../types/sisu";
 
 const api = axios.create({
   baseURL: "/api",
@@ -45,4 +45,22 @@ export async function fetchGeneroCurso(cursoNome: string, edicao?: string) {
     params: edicao ? { edicao } : {},
   })
   return data
+}
+
+/**
+ * Busca a distribuição de inscrições por faixa etária estimada.
+ * Agrupa por (ano, campus, faixa_etaria).
+ * Nunca retorna dt_nascimento nem idades individuais.
+ *
+ * @param campus — se fornecido, filtra no servidor; omitir para buscar todos os campuses
+ * @param edicao — se fornecido, filtra pela edição do SISU
+ */
+export async function fetchFaixasEtarias(campus?: string, edicao?: string) {
+  const params: Record<string, string> = {};
+  if (campus) params.campus = campus;
+  if (edicao) params.edicao = edicao;
+  const { data } = await api.get<FaixasEtarias>("/faixas-etarias", {
+    params: Object.keys(params).length ? params : undefined,
+  });
+  return data;
 }
