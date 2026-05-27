@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -35,9 +35,20 @@ export default function DashboardLayout({
 }) {
   const theme = useTheme();
   const isLaptop = useMediaQuery(theme.breakpoints.up("laptop"));
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const pathname = usePathname();
+
+  useEffect(() => {
+    setOpen(isLaptop);
+  }, [isLaptop]);
+
+  useEffect(() => {
+    if (!isLaptop) {
+      setOpen(false);
+    }
+  }, [isLaptop, pathname]);
+
   const segments = pathname.split("/").filter(Boolean);
   const breadcrumbs = segments.map((segment, index) => {
     const href = "/" + segments.slice(0, index + 1).join("/");
