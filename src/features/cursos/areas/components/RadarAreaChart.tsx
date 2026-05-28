@@ -4,6 +4,7 @@ import { RadarAxis, RadarChart } from "@mui/x-charts";
 import { useAreasFilter } from "../contexts/AreasFilterContext";
 import { Box, Typography } from "@mui/material";
 import { dashboardChartCardSx } from "@/src/config/dashboardStyles";
+import { DashboardEmptyState } from "@/src/components";
 
 const AREAS = [
   { label: "Matemática", key: "media_matematica" },
@@ -30,6 +31,19 @@ export const RadarAreaChart = () => {
   const maxNota = Math.ceil(
     Math.max(...mediasCurso, ...mediasUFMA, 0) / 100
   ) * 100;
+
+  const hasData = mediasCurso.length > 0 || mediasUFMA.length > 0;
+
+  if (!hasData) {
+    return (
+      <Box sx={{ ...dashboardChartCardSx, p: { xs: 2.5, mobile: 3 } }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
+          Notas médias por área
+        </Typography>
+        <DashboardEmptyState height={160} hint={undefined} />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ ...dashboardChartCardSx, p: { xs: 2.5, mobile: 3 } }}>

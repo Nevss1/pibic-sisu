@@ -12,11 +12,11 @@ import {
   Legend,
 } from "recharts";
 import CardContent from "@mui/material/CardContent";
-import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { useGeralOverview } from "@/src/hooks";
 import { useCampusFilter } from "@/src/features";
+import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "@/src/components";
 
 type TemporalEntry = {
   ano: string | number;
@@ -120,7 +120,7 @@ export function EvolucaoTemporalChart() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
   const { campusSelecionado } = useCampusFilter();
-  const { data, isLoading } = useGeralOverview();
+  const { data, isLoading, error } = useGeralOverview();
 
   const chartData = useMemo(() => {
     if (!data) return [];
@@ -134,21 +134,9 @@ export function EvolucaoTemporalChart() {
       .sort((a, b) => Number(a.ano) - Number(b.ano));
   }, [data, campusSelecionado]);
 
-  if (isLoading) {
-    return (
-      <CardContent sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-        <CircularProgress size={32} />
-      </CardContent>
-    );
-  }
-
-  if (!chartData.length) {
-    return (
-      <CardContent>
-        <Typography color="text.secondary">Sem dados disponíveis.</Typography>
-      </CardContent>
-    );
-  }
+  if (isLoading) return <DashboardLoadingState height={360} />;
+  if (error) return <DashboardErrorState />;
+  if (!chartData.length) return <DashboardEmptyState />;
 
   const isDark = theme.palette.mode === "dark";
   const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(154, 106, 33, 0.12)";

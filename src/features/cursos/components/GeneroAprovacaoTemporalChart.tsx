@@ -18,6 +18,7 @@ import { useCursoFilter } from "../contexts";
 import { useCampusFilter } from "@/src/features";
 import { useGeneroCurso } from "@/src/hooks";
 import { DadoGeneroCurso } from "@/src/types/sisu";
+import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "@/src/components";
 
 // Valores de sexo presentes no dataset SISU (M = Masculino, F = Feminino).
 // Registros com sexo nulo são excluídos pela query.
@@ -119,7 +120,7 @@ export function GeneroAprovacaoTemporalChart() {
   const { curso } = useCursoFilter();
   const { campusSelecionado } = useCampusFilter();
 
-  const { data: dadosGenero, isLoading } = useGeneroCurso(curso);
+  const { data: dadosGenero, isLoading, error } = useGeneroCurso(curso);
 
   const chartData = useMemo(
     () => (dadosGenero && campusSelecionado ? buildChartData(dadosGenero, campusSelecionado) : []),
@@ -130,31 +131,9 @@ export function GeneroAprovacaoTemporalChart() {
     theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(154, 106, 33, 0.12)";
   const textColor = theme.palette.text.secondary;
 
-  if (isLoading) {
-    return (
-      <CardContent>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-          Taxa de aprovação por gênero
-        </Typography>
-        <Typography color="text.secondary" variant="body2">
-          Carregando...
-        </Typography>
-      </CardContent>
-    );
-  }
-
-  if (!chartData.length) {
-    return (
-      <CardContent>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-          Taxa de aprovação por gênero
-        </Typography>
-        <Typography color="text.secondary" variant="body2">
-          Sem dados disponíveis para o filtro selecionado.
-        </Typography>
-      </CardContent>
-    );
-  }
+  if (isLoading) return <DashboardLoadingState height={360} />;
+  if (error) return <DashboardErrorState />;
+  if (!chartData.length) return <DashboardEmptyState />;
 
   return (
     <CardContent sx={{ p: { xs: 2.5, mobile: 3 } }}>

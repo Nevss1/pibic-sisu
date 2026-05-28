@@ -6,7 +6,6 @@ import {
   CardContent,
   Typography,
   Box,
-  CircularProgress,
   Tooltip as MuiTooltip,
   useMediaQuery,
   useTheme,
@@ -14,6 +13,7 @@ import {
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useCandidatosCursos } from "@/src/hooks";
 import { useCampusFilter, useYearFilter } from "@/src/features";
+import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "@/src/components";
 
 const MIN_INSCRITOS = 30;
 const TOP_N = 10;
@@ -143,7 +143,7 @@ export function TaxaAprovacaoRanking() {
   const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
   const { anosSelecionados } = useYearFilter();
   const { campusSelecionado } = useCampusFilter();
-  const { data, isLoading } = useCandidatosCursos();
+  const { data, isLoading, error } = useCandidatosCursos();
 
   const dataset = useMemo(() => {
     if (!data) return [];
@@ -174,23 +174,9 @@ export function TaxaAprovacaoRanking() {
       .slice(0, TOP_N);
   }, [data, anosSelecionados, campusSelecionado]);
 
-  if (isLoading || !data) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height={300}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (!dataset.length) {
-    return (
-      <CardContent>
-        <Typography color="text.secondary">
-          Sem dados disponíveis para o recorte selecionado.
-        </Typography>
-      </CardContent>
-    );
-  }
+  if (isLoading || !data) return <DashboardLoadingState height={360} />;
+  if (error) return <DashboardErrorState />;
+  if (!dataset.length) return <DashboardEmptyState />;
 
   const chartHeight = Math.max(300, dataset.length * 52 + 64);
   const maxRate = Math.max(...dataset.map((item) => item.taxa), 0);

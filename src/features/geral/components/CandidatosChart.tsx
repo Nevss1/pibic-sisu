@@ -4,11 +4,11 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import { CardContent, Divider, Tooltip, useTheme } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useCandidatosCursos } from "@/src/hooks";
 import { useCampusFilter, useYearFilter } from "@/src/features";
+import { DashboardErrorState, DashboardLoadingState } from "@/src/components";
 
 const BAR_HEIGHT = 28;
 const BAR_GAP = 10;
@@ -55,7 +55,7 @@ export function CandidatosBarChart() {
   const theme = useTheme();
   const { anosSelecionados } = useYearFilter();
   const { campusSelecionado } = useCampusFilter();
-  const { data, isLoading } = useCandidatosCursos();
+  const { data, isLoading, error } = useCandidatosCursos();
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(800);
   const [hovered, setHovered] = useState<HoveredItem | null>(null);
@@ -116,13 +116,8 @@ export function CandidatosBarChart() {
     });
   }, [dataset]);
 
-  if (isLoading || !data) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height={300}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (isLoading || !data) return <DashboardLoadingState height={420} />;
+  if (error) return <DashboardErrorState />;
 
   const { labelWidth, marginRight, truncateMax, fontSize } = getChartLayout(width);
   const maxVal = Math.max(...dataset.map((d) => d.candidatos), 1);

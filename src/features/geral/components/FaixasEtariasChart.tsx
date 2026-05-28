@@ -15,13 +15,13 @@ import {
 import {
   Box,
   CardContent,
-  CircularProgress,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { useFaixasEtarias } from "@/src/hooks";
 import { useCampusFilter } from "@/src/features";
+import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "@/src/components";
 
 // ─── Configuração das faixas ────────────────────────────────────────────────
 
@@ -226,7 +226,7 @@ export function FaixasEtariasChart() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
   const { campusSelecionado } = useCampusFilter();
-  const { data, isLoading } = useFaixasEtarias();
+  const { data, isLoading, error } = useFaixasEtarias();
 
   const chartData = useMemo<ChartRow[]>(() => {
     if (!data) return [];
@@ -252,29 +252,13 @@ export function FaixasEtariasChart() {
     );
   }, [data, campusSelecionado]);
 
-  // ── Estados de carregamento / vazio ─────────────────────────────────────
-
   // Aguarda tanto os dados da API quanto o campus ser selecionado pelo
   // GeralFilterProvider (que depende de useCursoOverview resolver).
   // Sem esse check, o useMemo roda com campusSelecionado="" e retorna
   // array vazio antes do contexto de campus estar pronto.
-  if (isLoading || !campusSelecionado) {
-    return (
-      <CardContent sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-        <CircularProgress size={32} />
-      </CardContent>
-    );
-  }
-
-  if (!chartData.length) {
-    return (
-      <CardContent>
-        <Typography color="text.secondary">
-          Sem dados de faixa etária disponíveis para o campus selecionado.
-        </Typography>
-      </CardContent>
-    );
-  }
+  if (isLoading || !campusSelecionado) return <DashboardLoadingState height={380} />;
+  if (error) return <DashboardErrorState />;
+  if (!chartData.length) return <DashboardEmptyState />;
 
   // ── Estilo ───────────────────────────────────────────────────────────────
 
