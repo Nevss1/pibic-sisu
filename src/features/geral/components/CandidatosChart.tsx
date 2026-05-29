@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { CardContent, Divider, Tooltip, useTheme } from "@mui/material";
+import { CardContent, Divider, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useCandidatosCursos } from "@/src/hooks";
 import { useCampusFilter, useYearFilter } from "@/src/features";
@@ -51,8 +51,141 @@ type HoveredItem = {
   y: number;
 };
 
+type CandidatosCourseItem = {
+  curso: string;
+  candidatos: number;
+  aprovados: number;
+  concorrencia: number | null;
+};
+
+function formatConcorrencia(value: number | null) {
+  return value != null ? `${value}x por vaga` : "Concorrência indisponível";
+}
+
+function formatTaxaAprovacao(item: CandidatosCourseItem) {
+  return item.candidatos > 0
+    ? `${((item.aprovados / item.candidatos) * 100).toFixed(1)}% aprovação`
+    : "Taxa indisponível";
+}
+
+function MobileCandidatosList({
+  dataset,
+  maxVal,
+}: {
+  dataset: CandidatosCourseItem[];
+  maxVal: number;
+}) {
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+      {dataset.map((item, index) => {
+        const ratio = maxVal > 0 ? item.candidatos / maxVal : 0;
+        const barWidth = ratio > 0 ? Math.max(ratio * 100, 4) : 0;
+        const color = getConcorrenciaColor(item.concorrencia ?? 0);
+
+        return (
+          <Box key={item.curso}>
+            <Box
+              sx={{
+                alignItems: "flex-start",
+                display: "flex",
+                gap: 1.25,
+                justifyContent: "space-between",
+                mb: 0.75,
+              }}
+            >
+              <Box
+                sx={{
+                  alignItems: "flex-start",
+                  display: "flex",
+                  gap: 1,
+                  minWidth: 0,
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    flexShrink: 0,
+                    fontSize: 12,
+                    fontVariantNumeric: "tabular-nums",
+                    fontWeight: 700,
+                    lineHeight: 1.45,
+                    width: 28,
+                  }}
+                >
+                  {index + 1}º
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "text.primary",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    lineHeight: 1.35,
+                    minWidth: 0,
+                    overflowWrap: "anywhere",
+                  }}
+                >
+                  {item.curso}
+                </Typography>
+              </Box>
+
+              <Typography
+                sx={{
+                  color: "text.primary",
+                  flexShrink: 0,
+                  fontSize: 13,
+                  fontVariantNumeric: "tabular-nums",
+                  fontWeight: 700,
+                  lineHeight: 1.35,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {item.candidatos.toLocaleString("pt-BR")}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                bgcolor: "rgba(174, 143, 88, 0.10)",
+                borderRadius: "6px",
+                height: 10,
+                mb: 0.75,
+                overflow: "hidden",
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  bgcolor: color,
+                  borderRadius: "6px",
+                  height: "100%",
+                  transition: `width ${DURATION} ${EASE}`,
+                  width: `${barWidth}%`,
+                }}
+              />
+            </Box>
+
+            <Typography
+              sx={{
+                color: "text.secondary",
+                fontSize: 11,
+                fontVariantNumeric: "tabular-nums",
+                lineHeight: 1.45,
+              }}
+            >
+              {formatConcorrencia(item.concorrencia)} ·{" "}
+              {item.aprovados.toLocaleString("pt-BR")} aprovados ·{" "}
+              {formatTaxaAprovacao(item)}
+            </Typography>
+          </Box>
+        );
+      })}
+    </Box>
+  );
+}
+
 export function CandidatosBarChart() {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
   const { anosSelecionados } = useYearFilter();
   const { campusSelecionado } = useCampusFilter();
   const { data, isLoading, error } = useCandidatosCursos();
@@ -64,26 +197,31 @@ export function CandidatosBarChart() {
   const prevY = useRef<Record<string, number>>({});
 
   useEffect(() => {
+    if (isMobile) return;
+
     const el = containerRef.current;
     if (!el) return;
+
     const ro = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [isMobile]);
 
-  const dataset = useMemo(() => {
+  useEffect(() => {
+    if (isMobile) setHovered(null);
+  }, [isMobile]);
+
+  const dataset = useMemo<CandidatosCourseItem[]>(() => {
     if (!data) return [];
-
-
 
     const filteredData = data.filter((d) => anosSelecionados.includes(d.ano) && d.campus === campusSelecionado);
 
     const aggregate = filteredData.reduce<Record<string, { curso: string; candidatos: number; aprovados: number }>>((acc, d) => {
       acc[d.no_curso] ??= { curso: d.no_curso, candidatos: 0, aprovados: 0 };
-        acc[d.no_curso].candidatos += d.total_candidatos;
-        acc[d.no_curso].aprovados += d.aprovados;
-        return acc;
-    }, {})
+      acc[d.no_curso].candidatos += d.total_candidatos;
+      acc[d.no_curso].aprovados += d.aprovados;
+      return acc;
+    }, {});
 
     return Object.values(aggregate)
       .map((d) => ({
@@ -96,6 +234,8 @@ export function CandidatosBarChart() {
   }, [data, anosSelecionados, campusSelecionado]);
 
   useLayoutEffect(() => {
+    if (isMobile) return;
+
     dataset.forEach((d, i) => {
       const el = rowRefs.current[d.curso];
       if (!el) return;
@@ -114,7 +254,7 @@ export function CandidatosBarChart() {
 
       prevY.current[d.curso] = newY;
     });
-  }, [dataset]);
+  }, [dataset, isMobile]);
 
   if (isLoading || !data) return <DashboardLoadingState height={420} />;
   if (error) return <DashboardErrorState />;
@@ -139,124 +279,130 @@ export function CandidatosBarChart() {
               <InfoOutlinedIcon sx={{ fontSize: 16, color: "text.disabled", cursor: "help" }} />
             </Tooltip>
           </Box>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
-            {TIERS.map((tier) => (
-              <Tooltip key={tier.label} title={tier.description} arrow placement="top">
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, cursor: "help" }}>
-                  <Box sx={{ width: 9, height: 9, borderRadius: "2px", bgcolor: tier.color }} />
-                  <Typography variant="caption" color="text.secondary">{tier.label}</Typography>
-                </Box>
-              </Tooltip>
-            ))}
-          </Box>
+          {!isMobile && (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+              {TIERS.map((tier) => (
+                <Tooltip key={tier.label} title={tier.description} arrow placement="top">
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, cursor: "help" }}>
+                    <Box sx={{ width: 9, height: 9, borderRadius: "2px", bgcolor: tier.color }} />
+                    <Typography variant="caption" color="text.secondary">{tier.label}</Typography>
+                  </Box>
+                </Tooltip>
+              ))}
+            </Box>
+          )}
         </Box>
 
-        <Box
-          sx={{
-            maxHeight: 500,
-            overflowY: "auto",
-            overflowX: "hidden",
-            "&::-webkit-scrollbar": { width: 6 },
-            "&::-webkit-scrollbar-thumb": { borderRadius: 3, bgcolor: "rgba(174, 143, 88, 0.28)" },
-          }}
-        >
-          <div ref={containerRef} style={{ width: "100%" }}>
-            <svg width={width} height={svgHeight} style={{ display: "block", overflow: "visible" }}>
-              <g transform={`translate(${labelWidth}, 6)`}>
-                {dataset.map((d) => {
-                  const ratio = d.candidatos / maxVal;
-                  const barWidth = ratio * innerWidth;
-                  const color = getConcorrenciaColor(d.concorrencia ?? 0);
+        {isMobile ? (
+          <MobileCandidatosList dataset={dataset} maxVal={maxVal} />
+        ) : (
+          <Box
+            sx={{
+              maxHeight: 500,
+              overflowY: "auto",
+              overflowX: "hidden",
+              "&::-webkit-scrollbar": { width: 6 },
+              "&::-webkit-scrollbar-thumb": { borderRadius: 3, bgcolor: "rgba(174, 143, 88, 0.28)" },
+            }}
+          >
+            <div ref={containerRef} style={{ width: "100%" }}>
+              <svg width={width} height={svgHeight} style={{ display: "block", overflow: "visible" }}>
+                <g transform={`translate(${labelWidth}, 6)`}>
+                  {dataset.map((d) => {
+                    const ratio = d.candidatos / maxVal;
+                    const barWidth = ratio * innerWidth;
+                    const color = getConcorrenciaColor(d.concorrencia ?? 0);
 
-                  return (
-                    <g
-                      key={d.curso}
-                      ref={(el) => { rowRefs.current[d.curso] = el; }}
-                      style={{ willChange: "transform", cursor: "pointer" }}
-                      onMouseMove={(e) => {
-                        setHovered({
-                          curso: d.curso,
-                          candidatos: d.candidatos,
-                          aprovados: d.aprovados,
-                          concorrencia: d.concorrencia,
-                          x: e.clientX,
-                          y: e.clientY,
-                        });
-                      }}
-                      onMouseLeave={() => setHovered(null)}
-                    >
-                      <rect
-                        x={0}
-                        y={0}
-                        width={innerWidth}
-                        height={BAR_HEIGHT}
-                        fill="currentColor"
-                        opacity={fgOpacity}
-                        rx={3}
-                      />
-
+                    return (
                       <g
-                        style={{
-                          transform: `scaleX(${ratio})`,
-                          transformOrigin: "0px 0px",
-                          transition: `transform ${DURATION} ${EASE}`,
+                        key={d.curso}
+                        ref={(el) => { rowRefs.current[d.curso] = el; }}
+                        style={{ willChange: "transform", cursor: "pointer" }}
+                        onMouseMove={(e) => {
+                          setHovered({
+                            curso: d.curso,
+                            candidatos: d.candidatos,
+                            aprovados: d.aprovados,
+                            concorrencia: d.concorrencia,
+                            x: e.clientX,
+                            y: e.clientY,
+                          });
                         }}
+                        onMouseLeave={() => setHovered(null)}
                       >
-                        <rect x={0} y={0} width={innerWidth} height={BAR_HEIGHT} fill={color} rx={3} />
-                      </g>
+                        <rect
+                          x={0}
+                          y={0}
+                          width={innerWidth}
+                          height={BAR_HEIGHT}
+                          fill="currentColor"
+                          opacity={fgOpacity}
+                          rx={3}
+                        />
 
-                      <text
-                        x={8}
-                        y={BAR_HEIGHT / 2}
-                        dominantBaseline="central"
-                        fill="white"
-                        fontWeight={600}
-                        fontSize={fontSize}
-                        style={{ pointerEvents: "none" }}
-                      >
-                        {d.candidatos.toLocaleString("pt-BR")}
-                      </text>
+                        <g
+                          style={{
+                            transform: `scaleX(${ratio})`,
+                            transformOrigin: "0px 0px",
+                            transition: `transform ${DURATION} ${EASE}`,
+                          }}
+                        >
+                          <rect x={0} y={0} width={innerWidth} height={BAR_HEIGHT} fill={color} rx={3} />
+                        </g>
 
-                      <g
-                        style={{
-                          transform: `translateX(${barWidth}px)`,
-                          transition: `transform ${DURATION} ${EASE}`,
-                        }}
-                      >
                         <text
                           x={8}
                           y={BAR_HEIGHT / 2}
                           dominantBaseline="central"
-                          fill="currentColor"
+                          fill="white"
+                          fontWeight={600}
                           fontSize={fontSize}
-                          opacity={0.6}
                           style={{ pointerEvents: "none" }}
                         >
-                          {d.concorrencia != null ? `${d.concorrencia}×` : "—"}
+                          {d.candidatos.toLocaleString("pt-BR")}
+                        </text>
+
+                        <g
+                          style={{
+                            transform: `translateX(${barWidth}px)`,
+                            transition: `transform ${DURATION} ${EASE}`,
+                          }}
+                        >
+                          <text
+                            x={8}
+                            y={BAR_HEIGHT / 2}
+                            dominantBaseline="central"
+                            fill="currentColor"
+                            fontSize={fontSize}
+                            opacity={0.6}
+                            style={{ pointerEvents: "none" }}
+                          >
+                            {d.concorrencia != null ? `${d.concorrencia}×` : "—"}
+                          </text>
+                        </g>
+
+                        <text
+                          x={-8}
+                          y={BAR_HEIGHT / 2}
+                          textAnchor="end"
+                          dominantBaseline="central"
+                          fontSize={fontSize}
+                          fill="currentColor"
+                          style={{ pointerEvents: "none" }}
+                        >
+                          {truncate(d.curso, truncateMax)}
                         </text>
                       </g>
-
-                      <text
-                        x={-8}
-                        y={BAR_HEIGHT / 2}
-                        textAnchor="end"
-                        dominantBaseline="central"
-                        fontSize={fontSize}
-                        fill="currentColor"
-                        style={{ pointerEvents: "none" }}
-                      >
-                        {truncate(d.curso, truncateMax)}
-                      </text>
-                    </g>
-                  );
-                })}
-              </g>
-            </svg>
-          </div>
-        </Box>
+                    );
+                  })}
+                </g>
+              </svg>
+            </div>
+          </Box>
+        )}
       </CardContent>
 
-      {hovered && createPortal(
+      {!isMobile && hovered && createPortal(
         <Box
           sx={{
             position: "fixed",
