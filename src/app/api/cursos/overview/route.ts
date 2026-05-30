@@ -9,7 +9,6 @@ export async function GET() {
       nome_campus AS campus,
       COUNT(*)::int                                                                AS total_inscritos,
       COUNT(*) FILTER (WHERE aprovado = 'S')::int                                AS aprovados,
-      ARRAY_AGG(nota_candidato ORDER BY nota_candidato)                          AS notas,
       ROUND(AVG(nota_candidato)::numeric, 2)::float                              AS media_nota_candidato,
       ROUND(AVG(nota_corte)::numeric, 2)::float                                  AS media_nota_corte,
       ROUND(MIN(nota_candidato)::numeric, 2)::float                              AS min_nota_candidato,

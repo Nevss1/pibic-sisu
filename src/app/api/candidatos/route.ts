@@ -4,12 +4,12 @@ import { pool } from "@/src/lib/db";
 export async function GET() {
   const result = await pool.query(`
     SELECT
-      nome_curso AS no_curso,
+      nome_curso                 AS no_curso,
       ano,
-      nome_campus AS campus,
-      COUNT(*)::int                                    AS total_candidatos,
-      COUNT(*) FILTER (WHERE aprovado = 'S')::int     AS aprovados
-    FROM silver_sisu_ufma
+      nome_campus                AS campus,
+      SUM(total_candidatos)::int AS total_candidatos,
+      SUM(total_aprovados)::int  AS aprovados
+    FROM gold_overview_curso_ano_campus
     GROUP BY nome_curso, ano, nome_campus
     ORDER BY nome_curso, ano, nome_campus
   `);
