@@ -10,7 +10,7 @@ export async function GET(
   const { searchParams } = new URL(req.url);
   const edicao = searchParams.get("edicao") ? Number(searchParams.get("edicao")) : null;
 
-  const [goldResult, notasResult] = await Promise.all([
+  const [goldResult, binsResult] = await Promise.all([
     pool.query(
       `
       SELECT
@@ -55,25 +55,32 @@ export async function GET(
       SELECT
         edicao,
         ano,
-        nome_campus                                                      AS campus,
-        ARRAY_AGG(nota_candidato ORDER BY nota_candidato)               AS notas
+        nome_campus                                        AS campus,
+        (FLOOR(nota_candidato / 10) * 10)::int            AS bin_start,
+        COUNT(*)::int                                      AS count
       FROM silver_sisu_ufma
       WHERE LOWER(nome_curso) = LOWER($1)
         AND nota_candidato IS NOT NULL
         AND ($2::int IS NULL OR edicao = $2::int)
-      GROUP BY edicao, ano, nome_campus
+      GROUP BY edicao, ano, nome_campus, bin_start
+      ORDER BY edicao, ano, nome_campus, bin_start
       `,
       [nomeCurso, edicao]
     ),
   ]);
 
-  const notasMap = new Map(
-    notasResult.rows.map((r) => [`${r.edicao}__${r.ano}__${r.campus}`, r.notas as number[]])
-  );
+  type BinRow = { edicao: number; ano: string; campus: string; bin_start: number; count: number };
+  const binsMap = new Map<string, { bin_start: number; count: number }[]>();
+  for (const r of binsResult.rows as BinRow[]) {
+    const key = `${r.edicao}__${r.ano}__${r.campus}`;
+    const arr = binsMap.get(key) ?? [];
+    arr.push({ bin_start: r.bin_start, count: r.count });
+    binsMap.set(key, arr);
+  }
 
   const rows = goldResult.rows.map((row) => ({
     ...row,
-    notas: notasMap.get(`${row.edicao}__${row.ano}__${row.campus}`) ?? [],
+    bins: binsMap.get(`${row.edicao}__${row.ano}__${row.campus}`) ?? [],
   }));
 
   return NextResponse.json(rows);

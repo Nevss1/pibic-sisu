@@ -10,13 +10,18 @@ export type Dado = {
 
 export type Dados = Dado[]
 
+export type HistogramaBin = {
+  bin_start: number
+  count: number
+}
+
 export type DadoOverviewCurso = {
   edicao: number
   ano: string
   campus: string
   total_inscritos: number
   aprovados: number
-  notas: number[]
+  bins: HistogramaBin[]
   media_nota_candidato: number
   media_nota_corte: number
   min_nota_candidato: number

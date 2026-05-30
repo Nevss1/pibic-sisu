@@ -4,19 +4,6 @@ import { Box, CardContent, Typography, useMediaQuery, useTheme } from "@mui/mate
 import { BarChart } from "@mui/x-charts/BarChart";
 import { useCursoFilter } from "../contexts";
 
-const BIN_SIZE = 10;
-
-function buildHistogram(notas: number[], min: number, max: number) {
-  const bins: { label: string; count: number }[] = [];
-  for (let start = Math.floor(min / BIN_SIZE) * BIN_SIZE; start < max; start += BIN_SIZE) {
-    bins.push({
-      label: `${start}`,
-      count: notas.filter((n) => n >= start && n < start + BIN_SIZE).length,
-    });
-  }
-  return bins;
-}
-
 export function NotasHistogram() {
   const { dadosFiltrados: dados } = useCursoFilter();
   const theme = useTheme();
@@ -24,11 +11,15 @@ export function NotasHistogram() {
 
   const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
 
-  const notas = dados?.flatMap((d) => d?.notas ?? []) ?? [];
-  const min = dados?.length ? Math.min(...dados.map((d) => d.min_nota_candidato)) : 0;
-  const max = dados?.length ? Math.max(...dados.map((d) => d.max_nota_candidato)) : 0;
-
-  const bins = notas.length > 0 ? buildHistogram(notas, min, max) : [];
+  const binMap = new Map<number, number>();
+  for (const d of dados ?? []) {
+    for (const b of d?.bins ?? []) {
+      binMap.set(b.bin_start, (binMap.get(b.bin_start) ?? 0) + b.count);
+    }
+  }
+  const bins = Array.from(binMap.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([bin_start, count]) => ({ label: String(bin_start), count }));
 
   const chartHeight = isLaptop ? 320 : isMobile ? 220 : 260;
 
