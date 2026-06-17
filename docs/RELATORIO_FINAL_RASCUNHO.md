@@ -151,7 +151,13 @@ A camada Bronze corresponde à base de dados consolidada, ainda próxima dos mic
 
 A camada Silver reúne os dados tratados, padronizados e enriquecidos com atributos derivados — como a categorização de modalidade de concorrência (ampla concorrência, bônus regional ou cota) e o subgrupo de cota (social, racial, indígena ou pessoa com deficiência). Esses dados são carregados em uma tabela no banco de dados PostgreSQL com granularidade por inscrição individual, servindo como fonte de verdade para consultas analíticas.
 
-A camada Gold contém tabelas de agregação pré-computadas, criadas para otimizar as consultas do dashboard e reduzir a carga sobre a camada Silver. Foram implementadas duas tabelas Gold: uma com agregações por curso, campus, ano, edição, grau e turno, contendo indicadores como total de inscrições, aprovações, médias de notas e distribuição por gênero; e outra com agregações por modalidade de concorrência, consolidando o desempenho e o volume de candidatos por categoria. A geração dessas tabelas é realizada por scripts de processamento em Python com a biblioteca pandas, e os resultados são persistidos no banco de dados em substituição à versão anterior a cada atualização da base.
+A camada Gold contém tabelas de agregação pré-computadas, criadas para otimizar as consultas do dashboard e reduzir a carga sobre a camada Silver. Foram implementadas duas tabelas Gold: uma com agregações por curso, campus, ano, edição, grau e turno, contendo indicadores como total de inscrições, aprovações, médias de notas e distribuição por gênero; e outra com agregações por modalidade de concorrência, consolidando o desempenho e o volume de candidatos por categoria. A geração dessas tabelas é realizada por scripts de processamento em Python com a biblioteca pandas, e os resultados são persistidos no banco de dados em substituição à versão anterior a cada atualização da base. A Tabela 2 apresenta um resumo comparativo das três camadas, indicando o formato de armazenamento, a granularidade e a finalidade de cada uma.
+
+[Tabela 2 — Estrutura das camadas Bronze, Silver e Gold. Fonte: Elaborado pelo autor.]
+
+A Figura 1 ilustra o fluxo completo do pipeline ETL, desde a origem dos dados públicos do SISU até o consumo pelo dashboard analítico.
+
+[Figura 1 — Fluxo do pipeline ETL: Bronze, Silver e Gold. Fonte: Elaborado pelo autor.]
 
 ## 4.4 Arquitetura da aplicação web
 
@@ -159,7 +165,9 @@ A aplicação web foi desenvolvida como plataforma de consulta interativa sobre 
 
 O armazenamento dos dados é realizado em um banco de dados PostgreSQL hospedado em serviço de nuvem, com acesso centralizado por meio de um pool de conexões. O frontend incorpora mecanismos de cache de estado do servidor para reduzir o número de requisições repetidas e melhorar a experiência de navegação em conjunto de dados volumosos.
 
-Essa arquitetura constitui o componente de consumo do workload — a camada responsável por tornar a base analítica acessível para exploração interativa — e será incluída na etapa de conteinerização junto ao pipeline de dados.
+Essa arquitetura constitui o componente de consumo do workload — a camada responsável por tornar a base analítica acessível para exploração interativa — e será incluída na etapa de conteinerização junto ao pipeline de dados. A Figura 2 apresenta um diagrama da arquitetura geral do sistema, indicando os componentes desenvolvidos e seus relacionamentos.
+
+[Figura 2 — Arquitetura geral do sistema analítico SISU/UFMA. Fonte: Elaborado pelo autor.]
 
 ## 4.5 Dashboard analítico
 
@@ -181,7 +189,9 @@ A etapa experimental com Docker ainda não foi executada. A proposta é utilizar
 1. execução local, sem contêiner, em ambiente de desenvolvimento padrão;
 2. execução conteinerizada, com Docker, em ambiente controlado e reprodutível.
 
-As métricas previstas incluem tempo total de execução do pipeline, tempo por etapa de processamento, consumo de CPU e consumo de memória durante a execução. Adicionalmente, poderá ser avaliado o impacto de restrições de recursos computacionais — como limites de CPU e RAM configuráveis via Docker — sobre o tempo de execução e a estabilidade do pipeline.
+As métricas previstas incluem tempo total de execução do pipeline, tempo por etapa de processamento, consumo de CPU e consumo de memória durante a execução. Adicionalmente, poderá ser avaliado o impacto de restrições de recursos computacionais — como limites de CPU e RAM configuráveis via Docker — sobre o tempo de execução e a estabilidade do pipeline. A Tabela 3 apresenta a matriz de cenários experimentais previstos, detalhando as configurações de ambiente e as variações de restrição de recursos que serão avaliadas.
+
+[Tabela 3 — Matriz de cenários experimentais previstos. Fonte: Elaborado pelo autor.]
 
 A comparação entre os dois cenários permitirá analisar os custos e os benefícios da conteinerização para este tipo de workload analítico, produzindo evidências empíricas sobre reprodutibilidade, portabilidade e desempenho em ambientes conteinerizados.
 
@@ -193,7 +203,9 @@ A comparação entre os dois cenários permitirá analisar os custos e os benef�
 
 Como resultado inicial, foi construída uma base consolidada com dados do SISU referentes à UFMA no período de 2017 a 2023, abrangendo 14 edições regulares. A base resultante contém aproximadamente 1,08 milhão de registros e reúne, para cada inscrição, atributos de identificação do curso, campus, grau, turno, modalidade de concorrência, notas nas cinco áreas do ENEM, nota de corte, situação de aprovação e de efetivação de matrícula, além de atributos de perfil como sexo do candidato.
 
-O recorte abrange cursos e campi da UFMA, permitindo análises tanto por curso específico quanto em perspectiva institucional. A consolidação dessa base transforma dados públicos dispersos — distribuídos em múltiplos arquivos CSV por edição — em um conjunto estruturado, padronizado e diretamente consultável para análises históricas comparativas.
+O recorte abrange cursos e campi da UFMA, permitindo análises tanto por curso específico quanto em perspectiva institucional. A consolidação dessa base transforma dados públicos dispersos — distribuídos em múltiplos arquivos CSV por edição — em um conjunto estruturado, padronizado e diretamente consultável para análises históricas comparativas. A Tabela 1 apresenta uma síntese das principais características da base consolidada.
+
+[Tabela 1 — Caracterização da base SISU/UFMA consolidada (2017–2023). Fonte: Elaborado pelo autor.]
 
 ## 5.2 Pipeline analítico implementado
 
@@ -205,9 +217,13 @@ Essa infraestrutura constitui o workload central do projeto: um conjunto de oper
 
 ## 5.3 Dashboard web desenvolvido
 
-O dashboard web foi implementado como artefato analítico para exploração interativa dos dados SISU/UFMA. Permite visualizar, de forma consolidada e filtrada por campus, ano e edição, informações sobre cursos, modalidades de concorrência, áreas do ENEM, perfil dos candidatos e evolução histórica de indicadores de ingresso.
+O dashboard web foi implementado como artefato analítico para exploração interativa dos dados SISU/UFMA. Permite visualizar, de forma consolidada e filtrada por campus, ano e edição, informações sobre cursos, modalidades de concorrência, áreas do ENEM, perfil dos candidatos e evolução histórica de indicadores de ingresso. A Figura 3 apresenta a tela de visão geral histórica de um curso, exibindo indicadores de inscrições, aprovações e a evolução da nota de corte ao longo das edições.
 
-As principais visualizações implementadas incluem evolução da nota de corte ao longo das edições, histograma de distribuição de notas dos inscritos, taxas de aprovação e de efetivação de matrícula, distribuição de inscrições e aprovações por sexo, análise comparativa por modalidade de concorrência e subgrupo de cota, desempenho médio nas áreas do ENEM, distribuição por faixa etária e análise histórica de perfis com filtros combinados.
+[Figura 3 — Dashboard: visão geral histórica de um curso. Fonte: Captura de tela do sistema desenvolvido pelo autor.]
+
+As principais visualizações implementadas incluem evolução da nota de corte ao longo das edições, histograma de distribuição de notas dos inscritos, taxas de aprovação e de efetivação de matrícula, distribuição de inscrições e aprovações por sexo, análise comparativa por modalidade de concorrência e subgrupo de cota, desempenho médio nas áreas do ENEM, distribuição por faixa etária e análise histórica de perfis com filtros combinados. A Figura 4 ilustra a análise por modalidade de concorrência, apresentando a distribuição de inscrições e aprovações entre as seis categorias implementadas.
+
+[Figura 4 — Dashboard: distribuição por modalidade de concorrência. Fonte: Captura de tela do sistema desenvolvido pelo autor.]
 
 O dashboard cumpre duas funções complementares no projeto: serve como ferramenta de análise dos dados públicos do SISU/UFMA e constitui o componente de consumo do workload de Ciência de Dados, cuja execução conteinerizada será avaliada na etapa experimental.
 
