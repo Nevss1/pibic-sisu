@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { Box, Typography, useTheme } from "@mui/material";
 import { dashboardGlassCardSx } from "@/src/config/dashboardStyles";
-import { AnoRow } from "./PerfilClient";
+import type { AnoRow } from "../perfil.types";
 
 type ChartRow = {
   ano: number;
@@ -28,6 +28,7 @@ type TooltipPayloadItem = {
   name: string;
   value: number | null;
   color: string;
+  payload: ChartRow;
 };
 
 type CustomTooltipProps = {
