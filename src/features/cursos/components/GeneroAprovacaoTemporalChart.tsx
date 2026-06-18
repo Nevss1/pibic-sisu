@@ -15,63 +15,32 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material";
 import { useCursoFilter } from "../contexts";
-import { useCampusFilter } from "@/src/features";
-import { useGeneroCurso } from "@/src/hooks";
-import { DadoGeneroCurso } from "@/src/types/sisu";
-import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "@/src/components";
+import { DadoOverviewCurso } from "@/src/types/sisu";
+import { DashboardEmptyState } from "@/src/components";
 
-// Valores de sexo presentes no dataset SISU (M = Masculino, F = Feminino).
-// Registros com sexo nulo são excluídos pela query.
-const SEXO_LABELS: Record<string, string> = {
-  M: "Masculino",
-  F: "Feminino",
-};
-
-const CORES_SEXO: Record<string, string> = {
-  M: "#2563EB",
-  F: "#EF4444",
+const CORES_SEXO = {
+  masculino: "#2563EB",
+  feminino: "#EF4444",
 };
 
 type ChartPoint = {
   ano: string;
-  M_taxa: number | null;
-  F_taxa: number | null;
-  M_total: number;
-  F_total: number;
-  M_aprovados: number;
-  F_aprovados: number;
+  masculino: number;
+  feminino: number;
 };
 
-function buildChartData(dados: DadoGeneroCurso[], campus: string): ChartPoint[] {
-  const filtered = dados.filter((d) => d.campus === campus);
-  if (filtered.length === 0) return [];
+function buildChartData(dados: DadoOverviewCurso[]): ChartPoint[] {
+  const byYear = new Map<string, { masculino: number; feminino: number }>();
 
-  // Agrupa por ano — se houver múltiplas edições no mesmo ano, soma candidatos
-  // e recalcula a taxa para evitar média de médias.
-  const byYear = new Map<string, { M_total: number; M_aprov: number; F_total: number; F_aprov: number }>();
-
-  for (const d of filtered) {
-    const entry = byYear.get(d.ano) ?? { M_total: 0, M_aprov: 0, F_total: 0, F_aprov: 0 };
-    if (d.sexo === "M") {
-      entry.M_total += d.total_candidatos;
-      entry.M_aprov += d.aprovados;
-    } else if (d.sexo === "F") {
-      entry.F_total += d.total_candidatos;
-      entry.F_aprov += d.aprovados;
-    }
+  for (const d of dados) {
+    const entry = byYear.get(d.ano) ?? { masculino: 0, feminino: 0 };
+    entry.masculino += d.inscritos_masculino;
+    entry.feminino += d.inscritos_feminino;
     byYear.set(d.ano, entry);
   }
 
   return Array.from(byYear.entries())
-    .map(([ano, v]) => ({
-      ano,
-      M_taxa: v.M_total > 0 ? Math.round((v.M_aprov / v.M_total) * 10000) / 100 : null,
-      F_taxa: v.F_total > 0 ? Math.round((v.F_aprov / v.F_total) * 10000) / 100 : null,
-      M_total: v.M_total,
-      F_total: v.F_total,
-      M_aprovados: v.M_aprov,
-      F_aprovados: v.F_aprov,
-    }))
+    .map(([ano, v]) => ({ ano, ...v }))
     .sort((a, b) => Number(a.ano) - Number(b.ano));
 }
 
@@ -91,57 +60,48 @@ function CustomTooltip({ active, payload, label }: any) {
       }}
     >
       <p style={{ fontWeight: 700, marginBottom: 6, marginTop: 0 }}>{label}</p>
-      {payload.map((entry: { dataKey: string; value: number; payload: ChartPoint }) => {
-        const sexo = entry.dataKey === "M_taxa" ? "M" : "F";
-        const total = sexo === "M" ? entry.payload.M_total : entry.payload.F_total;
-        const aprovados = sexo === "M" ? entry.payload.M_aprovados : entry.payload.F_aprovados;
+      {payload.map((entry: { dataKey: string; value: number }) => {
+        const cor = entry.dataKey === "masculino" ? CORES_SEXO.masculino : CORES_SEXO.feminino;
+        const rotulo = entry.dataKey === "masculino" ? "Masculino" : "Feminino";
         return (
           <div key={entry.dataKey} style={{ marginBottom: 4 }}>
-            <span style={{ color: CORES_SEXO[sexo], fontWeight: 600 }}>
-              {SEXO_LABELS[sexo]}
-            </span>
+            <span style={{ color: cor, fontWeight: 600 }}>{rotulo}</span>
             <br />
             <span style={{ color: "#666" }}>
-              Taxa: <strong>{entry.value?.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}%</strong>
-            </span>
-            <br />
-            <span style={{ color: "#888", fontSize: 12 }}>
-              {aprovados.toLocaleString("pt-BR")} aprovados / {total.toLocaleString("pt-BR")} inscritos
+              <strong>{entry.value.toLocaleString("pt-BR")}</strong> inscrições
             </span>
           </div>
         );
       })}
+      <p style={{ color: "#999", fontSize: 11, marginTop: 6, marginBottom: 0 }}>
+        Cada inscrição corresponde a uma opção de curso no SISU
+      </p>
     </div>
   );
 }
 
 export function GeneroAprovacaoTemporalChart() {
   const theme = useTheme();
-  const { curso } = useCursoFilter();
-  const { campusSelecionado } = useCampusFilter();
-
-  const { data: dadosGenero, isLoading, error } = useGeneroCurso(curso);
+  const { dadosTodosPeriodos } = useCursoFilter();
 
   const chartData = useMemo(
-    () => (dadosGenero && campusSelecionado ? buildChartData(dadosGenero, campusSelecionado) : []),
-    [dadosGenero, campusSelecionado]
+    () => (dadosTodosPeriodos ? buildChartData(dadosTodosPeriodos) : []),
+    [dadosTodosPeriodos]
   );
 
   const gridColor =
     theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(154, 106, 33, 0.12)";
   const textColor = theme.palette.text.secondary;
 
-  if (isLoading) return <DashboardLoadingState height={360} />;
-  if (error) return <DashboardErrorState />;
   if (!chartData.length) return <DashboardEmptyState />;
 
   return (
     <CardContent sx={{ p: { xs: 2.5, mobile: 3 } }}>
       <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
-        Taxa de aprovação por gênero
+        Candidatos por gênero ao longo do tempo
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Evolução anual da taxa de aprovação (%) para cada sexo — série histórica completa independente do filtro de ano
+        Número de inscrições masculinas e femininas por ano — série histórica completa independente do filtro de ano
       </Typography>
 
       <ResponsiveContainer width="100%" height={320}>
@@ -157,30 +117,30 @@ export function GeneroAprovacaoTemporalChart() {
             tick={{ fill: textColor, fontSize: 12 }}
             axisLine={false}
             tickLine={false}
-            width={48}
-            tickFormatter={(v) => `${v}%`}
+            width={56}
+            tickFormatter={(v) => v.toLocaleString("pt-BR")}
             domain={[0, "auto"]}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
             wrapperStyle={{ fontSize: 13, paddingTop: 12 }}
-            formatter={(value) => (value === "M_taxa" ? "Masculino" : "Feminino")}
+            formatter={(value) => (value === "masculino" ? "Masculino" : "Feminino")}
           />
           <Line
-            dataKey="M_taxa"
-            name="M_taxa"
-            stroke={CORES_SEXO.M}
+            dataKey="masculino"
+            name="masculino"
+            stroke={CORES_SEXO.masculino}
             strokeWidth={2.5}
-            dot={{ r: 4, fill: CORES_SEXO.M, stroke: "#ffffff", strokeWidth: 1.5 }}
+            dot={{ r: 4, fill: CORES_SEXO.masculino, stroke: "#ffffff", strokeWidth: 1.5 }}
             activeDot={{ r: 6, stroke: "#ffffff", strokeWidth: 2 }}
             connectNulls
           />
           <Line
-            dataKey="F_taxa"
-            name="F_taxa"
-            stroke={CORES_SEXO.F}
+            dataKey="feminino"
+            name="feminino"
+            stroke={CORES_SEXO.feminino}
             strokeWidth={2.5}
-            dot={{ r: 4, fill: CORES_SEXO.F, stroke: "#ffffff", strokeWidth: 1.5 }}
+            dot={{ r: 4, fill: CORES_SEXO.feminino, stroke: "#ffffff", strokeWidth: 1.5 }}
             activeDot={{ r: 6, stroke: "#ffffff", strokeWidth: 2 }}
             connectNulls
           />
