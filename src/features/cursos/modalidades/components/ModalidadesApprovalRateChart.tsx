@@ -28,7 +28,6 @@ const CATEGORIAS = [
 
 type ChartEntry = {
   label: string;
-  taxa: number;
   total_candidatos: number;
   aprovados: number;
   color: string;
@@ -44,13 +43,10 @@ function buildChartData(
       const rows = dados.filter((d) => (keys as readonly string[]).includes(d.categoria));
       const total_candidatos = rows.reduce((a, b) => a + b.total_candidatos, 0);
       const aprovados = rows.reduce((a, b) => a + b.aprovados, 0);
-      const taxa = total_candidatos > 0
-        ? parseFloat(((aprovados / total_candidatos) * 100).toFixed(1))
-        : 0;
-      return { label, taxa, total_candidatos, aprovados, color };
+      return { label, total_candidatos, aprovados, color };
     })
     .filter((e) => e.total_candidatos > 0)
-    .sort((a, b) => b.taxa - a.taxa);
+    .sort((a, b) => b.total_candidatos - a.total_candidatos);
 }
 
 function CustomTooltip({
@@ -89,7 +85,7 @@ function CustomTooltip({
       </Box>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
         <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
-          Candidatos:{" "}
+          Inscrições:{" "}
           <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
             {entry.total_candidatos.toLocaleString("pt-BR")}
           </Box>
@@ -100,11 +96,8 @@ function CustomTooltip({
             {entry.aprovados.toLocaleString("pt-BR")}
           </Box>
         </Typography>
-        <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
-          Taxa de aprovação:{" "}
-          <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
-            {entry.taxa.toFixed(1)}%
-          </Box>
+        <Typography sx={{ fontSize: 11, color: "text.disabled", mt: 0.5 }}>
+          Cada inscrição corresponde a uma opção de curso no SISU
         </Typography>
       </Box>
     </Box>
@@ -131,14 +124,14 @@ export function ModalidadesApprovalRateChart() {
 
   // Altura dinâmica: ~52px por barra, mínimo 280px
   const chartHeight = Math.max(280, chartData.length * 56 + 40);
-  const maxRate = Math.max(...chartData.map((item) => item.taxa), 0);
-  const xMax = Math.min(100, Math.max(10, Math.ceil(maxRate * 1.25)));
+  const maxCandidatos = Math.max(...chartData.map((item) => item.total_candidatos), 0);
+  const xMax = Math.ceil(maxCandidatos * 1.15);
 
   if (!chartData.length) {
     return (
       <Box sx={{ ...dashboardChartCardSx, p: { xs: 2.5, mobile: 3 } }}>
         <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
-          Taxa de aprovação por modalidade
+          Candidatos por modalidade
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Sem dados disponíveis para o filtro selecionado.
@@ -151,11 +144,10 @@ export function ModalidadesApprovalRateChart() {
     <Box sx={{ ...dashboardChartCardSx, p: { xs: 2.5, mobile: 3 } }}>
       {/* Cabeçalho */}
       <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
-        Taxa de aprovação por modalidade
+        Candidatos por modalidade
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Percentual de aprovados em relação ao total de candidatos de cada
-        modalidade no período filtrado.
+        Distribuição do volume de inscrições entre as modalidades de concorrência do curso.
       </Typography>
 
       {/* Gráfico */}
@@ -165,7 +157,7 @@ export function ModalidadesApprovalRateChart() {
           data={chartData}
           margin={{
             top: 0,
-            right: isMobile ? 34 : 56,
+            right: isMobile ? 56 : 80,
             left: isMobile ? -8 : 0,
             bottom: 0,
           }}
@@ -179,11 +171,11 @@ export function ModalidadesApprovalRateChart() {
           <XAxis
             type="number"
             domain={[0, xMax]}
-            tickFormatter={(v) => `${v}%`}
+            tickFormatter={(v) => v.toLocaleString("pt-BR")}
             tick={{ fill: textColor, fontSize: isMobile ? 11 : 12 }}
             axisLine={false}
             tickLine={false}
-            tickCount={isMobile ? 4 : 6}
+            tickCount={isMobile ? 4 : 5}
           />
           <YAxis
             type="category"
@@ -199,11 +191,11 @@ export function ModalidadesApprovalRateChart() {
             cursor={{ fill: "rgba(213, 166, 66, 0.06)" }}
           />
           <Bar
-            dataKey="taxa"
+            dataKey="total_candidatos"
             radius={[0, 6, 6, 0]}
             label={{
               position: "right",
-              formatter: (v: number) => `${v.toFixed(1)}%`,
+              formatter: (v: number) => v.toLocaleString("pt-BR"),
               fill: textColor,
               fontSize: isMobile ? 11 : 12,
             }}
