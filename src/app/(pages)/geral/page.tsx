@@ -1,6 +1,6 @@
 import { Box, Card, Container } from "@mui/material";
 import { PageHeader } from "@/src/components";
-import { CandidatosBarChart, EvolucaoTemporalChart, FaixasEtariasChart, GeralFilterProvider, TaxaAprovacaoRanking } from "@/src/features/geral";
+import { CandidatosBarChart, EvolucaoTemporalChart, FaixasEtariasChart, GeralFilterProvider, NotaCorteRanking } from "@/src/features/geral";
 import { dashboardChartCardSx } from "@/src/config/dashboardStyles";
 
 export default function GeralPage() {
@@ -19,7 +19,7 @@ export default function GeralPage() {
           </Card>
 
           <Card variant="outlined" sx={dashboardChartCardSx}>
-            <TaxaAprovacaoRanking />
+            <NotaCorteRanking />
           </Card>
 
           <Card variant="outlined" sx={dashboardChartCardSx}>

@@ -1,7 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
-import { BarChart } from "@mui/x-charts/BarChart";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  LabelList,
+} from "recharts";
 import {
   CardContent,
   Typography,
@@ -16,28 +25,24 @@ import { useCampusFilter, useYearFilter } from "@/src/features";
 import { DashboardEmptyState, DashboardErrorState, DashboardLoadingState } from "@/src/components";
 
 const MIN_INSCRITOS = 30;
-const TOP_N = 10;
-const BAR_COLOR = "#4e9a8f";
+const BAR_COLOR = "#D5B071";
 
 type RankingEntry = {
   curso: string;
-  candidatos: number;
-  aprovados: number;
-  taxa: number;
+  media_nota_corte: number;
+  total_candidatos: number;
 };
 
-function truncate(text: string, max: number) {
-  return text.length > max ? text.slice(0, max - 1) + "…" : text;
-}
-
 function MobileRankingList({ dataset }: { dataset: RankingEntry[] }) {
-  const maxRate = Math.max(...dataset.map((item) => item.taxa), 0);
+  const maxNota = Math.max(...dataset.map((item) => item.media_nota_corte), 0);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
       {dataset.map((item, index) => {
         const barRatio =
-          item.taxa > 0 && maxRate > 0 ? Math.max(item.taxa / maxRate, 0.04) : 0;
+          item.media_nota_corte > 0 && maxNota > 0
+            ? Math.max(item.media_nota_corte / maxNota, 0.04)
+            : 0;
 
         return (
           <Box key={item.curso}>
@@ -50,14 +55,7 @@ function MobileRankingList({ dataset }: { dataset: RankingEntry[] }) {
                 mb: 0.75,
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 1,
-                  minWidth: 0,
-                }}
-              >
+              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, minWidth: 0 }}>
                 <Typography
                   sx={{
                     color: "text.secondary",
@@ -84,7 +82,6 @@ function MobileRankingList({ dataset }: { dataset: RankingEntry[] }) {
                   {item.curso}
                 </Typography>
               </Box>
-
               <Typography
                 sx={{
                   color: BAR_COLOR,
@@ -96,13 +93,13 @@ function MobileRankingList({ dataset }: { dataset: RankingEntry[] }) {
                   whiteSpace: "nowrap",
                 }}
               >
-                {item.taxa.toFixed(1)}%
+                {item.media_nota_corte.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
             </Box>
 
             <Box
               sx={{
-                bgcolor: "rgba(78, 154, 143, 0.12)",
+                bgcolor: "rgba(213, 176, 113, 0.15)",
                 borderRadius: "6px",
                 height: 10,
                 mb: 0.75,
@@ -121,15 +118,8 @@ function MobileRankingList({ dataset }: { dataset: RankingEntry[] }) {
               />
             </Box>
 
-            <Typography
-              sx={{
-                color: "text.secondary",
-                fontSize: 11,
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              {item.candidatos.toLocaleString("pt-BR")} inscritos ·{" "}
-              {item.aprovados.toLocaleString("pt-BR")} aprovados
+            <Typography sx={{ color: "text.secondary", fontSize: 11, fontVariantNumeric: "tabular-nums" }}>
+              {item.total_candidatos.toLocaleString("pt-BR")} inscrições consideradas
             </Typography>
           </Box>
         );
@@ -138,7 +128,40 @@ function MobileRankingList({ dataset }: { dataset: RankingEntry[] }) {
   );
 }
 
-export function TaxaAprovacaoRanking() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function CustomTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+  const entry = payload[0].payload as RankingEntry;
+  return (
+    <Box
+      sx={{
+        background: "rgba(255,255,255,0.96)",
+        border: "1px solid rgba(174,143,88,0.18)",
+        borderRadius: 3,
+        boxShadow: "0 10px 28px rgba(70,50,20,0.12)",
+        p: 1.5,
+        minWidth: 220,
+        fontSize: 13,
+      }}
+    >
+      <Typography sx={{ fontWeight: 600, fontSize: 13, mb: 0.75 }}>{entry.curso}</Typography>
+      <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
+        Nota de corte média:{" "}
+        <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>
+          {entry.media_nota_corte.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </Box>
+      </Typography>
+      <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
+        Inscrições:{" "}
+        <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
+          {entry.total_candidatos.toLocaleString("pt-BR")}
+        </Box>
+      </Typography>
+    </Box>
+  );
+}
+
+export function NotaCorteRanking() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("tabletSmall"));
   const { anosSelecionados } = useYearFilter();
@@ -151,99 +174,101 @@ export function TaxaAprovacaoRanking() {
     const aggregate = data
       .filter(
         (d) =>
-          anosSelecionados.includes(d.ano) && d.campus === campusSelecionado
+          anosSelecionados.includes(d.ano) &&
+          d.campus === campusSelecionado &&
+          d.media_nota_corte != null
       )
-      .reduce<
-        Record<string, { curso: string; candidatos: number; aprovados: number }>
-      >((acc, d) => {
-        acc[d.no_curso] ??= { curso: d.no_curso, candidatos: 0, aprovados: 0 };
-        acc[d.no_curso].candidatos += d.total_candidatos;
-        acc[d.no_curso].aprovados += d.aprovados;
-        return acc;
-      }, {});
+      .reduce<Record<string, { curso: string; soma_ponderada: number; total_candidatos: number }>>(
+        (acc, d) => {
+          acc[d.no_curso] ??= { curso: d.no_curso, soma_ponderada: 0, total_candidatos: 0 };
+          acc[d.no_curso].soma_ponderada += (d.media_nota_corte as number) * d.total_candidatos;
+          acc[d.no_curso].total_candidatos += d.total_candidatos;
+          return acc;
+        },
+        {}
+      );
 
     return Object.values(aggregate)
-      .filter((d) => d.candidatos >= MIN_INSCRITOS)
+      .filter((d) => d.total_candidatos >= MIN_INSCRITOS)
       .map((d) => ({
         curso: d.curso,
-        candidatos: d.candidatos,
-        aprovados: d.aprovados,
-        taxa: parseFloat(((d.aprovados / d.candidatos) * 100).toFixed(1)),
+        media_nota_corte: parseFloat((d.soma_ponderada / d.total_candidatos).toFixed(2)),
+        total_candidatos: d.total_candidatos,
       }))
-      .sort((a, b) => b.taxa - a.taxa)
-      .slice(0, TOP_N);
+      .sort((a, b) => b.media_nota_corte - a.media_nota_corte);
   }, [data, anosSelecionados, campusSelecionado]);
 
   if (isLoading || !data) return <DashboardLoadingState height={360} />;
   if (error) return <DashboardErrorState />;
   if (!dataset.length) return <DashboardEmptyState />;
 
-  const chartHeight = Math.max(300, dataset.length * 52 + 64);
-  const maxRate = Math.max(...dataset.map((item) => item.taxa), 0);
-  const xMax = Math.min(100, Math.max(10, Math.ceil(maxRate * 1.25)));
+  const chartHeight = dataset.length * 52 + 48;
+  const textColor = theme.palette.text.secondary;
+  const gridColor = theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(154,106,33,0.12)";
+  const xMin = Math.max(0, Math.floor(Math.min(...dataset.map((i) => i.media_nota_corte)) * 0.9));
+  const xMax = Math.ceil(Math.max(...dataset.map((i) => i.media_nota_corte)) * 1.12);
 
   return (
     <CardContent sx={{ p: { xs: 2.5, mobile: 3 } }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, mb: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography fontWeight={700}>
-            Cursos com maior taxa de aprovação
-          </Typography>
+          <Typography fontWeight={700}>Cursos com maiores notas de corte</Typography>
           <MuiTooltip
-            title={`Top ${TOP_N} cursos com maior proporção de aprovados em relação ao total de inscrições. Considera apenas cursos com pelo menos ${MIN_INSCRITOS} inscrições no recorte selecionado.`}
+            title={`Cursos com maior nota de corte média ponderada pelo total de inscrições. Considera apenas cursos com pelo menos ${MIN_INSCRITOS} inscrições no recorte selecionado.`}
             arrow
             placement="right"
           >
-            <InfoOutlinedIcon
-              sx={{ fontSize: 16, color: "text.disabled", cursor: "help" }}
-            />
+            <InfoOutlinedIcon sx={{ fontSize: 16, color: "text.disabled", cursor: "help" }} />
           </MuiTooltip>
         </Box>
         <Typography variant="body2" color="text.secondary">
-          Aprovados ÷ inscritos · mínimo {MIN_INSCRITOS} inscrições por curso
+          Ranking dos cursos com maior nota de corte média no recorte selecionado.
         </Typography>
       </Box>
 
       {isMobile ? (
         <MobileRankingList dataset={dataset} />
       ) : (
-        <BarChart
-          layout="horizontal"
-          dataset={dataset}
-          yAxis={[
-            {
-              scaleType: "band",
-              dataKey: "curso",
-              valueFormatter: (v) => truncate(String(v), 26),
-            },
-          ]}
-          xAxis={[
-            {
-              min: 0,
-              max: xMax,
-              valueFormatter: (v) => `${v}%`,
-            },
-          ]}
-          series={[
-            {
-              dataKey: "taxa",
-              label: "Taxa de aprovação",
-              color: BAR_COLOR,
-              valueFormatter: (v) => `${v}%`,
-            },
-          ]}
-          height={chartHeight}
-          margin={{ left: 180, right: 24, top: 8, bottom: 32 }}
-          tooltip={{ trigger: "item" }}
-          slotProps={{
-            legend: { hidden: true },
-          }}
-          sx={{
-            "& .MuiChartsAxis-tickLabel": {
-              fontSize: { xs: "10px", sm: "12px" },
-            },
-          }}
-        />
+        <Box sx={{ overflowY: "auto", maxHeight: 600 }}>
+          <ResponsiveContainer width="100%" height={chartHeight}>
+            <BarChart
+              layout="vertical"
+              data={dataset}
+              margin={{ top: 4, right: 72, left: 0, bottom: 4 }}
+              barCategoryGap="28%"
+            >
+              <CartesianGrid strokeDasharray="4 4" stroke={gridColor} horizontal={false} />
+              <XAxis
+                type="number"
+                domain={[xMin, xMax]}
+                tickFormatter={(v) => v.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
+                tick={{ fill: textColor, fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+                tickCount={5}
+              />
+              <YAxis
+                type="category"
+                dataKey="curso"
+                width={280}
+                tick={{ fill: theme.palette.text.primary, fontSize: 13, fontWeight: 500 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(213,166,66,0.06)" }} />
+              <Bar dataKey="media_nota_corte" fill={BAR_COLOR} radius={[0, 4, 4, 0]}>
+                <LabelList
+                  dataKey="media_nota_corte"
+                  position="right"
+                  formatter={(v: unknown) =>
+                    Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                  }
+                  style={{ fontSize: 12, fontWeight: 600, fill: textColor }}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
       )}
     </CardContent>
   );

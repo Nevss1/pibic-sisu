@@ -1,4 +1,4 @@
 export * from './CandidatosChart'
 export * from './EvolucaoTemporalChart'
 export * from './FaixasEtariasChart'
-export * from './TaxaAprovacaoRanking'
+export * from './TaxaAprovacaoRanking' // exporta NotaCorteRanking
