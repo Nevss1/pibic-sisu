@@ -63,6 +63,8 @@ O dashboard e o pipeline são resultados parciais concretos do PIBIC e constitue
 - Filtros de campus, ano e edição com contextos React
 - Sistema de design coeso (paleta UFMA, tipografia, breakpoints responsivos)
 - Migração para novo banco Neon com schema Silver unificado (2017–2023)
+- Página `/sobre` informativa do projeto (fonte dos dados, privacidade, limitações, relação com o PIBIC)
+- Pipeline documentado e versionado: `data_pipeline/requirements.txt` (deps com versões fixadas), `data_pipeline/schema.sql` (DDL documentacional) e os scripts `build_gold_overview.py` / `build_gold_modalidades.py` commitados
 
 ### Parcialmente implementado
 - Filtro de edição (`EditionFilter`) existe mas não está integrado de forma consistente em todas as páginas
@@ -70,15 +72,14 @@ O dashboard e o pipeline são resultados parciais concretos do PIBIC e constitue
 - `taxa_efetivacao` existe no schema Gold mas não aparece em nenhuma visualização
 
 ### Pendente / não implementado
-- `/sobre` é placeholder vazio — pendente de implementação como página informativa do projeto
 - `/conta` é placeholder vazio — fora do escopo atual; pode ser removida da navegação salvo decisão posterior
-- Script `build_gold_overview.py` **está no repositório** (commitado — ver `data_pipeline/build_gold_overview.py`)
-- Nenhum arquivo DDL SQL para reprodução do schema do banco
-- Nenhum índice de banco documentado
+- Nenhum índice criado no banco — há índices recomendados (comentados) em `data_pipeline/schema.sql`, mas nenhum aplicado no Neon
 - Nenhum teste automatizado (unitário ou E2E)
 - Dockerfiles e docker-compose
 - Benchmarks de desempenho
 - Relatório final do PIBIC
+
+> Nota: `data_pipeline/schema.sql` existe, mas é **documentacional** — descreve o schema inferido pelos scripts de upload; não é executado contra o banco e pode divergir dos tipos reais (ver avisos no próprio arquivo).
 
 ### Decisões já tomadas
 - Usar arquitetura medalha: Silver (granular) + Gold (agregada) para separar dados brutos de dados prontos para visualização
@@ -222,7 +223,7 @@ pibic-sisu/
 | `/perfil` | `app/(pages)/perfil/page.tsx` | Funcional |
 | `/informacao` | `app/(pages)/informacao/page.tsx` | Funcional |
 | `/conta` | `app/(pages)/conta/page.tsx` | Fora do escopo atual |
-| `/sobre` | `app/(pages)/sobre/page.tsx` | Pendente (página informativa) |
+| `/sobre` | `app/(pages)/sobre/page.tsx` | Funcional (página informativa) |
 
 ### Hooks e Fetchers
 
@@ -376,7 +377,7 @@ Prioridades em ordem:
 
 1. **Finalizar o app web** — cobrir os casos de uso previstos, corrigir inconsistências de API (ex: `/api/cursos/overview` ainda usa Silver)
 2. **Melhorar UX / mobile-first** — `CandidatosBarChart` (SVG custom) não funciona bem em mobile; radar chart perde legibilidade abaixo de 500px
-3. **Documentar pipeline e arquitetura** — commitar o script `build_gold_overview.py`; criar arquivo DDL SQL do schema
+3. **Documentar pipeline e arquitetura** — `build_gold_overview.py` e `schema.sql` (DDL documentacional) já commitados; falta validar tipos reais e aplicar índices no banco
 4. **Iniciar relatório final do PIBIC** — documentar o pipeline como workload de Ciência de Dados; descrever o dashboard como artefato de análise
 5. **Planejar integração Docker / workloads** — Dockerfiles para Next.js e Python; docker-compose; definição de métricas de benchmark
 
@@ -419,6 +420,8 @@ Ao trabalhar neste repositório, siga estas diretrizes:
 
 Não existe Dockerfile, docker-compose nem resultado de benchmark até o momento. Esta seção descreve o escopo mínimo planejado para a etapa experimental.
 
+**Benchmark inicial recomendado:** começar pelo caminho **compute sem banco** — `build_gold_overview.py` (e, comparativamente, `build_gold_modalidades.py`): CSV Bronze → pandas (`read_csv` → `groupby`/`agg`) → CSV Gold. É determinístico, reproduzível e independe do Neon. Os scripts `upload_*` (que dependem do banco e usam `if_exists="replace"`) ficam para uma fase posterior, com PostgreSQL local em contêiner — nunca apontando para o Neon de produção.
+
 ### Escopo mínimo planejado
 
 | Etapa | Descrição | Status |
@@ -451,14 +454,14 @@ npm run lint          # lint com eslint (script presente em package.json)
 
 ### Pipeline de Dados
 
-> **Confirmar antes de executar** — o `DATABASE_URL` deve estar em `data_pipeline/.env`.
-> **Pendente:** `requirements.txt` não existe no repositório; criar antes de usar `pip install -r`.
+> **Confirmar antes de executar** — o `DATABASE_URL` deve estar em `data_pipeline/.env` (necessário apenas para os scripts `upload_*`; os `build_*` não acessam o banco).
+> `requirements.txt` já existe em `data_pipeline/`, com versões fixadas.
 
 ```bash
 cd data_pipeline
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt   # PENDENTE: requirements.txt não existe ainda
+pip install -r requirements.txt   # deps com versões fixadas
 python upload_silver.py           # carrega CSV bruto → silver_sisu_ufma
 python build_gold_modalidades.py  # agrega modalidades → CSV intermediário
 python upload_gold_modalidades.py # CSV → gold_modalidades_curso_ano_campus

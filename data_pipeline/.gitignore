@@ -6,4 +6,13 @@ venv/
 __pycache__/
 *.pyc
 
+# Dado bruto (Bronze)
 sisu_ufma_2017_2023.csv
+
+# CSVs derivados (Gold) — gerados localmente pelos scripts build_*
+gold_overview_curso_ano_campus.csv
+gold_modalidades_curso_ano_campus.csv
+
+# Saídas de benchmark / amostras locais
+benchmark_*.csv
+*_sample.csv

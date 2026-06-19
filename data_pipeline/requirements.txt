@@ -1,5 +1,5 @@
-pandas
-numpy
-sqlalchemy
-psycopg2-binary
-python-dotenv
+pandas==3.0.2
+numpy==2.4.4
+sqlalchemy==2.0.49
+psycopg2-binary==2.9.12
+python-dotenv==1.2.2

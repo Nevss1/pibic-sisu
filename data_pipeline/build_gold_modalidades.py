@@ -12,22 +12,51 @@ Categorias atômicas (sem sobreposição):
 
 "Cota geral" NÃO é armazenada aqui — é calculada pelo frontend
 como soma das 4 subcategorias de COTA (Escola pública + PPI + Indígenas + PcD).
+
+Script compute-only: lê um CSV e grava um CSV. Não acessa o banco de dados.
+
+Uso:
+  python build_gold_modalidades.py
+  python build_gold_modalidades.py --input sisu_ufma_2017_2023.csv --output gold_modalidades_curso_ano_campus.csv
 """
+
+import argparse
+import sys
 
 import numpy as np
 import pandas as pd
 
-ARQUIVO = "sisu_ufma_2017_2023.csv"
-SAIDA   = "gold_modalidades_curso_ano_campus.csv"
+DEFAULT_INPUT  = "sisu_ufma_2017_2023.csv"
+DEFAULT_OUTPUT = "gold_modalidades_curso_ano_campus.csv"
 
-GROUP_COLS = [
+BASE_GROUP_COLS = [
     "ano", "edicao",
     "codigo_campus", "nome_campus", "municipio_campus",
     "codigo_curso", "nome_curso", "grau", "turno",
-    "categoria",
 ]
 
+# "categoria" é derivada de grupo_concorrencia + subgrupo_cota (ver derivar_categoria)
+GROUP_COLS = BASE_GROUP_COLS + ["categoria"]
+
 NUMERIC_COLS = ["ano", "edicao", "codigo_campus", "codigo_curso", "nota_candidato"]
+
+# Colunas que precisam existir no CSV de entrada (categoria é derivada, não exigida)
+REQUIRED_COLS = BASE_GROUP_COLS + ["grupo_concorrencia", "subgrupo_cota", "aprovado", "nota_candidato"]
+
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="Gera gold_modalidades_curso_ano_campus.csv")
+    p.add_argument("--input",  default=DEFAULT_INPUT,  help="Caminho do CSV Silver/Bronze de entrada")
+    p.add_argument("--output", default=DEFAULT_OUTPUT, help="Caminho do CSV Gold de saída")
+    return p.parse_args()
+
+
+def _check_required_cols(df: pd.DataFrame) -> None:
+    missing = [c for c in REQUIRED_COLS if c not in df.columns]
+    if missing:
+        print(f"\nERRO: colunas ausentes no arquivo de entrada: {missing}")
+        print(f"Colunas disponíveis: {list(df.columns)}")
+        sys.exit(1)
 
 
 def derivar_categoria(df: pd.DataFrame) -> pd.Series:
@@ -54,10 +83,14 @@ def derivar_categoria(df: pd.DataFrame) -> pd.Series:
 
 
 def main():
-    print(f"Lendo {ARQUIVO}...")
-    df = pd.read_csv(ARQUIVO, dtype=str, encoding="utf-8", low_memory=False)
+    args = parse_args()
+
+    print(f"Lendo {args.input}...")
+    df = pd.read_csv(args.input, dtype=str, encoding="utf-8", low_memory=False)
     df.columns = [c.lower() for c in df.columns]
     print(f"  {len(df):,} linhas carregadas")
+
+    _check_required_cols(df)
 
     for col in NUMERIC_COLS:
         if col in df.columns:
@@ -98,8 +131,8 @@ def main():
     print(f"  {len(gold):,} linhas na Gold\n")
     _validar(df, gold)
 
-    gold.to_csv(SAIDA, index=False)
-    print(f"\nSalvo em: {SAIDA}")
+    gold.to_csv(args.output, index=False)
+    print(f"\nSalvo em: {args.output}")
 
 
 def _validar(silver: pd.DataFrame, gold: pd.DataFrame):
