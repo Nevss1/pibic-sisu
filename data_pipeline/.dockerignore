@@ -1,0 +1,16 @@
+# Segredos e ambiente
+.env
+.venv/
+venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Dados — montados por volume em /data, nunca embutidos na imagem
+sisu_ufma_2017_2023.csv
+*_sample.csv
+gold_*.csv
+
+# Saídas de benchmark
+benchmark_*.csv
