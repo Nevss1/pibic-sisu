@@ -195,7 +195,8 @@ export function NotaCorteRanking() {
         media_nota_corte: parseFloat((d.soma_ponderada / d.total_candidatos).toFixed(2)),
         total_candidatos: d.total_candidatos,
       }))
-      .sort((a, b) => b.media_nota_corte - a.media_nota_corte);
+      .sort((a, b) => b.media_nota_corte - a.media_nota_corte)
+      .slice(0, 10);
   }, [data, anosSelecionados, campusSelecionado]);
 
   if (isLoading || !data) return <DashboardLoadingState height={360} />;
