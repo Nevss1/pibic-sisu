@@ -15,6 +15,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# GNU time — necessário para `/usr/bin/time -v` (pico de RSS) na instrumentação
+# de benchmark executada DENTRO do container. Não copia dados nem código aqui.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends time \
+    && rm -rf /var/lib/apt/lists/*
+
 # Dependências primeiro, para aproveitar o cache de camadas do Docker
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

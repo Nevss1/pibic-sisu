@@ -16,3 +16,6 @@ gold_modalidades_curso_ano_campus.csv
 # Saídas de benchmark / amostras locais
 benchmark_*.csv
 *_sample.csv
+
+# Resultados de benchmark (gerados localmente: metrics.csv, logs, CSVs de saída)
+benchmark/results/
